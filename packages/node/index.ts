@@ -24,7 +24,7 @@ import { JobAttributesSpanProcessor } from "./src/jobs/index.js";
 export * from "./src/errors/index.js";
 export * from "./src/jobs/index.js";
 
-const DEFAULT_OTEL_ENDPOINT = "https://ingest.dev.vigilon.io";
+const DEFAULT_OTEL_ENDPOINT = "https://ingest.vigilon.io";
 
 // Shared with the preload entrypoints (register.cjs / register.mjs) so that a
 // preload and an in-process register() call cannot start two SDKs.

@@ -8,6 +8,8 @@ Vigilon provides OpenTelemetry bootstrap for Node.js apps with a preload entrypo
 npm install @vigilon/node
 ```
 
+Requires Node.js 18.19 or later (Node 20.6+ recommended), matching the OpenTelemetry packages it depends on.
+
 ## Required Environment Variables
 
 Set these before starting your app:
@@ -35,7 +37,7 @@ VIGILON_OTEL_ENDPOINT=http://localhost:4318
 VIGILON_EXCLUDED_URLS=/metrics,/internal/status
 ```
 
-`VIGILON_OTEL_ENDPOINT` overrides the base OTLP HTTP endpoint. Vigilon sends traces to `<endpoint>/v1/traces`; Vigilon's endpoint metrics are derived from those traces in the OpenTelemetry Collector.
+`VIGILON_OTEL_ENDPOINT` overrides the base OTLP HTTP endpoint (default: `https://ingest.vigilon.io`). Vigilon sends traces to `<endpoint>/v1/traces`; Vigilon's endpoint metrics are derived from those traces in the OpenTelemetry Collector.
 
 `VIGILON_EXCLUDED_URLS` is a comma-separated list of additional incoming request URLs to exclude when using the preload entrypoint. Values are trimmed and matched exactly against `req.url`, including any query string. The built-in exclusions (`/health`, `/ready`, and `/favicon.ico`) always apply.
 
