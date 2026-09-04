@@ -201,3 +201,62 @@ describe("incoming URL exclusions", () => {
     );
   });
 });
+
+describe("registerFromEnv", () => {
+  let registerFromEnv: typeof import("./index.js").registerFromEnv;
+
+  beforeEach(async () => {
+    ({ registerFromEnv } = await import("./index.js"));
+    vi.stubEnv("VIGILON_API_KEY", "env-key");
+    vi.stubEnv("VIGILON_SERVICE_NAME", "env-service");
+    vi.stubEnv("VIGILON_ENVIRONMENT", "env-test");
+    vi.stubEnv("VIGILON_SERVICE_VERSION", "1.0.0");
+    vi.stubEnv("VIGILON_EXCLUDED_URLS", " /metrics , /internal/status ,");
+  });
+
+  afterEach(() => {
+    vi.unstubAllEnvs();
+    vi.restoreAllMocks();
+  });
+
+  it("starts the SDK from the VIGILON_* variables", () => {
+    const sdk = registerFromEnv();
+
+    expect(sdk).toBeDefined();
+    expect(startMock).toHaveBeenCalledTimes(1);
+  });
+
+  it("throws without starting when a required variable is missing", () => {
+    vi.stubEnv("VIGILON_SERVICE_NAME", "");
+
+    expect(() => registerFromEnv()).toThrow(/VIGILON_SERVICE_NAME/);
+    expect(startMock).not.toHaveBeenCalled();
+  });
+
+  it("warns when VIGILON_SERVICE_VERSION is unset", () => {
+    vi.stubEnv("VIGILON_SERVICE_VERSION", "");
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+
+    registerFromEnv();
+
+    expect(warn).toHaveBeenCalledWith(
+      expect.stringContaining("VIGILON_SERVICE_VERSION"),
+    );
+  });
+
+  it("parses VIGILON_EXCLUDED_URLS into trimmed, non-empty exclusions", () => {
+    registerFromEnv();
+
+    const options = nodeSdkCtorMock.mock.calls[0][0] as {
+      instrumentations: unknown[];
+    };
+    const http = options.instrumentations.find(
+      (instrumentation) => instrumentation instanceof HttpInstrumentation,
+    ) as HttpInstrumentation;
+    const ignore = http.getConfig().ignoreIncomingRequestHook;
+    expect(ignore?.({ url: "/metrics" } as never)).toBe(true);
+    expect(ignore?.({ url: "/internal/status" } as never)).toBe(true);
+    expect(ignore?.({ url: "/health" } as never)).toBe(true);
+    expect(ignore?.({ url: "/api" } as never)).toBe(false);
+  });
+});

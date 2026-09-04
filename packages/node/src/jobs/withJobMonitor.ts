@@ -7,6 +7,7 @@ import {
   SpanKind,
   SpanStatusCode,
 } from "@opentelemetry/api";
+import { toRecordedError } from "../errors/recordException.js";
 
 /**
  * Public ingest contract. These names are deliberately vendor-neutral so that
@@ -95,9 +96,9 @@ export function withJobMonitor<T>(options: WithJobOptions, fn: () => T): T {
 }
 
 function failSpan(span: Span, error: unknown): void {
-  const err = error instanceof Error ? error : new Error(String(error));
-  span.recordException(err);
-  span.setStatus({ code: SpanStatusCode.ERROR, message: err.message });
+  const recorded = toRecordedError(error);
+  span.recordException(recorded);
+  span.setStatus({ code: SpanStatusCode.ERROR, message: recorded.message });
 }
 
 function isThenable(value: unknown): value is PromiseLike<unknown> {

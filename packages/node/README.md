@@ -41,6 +41,24 @@ VIGILON_EXCLUDED_URLS=/metrics,/internal/status
 
 `VIGILON_EXCLUDED_URLS` is a comma-separated list of additional incoming request URLs to exclude when using the preload entrypoint. Values are trimmed and matched exactly against `req.url`, including any query string. The built-in exclusions (`/health`, `/ready`, and `/favicon.ico`) always apply.
 
+## What Gets Instrumented
+
+Vigilon registers these OpenTelemetry instrumentations automatically:
+
+| Library | Notes |
+|---|---|
+| `http` / `https` | Incoming requests become server spans; outgoing requests become client spans. Built-in exclusions: `/health`, `/ready`, `/favicon.ico`. |
+| `fetch` / `undici` | Outgoing requests made with the global `fetch` or `undici`. |
+| Express | Route and middleware spans, and the route template on the server span. |
+| Fastify | Route and hook spans; the plugin is registered on every Fastify instance automatically. |
+| PostgreSQL (`pg`) | Query spans. |
+| MySQL (`mysql`) | Query spans. |
+| MongoDB | Command spans. |
+| Redis | Command spans. |
+| AWS Lambda | Enabled only inside the Lambda runtime; see [AWS Lambda](#aws-lambda). |
+
+Vigilon exports traces only. It does not export OpenTelemetry metrics or logs; endpoint and job metrics are derived from the exported spans on the Vigilon side.
+
 ## CommonJS
 
 For CommonJS apps, preload Vigilon with `--require`:
@@ -76,6 +94,8 @@ Example `package.json` script:
   }
 }
 ```
+
+The ESM preload also registers OpenTelemetry's module loader hook, so ESM imports of instrumented libraries (for example `import express from "express"`) are traced the same way `require()` calls are. No extra loader flags are needed.
 
 ## Background Jobs
 
@@ -142,7 +162,7 @@ to stop, after all monitored work has settled, and await it before calling
 
 ## Next Steps
 
-If you need to initialize Vigilon manually instead of preloading it, import the main package and call `register()` yourself.
+If you need to initialize Vigilon manually instead of preloading it, import the main package and call `register()` yourself. To reuse the preload's environment-variable configuration without preloading, call `registerFromEnv()` instead.
 
 ```ts
 import { register } from "@vigilon/node";
@@ -183,4 +203,4 @@ If there is no active span (called outside a traced request or job), `recordExce
 
 Vigilon detects the Lambda runtime via `AWS_LAMBDA_FUNCTION_NAME` and adds the AWS Lambda instrumentation automatically, which flushes traces at the end of each invocation (the container freezes between invocations, so telemetry must be drained before the handler returns). No extra configuration is needed.
 
-If you bundle your Lambda with esbuild (or a similar bundler), keep `@vigilon/node` and its `@opentelemetry/*` dependencies external — bundling them inlines the modules and breaks the require-hook instrumentation that powers auto-instrumentation. Most frameworks expose an "external modules" setting for this (for example SST/OpenNext `nodejs.esbuild.external`, or the serverless-esbuild `external` option).
+If you bundle your Lambda with esbuild (or a similar bundler), keep `@vigilon/node` and its `@opentelemetry/*` dependencies external — bundling them inlines the modules and breaks the require-hook instrumentation that powers auto-instrumentation. Most frameworks expose an "external modules" setting for this (for example SST `nodejs.esbuild.external`, or the serverless-esbuild `external` option).

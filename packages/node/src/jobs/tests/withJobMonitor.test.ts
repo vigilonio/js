@@ -120,6 +120,16 @@ describe("withJobMonitor", () => {
     expect(jobSpan().status.message).toBe("string failure");
   });
 
+  it("serializes a non-Error object throw into the status message", () => {
+    expect(() =>
+      withJobMonitor({ name: "sync-users" }, () => {
+        throw { code: "E_BOOM" };
+      }),
+    ).toThrow();
+
+    expect(jobSpan().status.message).toBe('{"code":"E_BOOM"}');
+  });
+
   it("starts a new root trace even inside an active span", () => {
     const tracer = trace.getTracer("test");
     const outer = tracer.startSpan("outer");

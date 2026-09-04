@@ -112,6 +112,45 @@ export function register({
 }
 
 /**
+ * Reads the VIGILON_* environment variables and calls register() with them.
+ * This is what the preload entrypoints (@vigilon/node/register) run; call it
+ * directly if you want the same environment-driven configuration without
+ * preloading.
+ *
+ * Throws if VIGILON_API_KEY, VIGILON_SERVICE_NAME, or VIGILON_ENVIRONMENT is
+ * missing; warns if VIGILON_SERVICE_VERSION is unset.
+ */
+export function registerFromEnv() {
+  const apiKey = process.env.VIGILON_API_KEY;
+  const serviceName = process.env.VIGILON_SERVICE_NAME;
+  const environment = process.env.VIGILON_ENVIRONMENT;
+  const serviceVersion = process.env.VIGILON_SERVICE_VERSION;
+  const excludedUrls = process.env.VIGILON_EXCLUDED_URLS?.split(",")
+    .map((url) => url.trim())
+    .filter(Boolean);
+
+  if (!apiKey || !serviceName || !environment) {
+    throw new Error(
+      "Vigilon register preload requires VIGILON_API_KEY, VIGILON_SERVICE_NAME, and VIGILON_ENVIRONMENT.",
+    );
+  }
+
+  if (!serviceVersion) {
+    console.warn(
+      "Vigilon recommends setting VIGILON_SERVICE_VERSION to track new deployments and generate better insights.",
+    );
+  }
+
+  return register({
+    apiKey,
+    serviceName,
+    environment,
+    serviceVersion,
+    excludedUrls,
+  });
+}
+
+/**
  * Flushes pending telemetry and shuts down the process-wide Vigilon SDK.
  *
  * Safe to call before registration and safe to call repeatedly. Concurrent

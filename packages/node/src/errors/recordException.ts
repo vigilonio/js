@@ -24,7 +24,8 @@ export function recordException(error: unknown): void {
   });
 }
 
-function toRecordedError(error: unknown): Error {
+/** Internal: normalizes any thrown value into an Error for span.recordException(). */
+export function toRecordedError(error: unknown): Error {
   if (error instanceof Error) {
     return error;
   }

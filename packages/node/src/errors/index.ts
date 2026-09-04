@@ -1,1 +1,1 @@
-export * from "./recordException.js";
+export { recordException } from "./recordException.js";

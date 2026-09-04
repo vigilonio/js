@@ -1,31 +1,14 @@
-import { register } from "./dist/esm/index.mjs";
+// ESM preload entrypoint: `node --import @vigilon/node/register app.mjs`.
+import { register as registerLoaderHook } from "node:module";
 
-const apiKey = process.env.VIGILON_API_KEY;
-const serviceName = process.env.VIGILON_SERVICE_NAME;
-const environment = process.env.VIGILON_ENVIRONMENT;
-const serviceVersion = process.env.VIGILON_SERVICE_VERSION;
-const excludedUrls = process.env.VIGILON_EXCLUDED_URLS?.split(",")
-  .map((url) => url.trim())
-  .filter(Boolean);
-
-if (!apiKey || !serviceName || !environment) {
-  throw new Error(
-    "Vigilon register preload requires VIGILON_API_KEY, VIGILON_SERVICE_NAME, and VIGILON_ENVIRONMENT.",
-  );
-}
-
-if (!serviceVersion) {
-  console.warn(
-    "Vigilon recommends setting VIGILON_SERVICE_VERSION to track new deployments and generate better insights.",
-  );
-}
+// ESM imports never go through require(), so OpenTelemetry's require-hook
+// instrumentation cannot patch modules such as express or pg when the app is
+// ESM. Registering OpenTelemetry's loader hook here — before the SDK and the
+// app are loaded — lets the same instrumentations intercept ESM imports.
+// module.register() needs Node 20.6+, which is this package's engine floor.
+registerLoaderHook("@opentelemetry/instrumentation/hook.mjs", import.meta.url);
 
 // register() is idempotent (guards on Symbol.for("vigilon.register.started")),
 // so a preload plus an in-process register() call cannot start two SDKs.
-register({
-  apiKey,
-  serviceName,
-  environment,
-  serviceVersion,
-  excludedUrls,
-});
+const { registerFromEnv } = await import("./dist/esm/index.mjs");
+registerFromEnv();
