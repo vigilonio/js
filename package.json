@@ -1,0 +1,10 @@
+{
+  "name": "vigilon-js",
+  "private": true,
+  "version": "0.0.0",
+  "scripts": {
+    "build": "pnpm -r build",
+    "test": "pnpm -r test",
+    "smoke": "bash scripts/smoke.sh"
+  }
+}

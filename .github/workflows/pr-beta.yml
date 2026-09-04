@@ -1,0 +1,76 @@
+name: Publish PR Beta
+
+on:
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+
+permissions:
+  contents: read
+  # Required for npm trusted publishing (OIDC) and provenance attestations.
+  id-token: write
+
+concurrency:
+  group: pr-beta-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  publish-beta:
+    if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v6
+        with:
+          version: 11.22.0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: pnpm
+          scope: "@vigilon"
+          registry-url: https://registry.npmjs.org
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Set beta version (all packages, lockstep)
+        shell: bash
+        run: |
+          current_version=$(node -p "require('./packages/node/package.json').version")
+          beta_version=$(node -e 'const [major, minor, patch] = process.argv[1].split(".").map(Number); console.log(major + "." + minor + "." + (patch + 1) + "-beta.pr-" + process.argv[2] + "." + process.argv[3]);' "$current_version" "${{ github.event.pull_request.number }}" "${{ github.run_number }}")
+          pnpm -r exec npm version "$beta_version" --no-git-tag-version
+          echo "BETA_VERSION=$beta_version" >> "$GITHUB_ENV"
+
+      - name: Build packages
+        run: pnpm build
+
+      - name: Run tests
+        run: pnpm test
+
+      - name: Smoke-test packed tarballs
+        run: pnpm smoke
+
+      - name: Publish betas to npm
+        run: |
+          # Idempotent per-package publish — see release-main.yml.
+          for dir in packages/node; do
+            name=$(node -p "require('./$dir/package.json').name")
+            version=$(node -p "require('./$dir/package.json').version")
+            if npm view "$name@$version" version >/dev/null 2>&1; then
+              echo "$name@$version already published — skipping"
+            else
+              tarball="$RUNNER_TEMP/$(basename "$dir").tgz"
+              (cd "$dir" && pnpm pack --out "$tarball")
+              npm publish "$tarball" --provenance --tag beta
+            fi
+          done

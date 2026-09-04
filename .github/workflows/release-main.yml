@@ -1,0 +1,99 @@
+name: Release Main
+
+# Manual trigger while the first public release is under review. Once the
+# package is ready to ship on every merge, replace `workflow_dispatch` with:
+#
+#   push:
+#     branches:
+#       - main
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  # Required for npm trusted publishing (OIDC) and provenance attestations.
+  id-token: write
+
+concurrency:
+  group: main-release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    if: "${{ github.actor != 'github-actions[bot]' && !startsWith(github.event.head_commit.message, 'chore(release): ') }}"
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v6
+        with:
+          version: 11.22.0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: pnpm
+          scope: "@vigilon"
+          registry-url: https://registry.npmjs.org
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Configure git author
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Version packages (lockstep)
+        run: |
+          version=$(node -p "require('./packages/node/package.json').version")
+          # A hand-set, not-yet-published version releases as-is; otherwise
+          # bump the patch version of every package in lockstep.
+          # NOTE: `npm view` runs unauthenticated, so while the package is
+          # published with restricted access an existing version looks
+          # unpublished here and the publish step fails on the conflict
+          # instead of bumping. Once the package is public this resolves.
+          if npm view "@vigilon/node@$version" version >/dev/null 2>&1; then
+            pnpm -r exec npm version patch --no-git-tag-version
+            version=$(node -p "require('./packages/node/package.json').version")
+            git commit -am "chore(release): $version"
+          fi
+          git rev-parse -q --verify "refs/tags/v$version" >/dev/null || git tag "v$version"
+          echo "RELEASE_VERSION=$version" >> "$GITHUB_ENV"
+
+      - name: Build packages
+        run: pnpm build
+
+      - name: Run tests
+        run: pnpm test
+
+      - name: Smoke-test packed tarballs
+        run: pnpm smoke
+
+      - name: Publish packages to npm
+        run: |
+          # Idempotent per-package publish so a partially-published release is
+          # recoverable by rerunning the workflow: versions that already exist
+          # in the registry are skipped instead of failing the run.
+          # `pnpm pack` rewrites workspace:* dependencies to real versions;
+          # `npm publish` on the tarball handles OIDC auth and provenance.
+          for dir in packages/node; do
+            name=$(node -p "require('./$dir/package.json').name")
+            version=$(node -p "require('./$dir/package.json').version")
+            if npm view "$name@$version" version >/dev/null 2>&1; then
+              echo "$name@$version already published — skipping"
+            else
+              tarball="$RUNNER_TEMP/$(basename "$dir").tgz"
+              (cd "$dir" && pnpm pack --out "$tarball")
+              npm publish "$tarball" --provenance --tag latest
+            fi
+          done
+
+      - name: Push release commit and tag
+        run: git push origin HEAD:main --follow-tags

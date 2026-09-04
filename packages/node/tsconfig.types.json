@@ -1,0 +1,14 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    "outDir": "dist/types",
+    "module": "ES2020",
+    "moduleResolution": "Bundler",
+    "rootDir": "."
+  },
+  "include": [
+    "index.ts"
+  ]
+}
