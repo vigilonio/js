@@ -77,23 +77,13 @@ jobs:
         run: pnpm smoke
 
       - name: Publish packages to npm
-        run: |
-          # Idempotent per-package publish so a partially-published release is
-          # recoverable by rerunning the workflow: versions that already exist
-          # in the registry are skipped instead of failing the run.
-          # `pnpm pack` rewrites workspace:* dependencies to real versions;
-          # `npm publish` on the tarball handles OIDC auth and provenance.
-          for dir in packages/node; do
-            name=$(node -p "require('./$dir/package.json').name")
-            version=$(node -p "require('./$dir/package.json').version")
-            if npm view "$name@$version" version >/dev/null 2>&1; then
-              echo "$name@$version already published — skipping"
-            else
-              tarball="$RUNNER_TEMP/$(basename "$dir").tgz"
-              (cd "$dir" && pnpm pack --out "$tarball")
-              npm publish "$tarball" --provenance --tag latest
-            fi
-          done
+        # Bootstrap: npm trusted publishing can only be configured for a
+        # package that already exists on the registry, so the very first
+        # version of a new package must be published manually with
+        # `scripts/publish.sh latest` from a logged-in machine. After that,
+        # add this workflow as a trusted publisher on npmjs.com and the
+        # OIDC publish below works with no token.
+        run: bash scripts/publish.sh latest
 
       - name: Push release commit and tag
         run: git push origin HEAD:main --follow-tags

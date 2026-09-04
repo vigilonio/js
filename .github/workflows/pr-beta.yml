@@ -61,16 +61,4 @@ jobs:
         run: pnpm smoke
 
       - name: Publish betas to npm
-        run: |
-          # Idempotent per-package publish — see release-main.yml.
-          for dir in packages/node; do
-            name=$(node -p "require('./$dir/package.json').name")
-            version=$(node -p "require('./$dir/package.json').version")
-            if npm view "$name@$version" version >/dev/null 2>&1; then
-              echo "$name@$version already published — skipping"
-            else
-              tarball="$RUNNER_TEMP/$(basename "$dir").tgz"
-              (cd "$dir" && pnpm pack --out "$tarball")
-              npm publish "$tarball" --provenance --tag beta
-            fi
-          done
+        run: bash scripts/publish.sh beta
