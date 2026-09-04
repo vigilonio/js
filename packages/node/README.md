@@ -8,7 +8,7 @@ Vigilon provides OpenTelemetry bootstrap for Node.js apps with a preload entrypo
 npm install @vigilon/node
 ```
 
-Requires Node.js 18.19 or later (Node 20.6+ recommended), matching the OpenTelemetry packages it depends on.
+Requires Node.js 20.6 or later.
 
 ## Required Environment Variables
 
