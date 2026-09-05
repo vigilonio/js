@@ -10,6 +10,10 @@ import {
 /**
  * Stamps job attributes onto every span started inside a `withJobMonitor` scope.
  *
+ * The job's root span is only exported when the job ends, but child spans
+ * export as they finish. Stamping the job identity on each child means any
+ * span in the trace identifies its job, even while a long-running job is
+ * still in progress.
  */
 export class JobAttributesSpanProcessor implements SpanProcessor {
   onStart(span: Span, parentContext: Context): void {

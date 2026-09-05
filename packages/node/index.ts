@@ -221,7 +221,7 @@ function startSdk({
     // is wired through the batch processor here instead.
     spanProcessors,
     // An empty list overrides NodeSDK's OTEL_METRICS_EXPORTER fallback so this
-    // SDK does not export metrics; the collector derives them from spans.
+    // SDK does not export metrics.
     metricReaders: [],
     instrumentations: buildInstrumentations(excludedUrls),
   });
