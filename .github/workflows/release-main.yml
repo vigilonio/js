@@ -75,7 +75,19 @@ jobs:
             version=$(node -p "require('./packages/node/package.json').version")
             git commit -am "chore(release): $version"
           fi
-          is_tagged "$version" || git tag -a "v$version" -m "v$version"
+          if is_tagged "$version"; then
+            # Retrying a tagged-but-unpublished version: the tarball and its
+            # provenance must come from the tagged commit, so refuse to
+            # publish a HEAD that has moved on since the tag was pushed.
+            tagged=$(git rev-parse "refs/tags/v$version^{commit}")
+            head=$(git rev-parse HEAD)
+            if [ "$tagged" != "$head" ]; then
+              echo "::error::v$version is tagged at $tagged but HEAD is $head. Publish from the tagged commit, or delete the tag so the next release bumps past $version."
+              exit 1
+            fi
+          else
+            git tag -a "v$version" -m "v$version"
+          fi
 
           # Git state is established before the irreversible npm publish. If
           # main moved during the run this push fails, nothing is published,

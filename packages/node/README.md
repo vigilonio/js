@@ -227,3 +227,4 @@ If you bundle your Lambda with esbuild (or a similar bundler), keep `@vigilon/no
 - Dashboard: [app.vigilon.io](https://app.vigilon.io)
 - Questions and issues: [support@vigilon.io](mailto:support@vigilon.io)
 - Security reports: [security@vigilon.io](mailto:security@vigilon.io)
+- Privacy policy: [vigilon.io/privacy](https://vigilon.io/privacy)
