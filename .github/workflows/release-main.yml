@@ -31,8 +31,6 @@ jobs:
 
       - name: Set up pnpm
         uses: pnpm/action-setup@v6
-        with:
-          version: 10.34.5
 
       - name: Set up Node.js
         uses: actions/setup-node@v6
@@ -45,27 +43,8 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Configure git author
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-
-      - name: Version packages (lockstep)
-        run: |
-          version=$(node -p "require('./packages/node/package.json').version")
-          # Release tags are the source of truth for "has this version
-          # shipped": a hand-set version with no v<version> tag releases
-          # as-is; otherwise bump the patch version of every package in
-          # lockstep. This needs no registry access, so it works the same
-          # for public and restricted packages.
-          if git rev-parse -q --verify "refs/tags/v$version" >/dev/null; then
-            pnpm -r exec npm version patch --no-git-tag-version
-            version=$(node -p "require('./packages/node/package.json').version")
-            git commit -am "chore(release): $version"
-          fi
-          git tag "v$version"
-          echo "RELEASE_VERSION=$version" >> "$GITHUB_ENV"
-
+      # Validate before touching git or npm state, so a failing build or test
+      # leaves nothing behind to recover from.
       - name: Build packages
         run: pnpm build
 
@@ -75,14 +54,42 @@ jobs:
       - name: Smoke-test packed tarballs
         run: pnpm smoke
 
+      - name: Configure git author
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Version, tag, and push (lockstep)
+        run: |
+          version=$(node -p "require('./packages/node/package.json').version")
+          is_tagged()    { git rev-parse -q --verify "refs/tags/v$1" >/dev/null; }
+          is_published() { npm view "@vigilon/node@$1" version >/dev/null 2>&1; }
+
+          # Bump only when the current version has fully shipped (tagged and
+          # on npm). A hand-set, untagged version releases as-is; a tagged
+          # version missing from npm is a failed publish being retried, and
+          # also releases as-is. Tags are annotated: `--follow-tags` and
+          # lightweight tags silently do not mix.
+          if is_tagged "$version" && is_published "$version"; then
+            pnpm -r exec npm version patch --no-git-tag-version
+            version=$(node -p "require('./packages/node/package.json').version")
+            git commit -am "chore(release): $version"
+          fi
+          is_tagged "$version" || git tag -a "v$version" -m "v$version"
+
+          # Git state is established before the irreversible npm publish. If
+          # main moved during the run this push fails, nothing is published,
+          # and a rerun starts clean. --atomic: branch and tag land together
+          # or not at all.
+          git push --atomic origin HEAD:main "refs/tags/v$version"
+          echo "RELEASE_VERSION=$version" >> "$GITHUB_ENV"
+
       - name: Publish packages to npm
         # Bootstrap: npm trusted publishing can only be configured for a
         # package that already exists on the registry, so the very first
         # version of a new package must be published manually with
-        # `scripts/publish.sh latest` from a logged-in machine. After that,
-        # add this workflow as a trusted publisher on npmjs.com and the
-        # OIDC publish below works with no token.
+        # `scripts/publish.sh latest` from a logged-in machine, and its
+        # annotated v<version> tag pushed by hand. After that, add this
+        # workflow as a trusted publisher on npmjs.com and the OIDC publish
+        # below works with no token.
         run: bash scripts/publish.sh latest
-
-      - name: Push release commit and tag
-        run: git push origin HEAD:main --follow-tags

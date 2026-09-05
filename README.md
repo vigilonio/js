@@ -1,6 +1,6 @@
 # Vigilon JavaScript SDKs
 
-pnpm workspace housing Vigilon's JavaScript SDK packages, published to npm under the `@vigilon` scope.
+pnpm workspace housing Vigilon's JavaScript SDK packages, published to npm under the `@vigilon` scope. Product documentation lives at [vigilon.io/docs](https://vigilon.io/docs).
 
 | Package | Use it for |
 |---|---|

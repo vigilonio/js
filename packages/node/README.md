@@ -12,7 +12,7 @@ Requires Node.js 20.6 or later.
 
 ## Required Environment Variables
 
-Set these before starting your app:
+Create an API key in the [Vigilon dashboard](https://app.vigilon.io) under your project's **Settings** page, **API Keys** tab. Then set these before starting your app:
 
 ```bash
 VIGILON_API_KEY=your-api-key
@@ -220,3 +220,10 @@ If you bundle your Lambda with esbuild (or a similar bundler), keep `@vigilon/no
 **Traces stop when the process exits or is suspended.** Spans are exported in batches. Call `shutdown()` before exiting short-lived processes; see [Short-Lived Processes](#short-lived-processes). AWS Lambda is handled automatically.
 
 **`--import` fails with a `module.register` error.** The ESM preload needs Node.js 20.6 or later.
+
+## Support
+
+- Documentation: [vigilon.io/docs](https://vigilon.io/docs)
+- Dashboard: [app.vigilon.io](https://app.vigilon.io)
+- Questions and issues: [support@vigilon.io](mailto:support@vigilon.io)
+- Security reports: [security@vigilon.io](mailto:security@vigilon.io)
