@@ -37,7 +37,7 @@ VIGILON_OTEL_ENDPOINT=http://localhost:4318
 VIGILON_EXCLUDED_URLS=/metrics,/internal/status
 ```
 
-`VIGILON_OTEL_ENDPOINT` overrides the base OTLP HTTP endpoint (default: `https://ingest.vigilon.io`). Vigilon sends traces to `<endpoint>/v1/traces`; Vigilon's endpoint metrics are derived from those traces in the OpenTelemetry Collector.
+`VIGILON_OTEL_ENDPOINT` overrides the base OTLP HTTP endpoint (default: `https://ingest.vigilon.io`). Vigilon sends traces to `<endpoint>/v1/traces`; Vigilon's endpoint metrics are derived from those traces.
 
 `VIGILON_EXCLUDED_URLS` is a comma-separated list of additional incoming request URLs to exclude when using the preload entrypoint. Values are trimmed and matched exactly against `req.url`, including any query string. The built-in exclusions (`/health`, `/ready`, and `/favicon.ico`) always apply.
 
@@ -57,7 +57,7 @@ Vigilon registers these OpenTelemetry instrumentations automatically:
 | Redis | Command spans. |
 | AWS Lambda | Enabled only inside the Lambda runtime; see [AWS Lambda](#aws-lambda). |
 
-Vigilon exports traces only. It does not export OpenTelemetry metrics or logs; endpoint and job metrics are derived from the exported spans on the Vigilon side.
+Vigilon exports traces only. It does not export OpenTelemetry metrics or logs; endpoint and job metrics are derived from the exported spans on the Vigilon Ingestion Engine side.
 
 ## CommonJS
 

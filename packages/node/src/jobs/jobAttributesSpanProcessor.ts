@@ -10,11 +10,6 @@ import {
 /**
  * Stamps job attributes onto every span started inside a `withJobMonitor` scope.
  *
- * This is required for correctness, not cosmetics: the collector decides
- * whether to keep a trace shortly after its first span arrives, but a job's
- * root span is only exported when the job ends. Child spans carrying the job
- * marker export during execution, so the "keep all job traces" policy matches
- * within the decision window even for long-running jobs.
  */
 export class JobAttributesSpanProcessor implements SpanProcessor {
   onStart(span: Span, parentContext: Context): void {
