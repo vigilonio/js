@@ -32,7 +32,7 @@ jobs:
       - name: Set up pnpm
         uses: pnpm/action-setup@v6
         with:
-          version: 11.22.0
+          version: 10.34.5
 
       - name: Set up Node.js
         uses: actions/setup-node@v6
@@ -53,18 +53,17 @@ jobs:
       - name: Version packages (lockstep)
         run: |
           version=$(node -p "require('./packages/node/package.json').version")
-          # A hand-set, not-yet-published version releases as-is; otherwise
-          # bump the patch version of every package in lockstep.
-          # NOTE: `npm view` runs unauthenticated, so while the package is
-          # published with restricted access an existing version looks
-          # unpublished here and the publish step fails on the conflict
-          # instead of bumping. Once the package is public this resolves.
-          if npm view "@vigilon/node@$version" version >/dev/null 2>&1; then
+          # Release tags are the source of truth for "has this version
+          # shipped": a hand-set version with no v<version> tag releases
+          # as-is; otherwise bump the patch version of every package in
+          # lockstep. This needs no registry access, so it works the same
+          # for public and restricted packages.
+          if git rev-parse -q --verify "refs/tags/v$version" >/dev/null; then
             pnpm -r exec npm version patch --no-git-tag-version
             version=$(node -p "require('./packages/node/package.json').version")
             git commit -am "chore(release): $version"
           fi
-          git rev-parse -q --verify "refs/tags/v$version" >/dev/null || git tag "v$version"
+          git tag "v$version"
           echo "RELEASE_VERSION=$version" >> "$GITHUB_ENV"
 
       - name: Build packages

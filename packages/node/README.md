@@ -164,6 +164,8 @@ to stop, after all monitored work has settled, and await it before calling
 
 If you need to initialize Vigilon manually instead of preloading it, import the main package and call `register()` yourself. To reuse the preload's environment-variable configuration without preloading, call `registerFromEnv()` instead.
 
+Manual registration must run before your framework and database clients are loaded, because instrumentation patches modules as they are required. In CommonJS that means calling it at the very top of your entry file, before any other `require`. In ESM it is not enough: `import` statements are hoisted and evaluated before your code runs, and only the `--import @vigilon/node/register` preload installs the module loader hook that ESM auto-instrumentation depends on. ESM apps should always use the preload.
+
 ```ts
 import { register } from "@vigilon/node";
 
@@ -204,3 +206,17 @@ If there is no active span (called outside a traced request or job), `recordExce
 Vigilon detects the Lambda runtime via `AWS_LAMBDA_FUNCTION_NAME` and adds the AWS Lambda instrumentation automatically, which flushes traces at the end of each invocation (the container freezes between invocations, so telemetry must be drained before the handler returns). No extra configuration is needed.
 
 If you bundle your Lambda with esbuild (or a similar bundler), keep `@vigilon/node` and its `@opentelemetry/*` dependencies external — bundling them inlines the modules and breaks the require-hook instrumentation that powers auto-instrumentation. Most frameworks expose an "external modules" setting for this (for example SST `nodejs.esbuild.external`, or the serverless-esbuild `external` option).
+
+## Troubleshooting
+
+**No traces show up.** Check that all three required environment variables are set and that the process was started with the preload (`--require` for CommonJS, `--import` for ESM). The preload throws at startup if a required variable is missing.
+
+**HTTP spans appear but Express, Fastify, or database spans are missing.** The instrumented library was loaded before Vigilon. With the preload this only happens in ESM apps started without `--import @vigilon/node/register`; with manual registration it happens whenever `register()` runs after the library is imported. See [Next Steps](#next-steps).
+
+**Spans are missing after bundling.** Bundlers such as esbuild inline `@vigilon/node` and its `@opentelemetry/*` dependencies, which bypasses the require hooks. Keep them external; see [AWS Lambda](#aws-lambda).
+
+**"Vigilon is already registered" warning.** The SDK was started twice, usually via both the preload and an in-process `register()` call. Keep one.
+
+**Traces stop when the process exits or is suspended.** Spans are exported in batches. Call `shutdown()` before exiting short-lived processes; see [Short-Lived Processes](#short-lived-processes). AWS Lambda is handled automatically.
+
+**`--import` fails with a `module.register` error.** The ESM preload needs Node.js 20.6 or later.

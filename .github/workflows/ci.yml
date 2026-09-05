@@ -1,8 +1,10 @@
 name: CI
 
 # Unprivileged validation for every PR (including forks) and every push to
-# main: build, unit tests, and the packed-tarball integration smoke test on
-# the minimum supported Node major and the current one.
+# main. Two jobs because the dev tooling and the SDK have different Node
+# floors: vitest/vite need Node 20.19+, while the package itself supports
+# 20.6+. The runtime-floor job therefore builds and runs the packed-tarball
+# smoke test on exactly 20.6.0 without the unit-test tooling.
 on:
   pull_request:
   push:
@@ -18,6 +20,7 @@ concurrency:
 
 jobs:
   test:
+    name: Build, unit tests, smoke (Node ${{ matrix.node-version }})
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -31,7 +34,7 @@ jobs:
       - name: Set up pnpm
         uses: pnpm/action-setup@v6
         with:
-          version: 11.22.0
+          version: 10.34.5
 
       - name: Set up Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v6
@@ -47,6 +50,34 @@ jobs:
 
       - name: Run tests
         run: pnpm test
+
+      - name: Smoke-test packed tarballs
+        run: pnpm smoke
+
+  runtime-floor:
+    name: Build, smoke (Node 20.6.0, declared engine minimum)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v7
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v6
+        with:
+          version: 10.34.5
+
+      - name: Set up Node.js 20.6.0
+        uses: actions/setup-node@v6
+        with:
+          node-version: 20.6.0
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build packages
+        run: pnpm build
 
       - name: Smoke-test packed tarballs
         run: pnpm smoke

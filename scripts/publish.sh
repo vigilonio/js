@@ -14,12 +14,20 @@
 # configured for a package: it then uses your `npm login` session and skips
 # provenance, which is only available from a CI runner.
 #
-# NOTE: `npm view` is unauthenticated in CI, so while a package is published
-# with restricted access an existing version looks unpublished here and
-# `npm publish` fails on the conflict instead of being skipped.
+# NOTE: the already-published check uses `npm view`, which only sees public
+# versions when run unauthenticated (as in CI). Packages are published with
+# public access, so that is sufficient; a restricted version would look
+# unpublished here and `npm publish` would then fail on the conflict.
 set -euo pipefail
 
-tag=${1:?usage: scripts/publish.sh <dist-tag>}
+tag=${1:-}
+case "$tag" in
+  latest | beta) ;;
+  *)
+    echo "usage: scripts/publish.sh <latest|beta>" >&2
+    exit 2
+    ;;
+esac
 repo_root=$(cd "$(dirname "$0")/.." && pwd)
 tmp=$(mktemp -d)
 trap 'rm -rf "$tmp"' EXIT

@@ -9,7 +9,19 @@ set -euo pipefail
 repo_root=$(cd "$(dirname "$0")/.." && pwd)
 tmp=$(mktemp -d)
 collector_pid=""
-trap '{ [ -n "$collector_pid" ] && kill "$collector_pid" && wait "$collector_pid"; } 2>/dev/null; rm -rf "$tmp"' EXIT
+
+cleanup() {
+  # Preserve the script's own status: killing the collector is expected and
+  # must not turn a passing run into exit 143.
+  local status=$?
+  if [ -n "$collector_pid" ]; then
+    kill "$collector_pid" 2>/dev/null || true
+    wait "$collector_pid" 2>/dev/null || true
+  fi
+  rm -rf "$tmp"
+  exit "$status"
+}
+trap cleanup EXIT
 
 (cd "$repo_root/packages/node" && pnpm pack --out "$tmp/node.tgz")
 
