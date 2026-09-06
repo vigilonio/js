@@ -1,9 +1,12 @@
 #!/usr/bin/env bash
 # Packs the workspace packages, installs them into a throwaway npm project
-# together with Express, and runs the real preload entrypoints — CJS via
-# --require and ESM via --import — against a local OTLP receiver. Each
-# variant must export both an HTTP server span and an Express span, which is
-# what verifies the loader-hook wiring a consumer actually depends on.
+# together with Express, and runs the real preload entrypoints — --import for
+# both CJS and ESM apps, plus the legacy --require for CJS — against a local
+# OTLP receiver. Each variant must export both an HTTP server span and an
+# Express span, which is what verifies the loader-hook wiring a consumer
+# actually depends on. A final variant drops the VIGILON_SERVICE_NAME and
+# VIGILON_SERVICE_VERSION variables to check that the defaults are derived
+# from the project's package.json.
 set -euo pipefail
 
 repo_root=$(cd "$(dirname "$0")/.." && pwd)
@@ -27,6 +30,7 @@ trap cleanup EXIT
 
 cd "$tmp"
 npm init -y >/dev/null
+npm pkg set name=smoke-derived-service version=9.9.9
 npm install --no-save --no-audit --no-fund ./node.tgz express >/dev/null
 cp "$repo_root"/scripts/smoke/*.mjs "$repo_root"/scripts/smoke/*.cjs .
 
@@ -47,13 +51,28 @@ export VIGILON_OTEL_ENDPOINT="http://127.0.0.1:$port"
 
 run_variant() {
   local label=$1
-  shift
+  local markers=$2
+  shift 2
   : > collector.log
   "$@"
-  node assert.mjs "$label"
+  # shellcheck disable=SC2086
+  node assert.mjs "$label" $markers
 }
 
-run_variant "CJS --require" node --require @vigilon/node/register app.cjs
-run_variant "ESM --import" node --import @vigilon/node/register app.mjs
+spans="httpServerSpan expressSpan"
+run_variant "CJS --import" "$spans" node --import @vigilon/node/register app.cjs
+run_variant "ESM --import" "$spans" node --import @vigilon/node/register app.mjs
+run_variant "CJS --require" "$spans" node --require @vigilon/node/register app.cjs
+run_variant "CJS NODE_OPTIONS" "$spans" \
+  env NODE_OPTIONS="--import @vigilon/node/register" node app.cjs
+
+# Derived defaults: service name and version come from package.json, the
+# environment from the generic ENVIRONMENT variable. The npm_package_*
+# variables are unset because `pnpm smoke` leaks the workspace's own values
+# into this shell.
+run_variant "derived defaults" "$spans derivedServiceName derivedServiceVersion" \
+  env -u VIGILON_SERVICE_NAME -u VIGILON_SERVICE_VERSION -u VIGILON_ENVIRONMENT \
+  -u npm_package_name -u npm_package_version \
+  ENVIRONMENT=smoke node --import @vigilon/node/register app.cjs
 
 echo "smoke: OK"

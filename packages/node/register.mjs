@@ -1,4 +1,5 @@
-// ESM preload entrypoint: `node --import @vigilon/node/register app.mjs`.
+// Preload entrypoint: `node --import @vigilon/node/register app.js`. Works for
+// both CommonJS and ESM apps.
 import { register as registerLoaderHook } from "node:module";
 
 // ESM imports never go through require(), so OpenTelemetry's require-hook

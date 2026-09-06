@@ -17,6 +17,14 @@ vi.mock("@opentelemetry/sdk-node", () => ({
   },
 }));
 
+// Under vitest, npm_package_* and the nearest package.json would supply a
+// service name and version, which would hide the "missing setting" paths.
+// Pretend there is no package.json and clear the npm-provided variables.
+vi.mock("./src/config/packageJson.js", () => ({
+  defaultSearchDirs: () => [],
+  findNearestPackageJson: () => undefined,
+}));
+
 const REGISTER_STATE_KEY = Symbol.for("vigilon.register.started");
 
 const params = {
@@ -31,6 +39,9 @@ let shutdown: typeof import("./index.js").shutdown;
 
 beforeEach(async () => {
   ({ register, shutdown } = await import("./index.js"));
+  vi.stubEnv("npm_package_name", "");
+  vi.stubEnv("npm_package_version", "");
+  vi.spyOn(console, "info").mockImplementation(() => {});
   startMock.mockClear();
   shutdownMock.mockReset().mockResolvedValue(undefined);
   nodeSdkCtorMock.mockClear();
@@ -38,6 +49,28 @@ beforeEach(async () => {
 });
 
 describe("shutdown", () => {
+  it("resolves and warns instead of rejecting when the final flush fails", async () => {
+    shutdownMock.mockRejectedValue(new Error("Unauthorized"));
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    register(params);
+
+    await expect(shutdown()).resolves.toBeUndefined();
+
+    expect(warn).toHaveBeenCalledWith(expect.stringContaining("Unauthorized"));
+  });
+
+  it("resolves when the SDK throws synchronously from shutdown", async () => {
+    shutdownMock.mockImplementation(() => {
+      throw new Error("sync boom");
+    });
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    register(params);
+
+    await expect(shutdown()).resolves.toBeUndefined();
+
+    expect(warn).toHaveBeenCalledWith(expect.stringContaining("sync boom"));
+  });
+
   it("is a no-op before the SDK is registered", async () => {
     await expect(shutdown()).resolves.toBeUndefined();
 
@@ -76,6 +109,7 @@ describe("shutdown", () => {
 });
 
 afterEach(() => {
+  vi.unstubAllEnvs();
   vi.restoreAllMocks();
   delete (globalThis as Record<symbol, unknown>)[REGISTER_STATE_KEY];
 });
@@ -202,7 +236,7 @@ describe("incoming URL exclusions", () => {
   });
 });
 
-describe("registerFromEnv", () => {
+describe("configuration from the environment", () => {
   let registerFromEnv: typeof import("./index.js").registerFromEnv;
 
   beforeEach(async () => {
@@ -214,11 +248,6 @@ describe("registerFromEnv", () => {
     vi.stubEnv("VIGILON_EXCLUDED_URLS", " /metrics , /internal/status ,");
   });
 
-  afterEach(() => {
-    vi.unstubAllEnvs();
-    vi.restoreAllMocks();
-  });
-
   it("starts the SDK from the VIGILON_* variables", () => {
     const sdk = registerFromEnv();
 
@@ -226,14 +255,59 @@ describe("registerFromEnv", () => {
     expect(startMock).toHaveBeenCalledTimes(1);
   });
 
-  it("throws without starting when a required variable is missing", () => {
+  it("uses the resolved values as the resource attributes", () => {
+    vi.stubEnv("VIGILON_SERVICE_NAME", "");
+    vi.stubEnv("OTEL_SERVICE_NAME", "otel-service");
+    vi.stubEnv("VIGILON_ENVIRONMENT", "");
+    vi.stubEnv("ENVIRONMENT", "staging");
+
+    register();
+
+    const options = nodeSdkCtorMock.mock.calls[0][0] as {
+      resource: { attributes: Record<string, unknown> };
+    };
+    expect(options.resource.attributes).toMatchObject({
+      "service.name": "otel-service",
+      "service.version": "1.0.0",
+      "deployment.environment": "staging",
+    });
+  });
+
+  it("lets register() arguments override the environment", () => {
+    register({ serviceName: "explicit", environment: "explicit-env" });
+
+    const options = nodeSdkCtorMock.mock.calls[0][0] as {
+      resource: { attributes: Record<string, unknown> };
+    };
+    expect(options.resource.attributes).toMatchObject({
+      "service.name": "explicit",
+      "deployment.environment": "explicit-env",
+    });
+  });
+
+  it("throws without starting or taking the guard when a required setting is missing", () => {
     vi.stubEnv("VIGILON_SERVICE_NAME", "");
 
     expect(() => registerFromEnv()).toThrow(/VIGILON_SERVICE_NAME/);
     expect(startMock).not.toHaveBeenCalled();
+    expect(
+      (globalThis as Record<symbol, unknown>)[REGISTER_STATE_KEY],
+    ).toBeUndefined();
   });
 
-  it("warns when VIGILON_SERVICE_VERSION is unset", () => {
+  it("logs the effective configuration and its sources on startup", () => {
+    const info = vi.spyOn(console, "info").mockImplementation(() => {});
+
+    registerFromEnv();
+
+    expect(info).toHaveBeenCalledWith(
+      expect.stringContaining(
+        "service.name=env-service (VIGILON_SERVICE_NAME), deployment.environment=env-test (VIGILON_ENVIRONMENT), service.version=1.0.0 (VIGILON_SERVICE_VERSION)",
+      ),
+    );
+  });
+
+  it("warns when no service version can be resolved", () => {
     vi.stubEnv("VIGILON_SERVICE_VERSION", "");
     const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
 
@@ -242,6 +316,18 @@ describe("registerFromEnv", () => {
     expect(warn).toHaveBeenCalledWith(
       expect.stringContaining("VIGILON_SERVICE_VERSION"),
     );
+  });
+
+  it("does nothing when VIGILON_DISABLED is set", () => {
+    vi.stubEnv("VIGILON_DISABLED", "true");
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+
+    expect(register()).toBeUndefined();
+    expect(startMock).not.toHaveBeenCalled();
+    expect(
+      (globalThis as Record<symbol, unknown>)[REGISTER_STATE_KEY],
+    ).toBeUndefined();
+    expect(warn).toHaveBeenCalledWith(expect.stringContaining("VIGILON_DISABLED"));
   });
 
   it("parses VIGILON_EXCLUDED_URLS into trimmed, non-empty exclusions", () => {

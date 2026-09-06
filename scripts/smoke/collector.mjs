@@ -8,6 +8,10 @@ import fs from "node:fs";
 const MARKERS = {
   httpServerSpan: "GET /hello",
   expressSpan: "request handler",
+  // Set by the derived-defaults variant, which unsets VIGILON_SERVICE_NAME
+  // and VIGILON_SERVICE_VERSION and relies on the throwaway package.json.
+  derivedServiceName: "smoke-derived-service",
+  derivedServiceVersion: "9.9.9",
 };
 
 http

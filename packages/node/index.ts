@@ -1,4 +1,5 @@
 import type { Instrumentation } from "@opentelemetry/instrumentation";
+import { diag, DiagConsoleLogger, DiagLogLevel } from "@opentelemetry/api";
 import { NodeSDK } from "@opentelemetry/sdk-node";
 import { resourceFromAttributes } from "@opentelemetry/resources";
 import {
@@ -20,9 +21,23 @@ import {
   type SpanProcessor,
 } from "@opentelemetry/sdk-trace-node";
 import { JobAttributesSpanProcessor } from "./src/jobs/index.js";
+import {
+  describeConfig,
+  isDebug,
+  isDisabled,
+  resolveConfig,
+  type ResolvedConfig,
+} from "./src/config/index.js";
+import { ExportFeedbackSpanExporter } from "./src/export/exportFeedbackSpanExporter.js";
 
 export * from "./src/errors/index.js";
 export * from "./src/jobs/index.js";
+export {
+  VigilonConfigError,
+  SERVICE_NAME_ENV_VARS,
+  ENVIRONMENT_ENV_VARS,
+  SERVICE_VERSION_ENV_VARS,
+} from "./src/config/index.js";
 
 const DEFAULT_OTEL_ENDPOINT = "https://ingest.vigilon.io";
 
@@ -54,15 +69,36 @@ export type SpanProcessorExtensions = {
   append?: SpanProcessor[];
 };
 
+/**
+ * Every setting is optional. Anything omitted is resolved from the
+ * environment, and service name and version additionally fall back to the
+ * nearest package.json. See the README for the full precedence.
+ */
 export type VigilonRegisterParams = {
-  apiKey: string;
-  serviceName: string;
-  environment: string;
+  /** Falls back to VIGILON_API_KEY. Required once resolved. */
+  apiKey?: string;
+  /**
+   * Falls back to VIGILON_SERVICE_NAME, OTEL_SERVICE_NAME, npm_package_name,
+   * AWS_LAMBDA_FUNCTION_NAME, then the "name" of the nearest package.json.
+   * Required once resolved.
+   */
+  serviceName?: string;
+  /**
+   * Falls back to VIGILON_ENVIRONMENT, ENVIRONMENT, ENV, then NODE_ENV.
+   * Required once resolved.
+   */
+  environment?: string;
+  /**
+   * Falls back to VIGILON_SERVICE_VERSION, npm_package_version, then the
+   * "version" of the nearest package.json. Optional; warns when unresolved.
+   */
   serviceVersion?: string;
+  /** Falls back to VIGILON_OTEL_ENDPOINT, then https://ingest.vigilon.io. */
   otelEndpoint?: string;
   /**
    * Additional incoming request URLs to leave uninstrumented. URLs are
    * matched exactly against the request URL, including any query string.
+   * Falls back to the comma-separated VIGILON_EXCLUDED_URLS.
    */
   excludedUrls?: string[];
   /**
@@ -72,15 +108,22 @@ export type VigilonRegisterParams = {
   extendSpanProcessors?: (ctx: SpanProcessorContext) => SpanProcessorExtensions;
 };
 
-export function register({
-  apiKey,
-  serviceName,
-  environment,
-  serviceVersion,
-  otelEndpoint = process.env.VIGILON_OTEL_ENDPOINT,
-  excludedUrls,
-  extendSpanProcessors,
-}: VigilonRegisterParams) {
+/**
+ * Resolves the configuration (explicit params, then environment variables,
+ * then package.json), validates it, and starts the OpenTelemetry SDK.
+ *
+ * Throws a VigilonConfigError when the API key, service name, or environment
+ * cannot be resolved. Returns undefined without starting anything when
+ * VIGILON_DISABLED is set or the SDK is already registered in this process.
+ */
+export function register(params: VigilonRegisterParams = {}) {
+  if (isDisabled()) {
+    console.warn(
+      "Vigilon is disabled via VIGILON_DISABLED; no telemetry will be collected or exported.",
+    );
+    return undefined;
+  }
+
   const globalState = globalThis as Record<symbol, unknown>;
   if (globalState[REGISTER_STATE_KEY]) {
     console.warn(
@@ -88,19 +131,16 @@ export function register({
     );
     return undefined;
   }
+
+  // Resolve before taking the guard so a configuration error leaves the
+  // process exactly as it was.
+  const config = resolveConfig(params);
+
   const registrationState: VigilonRegistrationState = {};
   globalState[REGISTER_STATE_KEY] = registrationState;
 
   try {
-    const sdk = startSdk({
-      apiKey,
-      serviceName,
-      environment,
-      serviceVersion,
-      otelEndpoint,
-      excludedUrls,
-      extendSpanProcessors,
-    });
+    const sdk = startSdk(config, params.extendSpanProcessors);
     registrationState.sdk = sdk;
     return sdk;
   } catch (error) {
@@ -112,49 +152,22 @@ export function register({
 }
 
 /**
- * Reads the VIGILON_* environment variables and calls register() with them.
- * This is what the preload entrypoints (@vigilon/node/register) run; call it
- * directly if you want the same environment-driven configuration without
- * preloading.
- *
- * Throws if VIGILON_API_KEY, VIGILON_SERVICE_NAME, or VIGILON_ENVIRONMENT is
- * missing; warns if VIGILON_SERVICE_VERSION is unset.
+ * Starts the SDK from environment variables and package.json alone. This is
+ * what the preload entrypoints (@vigilon/node/register) run; it is equivalent
+ * to calling register() with no arguments and is kept for compatibility.
  */
 export function registerFromEnv() {
-  const apiKey = process.env.VIGILON_API_KEY;
-  const serviceName = process.env.VIGILON_SERVICE_NAME;
-  const environment = process.env.VIGILON_ENVIRONMENT;
-  const serviceVersion = process.env.VIGILON_SERVICE_VERSION;
-  const excludedUrls = process.env.VIGILON_EXCLUDED_URLS?.split(",")
-    .map((url) => url.trim())
-    .filter(Boolean);
-
-  if (!apiKey || !serviceName || !environment) {
-    throw new Error(
-      "Vigilon register preload requires VIGILON_API_KEY, VIGILON_SERVICE_NAME, and VIGILON_ENVIRONMENT.",
-    );
-  }
-
-  if (!serviceVersion) {
-    console.warn(
-      "Vigilon recommends setting VIGILON_SERVICE_VERSION to track new deployments and generate better insights.",
-    );
-  }
-
-  return register({
-    apiKey,
-    serviceName,
-    environment,
-    serviceVersion,
-    excludedUrls,
-  });
+  return register();
 }
 
 /**
  * Flushes pending telemetry and shuts down the process-wide Vigilon SDK.
  *
  * Safe to call before registration and safe to call repeatedly. Concurrent
- * and later calls share the first shutdown attempt.
+ * and later calls share the first shutdown attempt. Never rejects: a failed
+ * final flush (for example a rejected API key) is logged and swallowed, so
+ * awaiting shutdown() in a `finally` block cannot turn a telemetry problem
+ * into a crash of the exiting process.
  */
 export function shutdown(): Promise<void> {
   const globalState = globalThis as Record<symbol, unknown>;
@@ -165,13 +178,25 @@ export function shutdown(): Promise<void> {
   }
 
   if (!registrationState.shutdownPromise) {
+    let attempt: Promise<void>;
     try {
-      registrationState.shutdownPromise = registrationState.sdk.shutdown();
+      attempt = Promise.resolve(registrationState.sdk.shutdown());
     } catch (error) {
-      registrationState.shutdownPromise = Promise.reject(error);
+      attempt = Promise.reject(error);
     }
+    registrationState.shutdownPromise = attempt.catch((error: unknown) => {
+      console.warn(
+        `Vigilon: shutdown could not flush all pending telemetry${describeError(error)}. The process will continue exiting normally.`,
+      );
+    });
   }
   return registrationState.shutdownPromise;
+}
+
+function describeError(error: unknown): string {
+  const message =
+    error instanceof Error ? error.message : typeof error === "string" ? error : "";
+  return message ? `: ${message}` : "";
 }
 
 function isRegistrationState(
@@ -180,25 +205,26 @@ function isRegistrationState(
   return typeof value === "object" && value !== null;
 }
 
-function startSdk({
-  apiKey,
-  serviceName,
-  environment,
-  serviceVersion,
-  otelEndpoint,
-  excludedUrls,
-  extendSpanProcessors,
-}: VigilonRegisterParams) {
+function startSdk(
+  config: ResolvedConfig,
+  extendSpanProcessors: VigilonRegisterParams["extendSpanProcessors"],
+) {
   process.env.OTEL_SEMCONV_STABILITY_OPT_IN = "http";
 
-  const exporterBaseUrl = resolveEndpoint(otelEndpoint);
+  if (isDebug()) {
+    diag.setLogger(new DiagConsoleLogger(), DiagLogLevel.DEBUG);
+  }
 
-  const traceExporter = new OTLPTraceExporter({
-    url: `${exporterBaseUrl}/v1/traces`,
-    headers: {
-      authorization: `Bearer ${apiKey}`,
-    },
-  });
+  const exporterBaseUrl = resolveEndpoint(config.otelEndpoint);
+
+  const traceExporter = new ExportFeedbackSpanExporter(
+    new OTLPTraceExporter({
+      url: `${exporterBaseUrl}/v1/traces`,
+      headers: {
+        authorization: `Bearer ${config.apiKey}`,
+      },
+    }),
+  );
 
   const batchSpanProcessor = new BatchSpanProcessor(traceExporter);
   const extensions = extendSpanProcessors?.({ batchSpanProcessor }) ?? {};
@@ -211,11 +237,11 @@ function startSdk({
 
   const sdk = new NodeSDK({
     resource: resourceFromAttributes({
-      [ATTR_SERVICE_NAME]: serviceName,
-      ...(serviceVersion
-        ? { [ATTR_SERVICE_VERSION]: serviceVersion }
+      [ATTR_SERVICE_NAME]: config.serviceName,
+      ...(config.serviceVersion
+        ? { [ATTR_SERVICE_VERSION]: config.serviceVersion }
         : {}),
-      ["deployment.environment"]: environment,
+      ["deployment.environment"]: config.environment,
     }),
     // NodeSDK ignores traceExporter once spanProcessors is set, so the exporter
     // is wired through the batch processor here instead.
@@ -223,10 +249,17 @@ function startSdk({
     // An empty list overrides NodeSDK's OTEL_METRICS_EXPORTER fallback so this
     // SDK does not export metrics.
     metricReaders: [],
-    instrumentations: buildInstrumentations(excludedUrls),
+    instrumentations: buildInstrumentations(config.excludedUrls),
   });
 
   sdk.start();
+
+  console.info(describeConfig(config, exporterBaseUrl));
+  if (!config.serviceVersion) {
+    console.warn(
+      "Vigilon could not determine a service version. Set VIGILON_SERVICE_VERSION (or a \"version\" in package.json) to track deployments and get better insights.",
+    );
+  }
 
   return sdk;
 }

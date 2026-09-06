@@ -1,4 +1,4 @@
-// CommonJS consumer app, started with `node --require @vigilon/node/register`.
+// CommonJS consumer app, started with `node --import` (or `--require`) `@vigilon/node/register`.
 const assert = require("node:assert");
 const express = require("express");
 const vigilon = require("@vigilon/node");
