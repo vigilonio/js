@@ -13,8 +13,10 @@ import { FastifyOtelInstrumentation } from "@fastify/otel";
 import { AwsLambdaInstrumentation } from "@opentelemetry/instrumentation-aws-lambda";
 import { PgInstrumentation } from "@opentelemetry/instrumentation-pg";
 import { RedisInstrumentation } from "@opentelemetry/instrumentation-redis";
+import { IORedisInstrumentation } from "@opentelemetry/instrumentation-ioredis";
 import { MongoDBInstrumentation } from "@opentelemetry/instrumentation-mongodb";
 import { MySQLInstrumentation } from "@opentelemetry/instrumentation-mysql";
+import { MySQL2Instrumentation } from "@opentelemetry/instrumentation-mysql2";
 import { UndiciInstrumentation } from "@opentelemetry/instrumentation-undici";
 import {
   BatchSpanProcessor,
@@ -281,8 +283,10 @@ function buildInstrumentations(excludedUrls: string[] = []): Instrumentation[] {
     new FastifyOtelInstrumentation({ registerOnInitialization: true }),
     new PgInstrumentation(),
     new RedisInstrumentation(),
+    new IORedisInstrumentation(),
     new MongoDBInstrumentation(),
     new MySQLInstrumentation(),
+    new MySQL2Instrumentation(),
     new UndiciInstrumentation(),
   ];
 

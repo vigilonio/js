@@ -119,9 +119,9 @@ Vigilon registers these OpenTelemetry instrumentations automatically:
 | Express | Route and middleware spans, and the route template on the server span. |
 | Fastify | Route and hook spans; the plugin is registered on every Fastify instance automatically. |
 | PostgreSQL (`pg`) | Query spans. |
-| MySQL (`mysql`) | Query spans. |
+| MySQL (`mysql`, `mysql2`) | Query spans. |
 | MongoDB | Command spans. |
-| Redis | Command spans. |
+| Redis (`redis`, `ioredis`) | Command spans. |
 | AWS Lambda | Enabled only inside the Lambda runtime; see [AWS Lambda](#aws-lambda). |
 
 Vigilon exports traces only. It does not export OpenTelemetry metrics or logs; endpoint and job metrics are derived from the exported spans on the Vigilon Ingestion Engine side.
