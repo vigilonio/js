@@ -1,12 +1,13 @@
 name: Release Main
 
-# Manual trigger while the first public release is under review. Once the
-# package is ready to ship on every merge, replace `workflow_dispatch` with:
-#
-#   push:
-#     branches:
-#       - main
+# Every push to main releases. The manual trigger stays for retrying a
+# release whose publish failed after the tag was pushed: dispatch a fresh run
+# from main rather than re-running the failed one, because a re-run checks
+# out the commit that originally triggered it, not the tagged release commit.
 on:
+  push:
+    branches:
+      - main
   workflow_dispatch:
 
 permissions:
