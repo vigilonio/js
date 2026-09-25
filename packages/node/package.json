@@ -45,7 +45,7 @@
     "LICENSE"
   ],
   "publishConfig": {
-    "access": "restricted"
+    "access": "public"
   },
   "scripts": {
     "clean": "rm -rf dist",
