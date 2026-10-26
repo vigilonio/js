@@ -1,0 +1,314 @@
+{
+  "schema": "vigilon.browser.event@1",
+  "sdk": {
+    "name": "@vigilon/browser",
+    "version": "0.1.0"
+  },
+  "sentAt": "2026-10-25T10:15:31.002Z",
+  "service": {
+    "name": "dashboard",
+    "environment": "production"
+  },
+  "events": [
+    {
+      "type": "exception",
+      "eventId": "0f8c2c1e-6d1c-4e0e-9d55-000000000064",
+      "timestamp": "2026-10-25T10:15:30.123Z",
+      "exception": {
+        "type": "TypeError",
+        "message": "Cannot read properties of undefined (reading 'id')",
+        "stack": "TypeError: Cannot read properties of undefined (reading 'id')\n    at UserCard (https://app.example.com/assets/index-B3f9.js:12:3456)\n    at renderWithHooks (https://app.example.com/assets/vendor-9aF1.js:1:23456)\n    at async loadUser (https://app.example.com/assets/index-B3f9.js:40:12)",
+        "mechanism": "onerror",
+        "handled": false
+      },
+      "page": {
+        "url": "https://app.example.com/users/42"
+      }
+    },
+    {
+      "type": "exception",
+      "eventId": "0f8c2c1e-6d1c-4e0e-9d55-000000000065",
+      "timestamp": "2026-10-25T10:15:30.123Z",
+      "exception": {
+        "type": "TypeError",
+        "message": "Cannot read properties of undefined (reading 'id')",
+        "stack": "TypeError: Cannot read properties of undefined (reading 'id')\n    at UserCard (https://app.example.com/assets/index-B3f9.js:12:3456)\n    at renderWithHooks (https://app.example.com/assets/vendor-9aF1.js:1:23456)\n    at async loadUser (https://app.example.com/assets/index-B3f9.js:40:12)",
+        "mechanism": "onerror",
+        "handled": false
+      },
+      "page": {
+        "url": "https://app.example.com/users/42"
+      }
+    },
+    {
+      "type": "exception",
+      "eventId": "0f8c2c1e-6d1c-4e0e-9d55-000000000066",
+      "timestamp": "2026-10-25T10:15:30.123Z",
+      "exception": {
+        "type": "TypeError",
+        "message": "Cannot read properties of undefined (reading 'id')",
+        "stack": "TypeError: Cannot read properties of undefined (reading 'id')\n    at UserCard (https://app.example.com/assets/index-B3f9.js:12:3456)\n    at renderWithHooks (https://app.example.com/assets/vendor-9aF1.js:1:23456)\n    at async loadUser (https://app.example.com/assets/index-B3f9.js:40:12)",
+        "mechanism": "onerror",
+        "handled": false
+      },
+      "page": {
+        "url": "https://app.example.com/users/42"
+      }
+    },
+    {
+      "type": "exception",
+      "eventId": "0f8c2c1e-6d1c-4e0e-9d55-000000000067",
+      "timestamp": "2026-10-25T10:15:30.123Z",
+      "exception": {
+        "type": "TypeError",
+        "message": "Cannot read properties of undefined (reading 'id')",
+        "stack": "TypeError: Cannot read properties of undefined (reading 'id')\n    at UserCard (https://app.example.com/assets/index-B3f9.js:12:3456)\n    at renderWithHooks (https://app.example.com/assets/vendor-9aF1.js:1:23456)\n    at async loadUser (https://app.example.com/assets/index-B3f9.js:40:12)",
+        "mechanism": "onerror",
+        "handled": false
+      },
+      "page": {
+        "url": "https://app.example.com/users/42"
+      }
+    },
+    {
+      "type": "exception",
+      "eventId": "0f8c2c1e-6d1c-4e0e-9d55-000000000068",
+      "timestamp": "2026-10-25T10:15:30.123Z",
+      "exception": {
+        "type": "TypeError",
+        "message": "Cannot read properties of undefined (reading 'id')",
+        "stack": "TypeError: Cannot read properties of undefined (reading 'id')\n    at UserCard (https://app.example.com/assets/index-B3f9.js:12:3456)\n    at renderWithHooks (https://app.example.com/assets/vendor-9aF1.js:1:23456)\n    at async loadUser (https://app.example.com/assets/index-B3f9.js:40:12)",
+        "mechanism": "onerror",
+        "handled": false
+      },
+      "page": {
+        "url": "https://app.example.com/users/42"
+      }
+    },
+    {
+      "type": "exception",
+      "eventId": "0f8c2c1e-6d1c-4e0e-9d55-000000000069",
+      "timestamp": "2026-10-25T10:15:30.123Z",
+      "exception": {
+        "type": "TypeError",
+        "message": "Cannot read properties of undefined (reading 'id')",
+        "stack": "TypeError: Cannot read properties of undefined (reading 'id')\n    at UserCard (https://app.example.com/assets/index-B3f9.js:12:3456)\n    at renderWithHooks (https://app.example.com/assets/vendor-9aF1.js:1:23456)\n    at async loadUser (https://app.example.com/assets/index-B3f9.js:40:12)",
+        "mechanism": "onerror",
+        "handled": false
+      },
+      "page": {
+        "url": "https://app.example.com/users/42"
+      }
+    },
+    {
+      "type": "exception",
+      "eventId": "0f8c2c1e-6d1c-4e0e-9d55-00000000006a",
+      "timestamp": "2026-10-25T10:15:30.123Z",
+      "exception": {
+        "type": "TypeError",
+        "message": "Cannot read properties of undefined (reading 'id')",
+        "stack": "TypeError: Cannot read properties of undefined (reading 'id')\n    at UserCard (https://app.example.com/assets/index-B3f9.js:12:3456)\n    at renderWithHooks (https://app.example.com/assets/vendor-9aF1.js:1:23456)\n    at async loadUser (https://app.example.com/assets/index-B3f9.js:40:12)",
+        "mechanism": "onerror",
+        "handled": false
+      },
+      "page": {
+        "url": "https://app.example.com/users/42"
+      }
+    },
+    {
+      "type": "exception",
+      "eventId": "0f8c2c1e-6d1c-4e0e-9d55-00000000006b",
+      "timestamp": "2026-10-25T10:15:30.123Z",
+      "exception": {
+        "type": "TypeError",
+        "message": "Cannot read properties of undefined (reading 'id')",
+        "stack": "TypeError: Cannot read properties of undefined (reading 'id')\n    at UserCard (https://app.example.com/assets/index-B3f9.js:12:3456)\n    at renderWithHooks (https://app.example.com/assets/vendor-9aF1.js:1:23456)\n    at async loadUser (https://app.example.com/assets/index-B3f9.js:40:12)",
+        "mechanism": "onerror",
+        "handled": false
+      },
+      "page": {
+        "url": "https://app.example.com/users/42"
+      }
+    },
+    {
+      "type": "exception",
+      "eventId": "0f8c2c1e-6d1c-4e0e-9d55-00000000006c",
+      "timestamp": "2026-10-25T10:15:30.123Z",
+      "exception": {
+        "type": "TypeError",
+        "message": "Cannot read properties of undefined (reading 'id')",
+        "stack": "TypeError: Cannot read properties of undefined (reading 'id')\n    at UserCard (https://app.example.com/assets/index-B3f9.js:12:3456)\n    at renderWithHooks (https://app.example.com/assets/vendor-9aF1.js:1:23456)\n    at async loadUser (https://app.example.com/assets/index-B3f9.js:40:12)",
+        "mechanism": "onerror",
+        "handled": false
+      },
+      "page": {
+        "url": "https://app.example.com/users/42"
+      }
+    },
+    {
+      "type": "exception",
+      "eventId": "0f8c2c1e-6d1c-4e0e-9d55-00000000006d",
+      "timestamp": "2026-10-25T10:15:30.123Z",
+      "exception": {
+        "type": "TypeError",
+        "message": "Cannot read properties of undefined (reading 'id')",
+        "stack": "TypeError: Cannot read properties of undefined (reading 'id')\n    at UserCard (https://app.example.com/assets/index-B3f9.js:12:3456)\n    at renderWithHooks (https://app.example.com/assets/vendor-9aF1.js:1:23456)\n    at async loadUser (https://app.example.com/assets/index-B3f9.js:40:12)",
+        "mechanism": "onerror",
+        "handled": false
+      },
+      "page": {
+        "url": "https://app.example.com/users/42"
+      }
+    },
+    {
+      "type": "exception",
+      "eventId": "0f8c2c1e-6d1c-4e0e-9d55-00000000006e",
+      "timestamp": "2026-10-25T10:15:30.123Z",
+      "exception": {
+        "type": "TypeError",
+        "message": "Cannot read properties of undefined (reading 'id')",
+        "stack": "TypeError: Cannot read properties of undefined (reading 'id')\n    at UserCard (https://app.example.com/assets/index-B3f9.js:12:3456)\n    at renderWithHooks (https://app.example.com/assets/vendor-9aF1.js:1:23456)\n    at async loadUser (https://app.example.com/assets/index-B3f9.js:40:12)",
+        "mechanism": "onerror",
+        "handled": false
+      },
+      "page": {
+        "url": "https://app.example.com/users/42"
+      }
+    },
+    {
+      "type": "exception",
+      "eventId": "0f8c2c1e-6d1c-4e0e-9d55-00000000006f",
+      "timestamp": "2026-10-25T10:15:30.123Z",
+      "exception": {
+        "type": "TypeError",
+        "message": "Cannot read properties of undefined (reading 'id')",
+        "stack": "TypeError: Cannot read properties of undefined (reading 'id')\n    at UserCard (https://app.example.com/assets/index-B3f9.js:12:3456)\n    at renderWithHooks (https://app.example.com/assets/vendor-9aF1.js:1:23456)\n    at async loadUser (https://app.example.com/assets/index-B3f9.js:40:12)",
+        "mechanism": "onerror",
+        "handled": false
+      },
+      "page": {
+        "url": "https://app.example.com/users/42"
+      }
+    },
+    {
+      "type": "exception",
+      "eventId": "0f8c2c1e-6d1c-4e0e-9d55-000000000070",
+      "timestamp": "2026-10-25T10:15:30.123Z",
+      "exception": {
+        "type": "TypeError",
+        "message": "Cannot read properties of undefined (reading 'id')",
+        "stack": "TypeError: Cannot read properties of undefined (reading 'id')\n    at UserCard (https://app.example.com/assets/index-B3f9.js:12:3456)\n    at renderWithHooks (https://app.example.com/assets/vendor-9aF1.js:1:23456)\n    at async loadUser (https://app.example.com/assets/index-B3f9.js:40:12)",
+        "mechanism": "onerror",
+        "handled": false
+      },
+      "page": {
+        "url": "https://app.example.com/users/42"
+      }
+    },
+    {
+      "type": "exception",
+      "eventId": "0f8c2c1e-6d1c-4e0e-9d55-000000000071",
+      "timestamp": "2026-10-25T10:15:30.123Z",
+      "exception": {
+        "type": "TypeError",
+        "message": "Cannot read properties of undefined (reading 'id')",
+        "stack": "TypeError: Cannot read properties of undefined (reading 'id')\n    at UserCard (https://app.example.com/assets/index-B3f9.js:12:3456)\n    at renderWithHooks (https://app.example.com/assets/vendor-9aF1.js:1:23456)\n    at async loadUser (https://app.example.com/assets/index-B3f9.js:40:12)",
+        "mechanism": "onerror",
+        "handled": false
+      },
+      "page": {
+        "url": "https://app.example.com/users/42"
+      }
+    },
+    {
+      "type": "exception",
+      "eventId": "0f8c2c1e-6d1c-4e0e-9d55-000000000072",
+      "timestamp": "2026-10-25T10:15:30.123Z",
+      "exception": {
+        "type": "TypeError",
+        "message": "Cannot read properties of undefined (reading 'id')",
+        "stack": "TypeError: Cannot read properties of undefined (reading 'id')\n    at UserCard (https://app.example.com/assets/index-B3f9.js:12:3456)\n    at renderWithHooks (https://app.example.com/assets/vendor-9aF1.js:1:23456)\n    at async loadUser (https://app.example.com/assets/index-B3f9.js:40:12)",
+        "mechanism": "onerror",
+        "handled": false
+      },
+      "page": {
+        "url": "https://app.example.com/users/42"
+      }
+    },
+    {
+      "type": "exception",
+      "eventId": "0f8c2c1e-6d1c-4e0e-9d55-000000000073",
+      "timestamp": "2026-10-25T10:15:30.123Z",
+      "exception": {
+        "type": "TypeError",
+        "message": "Cannot read properties of undefined (reading 'id')",
+        "stack": "TypeError: Cannot read properties of undefined (reading 'id')\n    at UserCard (https://app.example.com/assets/index-B3f9.js:12:3456)\n    at renderWithHooks (https://app.example.com/assets/vendor-9aF1.js:1:23456)\n    at async loadUser (https://app.example.com/assets/index-B3f9.js:40:12)",
+        "mechanism": "onerror",
+        "handled": false
+      },
+      "page": {
+        "url": "https://app.example.com/users/42"
+      }
+    },
+    {
+      "type": "exception",
+      "eventId": "0f8c2c1e-6d1c-4e0e-9d55-000000000074",
+      "timestamp": "2026-10-25T10:15:30.123Z",
+      "exception": {
+        "type": "TypeError",
+        "message": "Cannot read properties of undefined (reading 'id')",
+        "stack": "TypeError: Cannot read properties of undefined (reading 'id')\n    at UserCard (https://app.example.com/assets/index-B3f9.js:12:3456)\n    at renderWithHooks (https://app.example.com/assets/vendor-9aF1.js:1:23456)\n    at async loadUser (https://app.example.com/assets/index-B3f9.js:40:12)",
+        "mechanism": "onerror",
+        "handled": false
+      },
+      "page": {
+        "url": "https://app.example.com/users/42"
+      }
+    },
+    {
+      "type": "exception",
+      "eventId": "0f8c2c1e-6d1c-4e0e-9d55-000000000075",
+      "timestamp": "2026-10-25T10:15:30.123Z",
+      "exception": {
+        "type": "TypeError",
+        "message": "Cannot read properties of undefined (reading 'id')",
+        "stack": "TypeError: Cannot read properties of undefined (reading 'id')\n    at UserCard (https://app.example.com/assets/index-B3f9.js:12:3456)\n    at renderWithHooks (https://app.example.com/assets/vendor-9aF1.js:1:23456)\n    at async loadUser (https://app.example.com/assets/index-B3f9.js:40:12)",
+        "mechanism": "onerror",
+        "handled": false
+      },
+      "page": {
+        "url": "https://app.example.com/users/42"
+      }
+    },
+    {
+      "type": "exception",
+      "eventId": "0f8c2c1e-6d1c-4e0e-9d55-000000000076",
+      "timestamp": "2026-10-25T10:15:30.123Z",
+      "exception": {
+        "type": "TypeError",
+        "message": "Cannot read properties of undefined (reading 'id')",
+        "stack": "TypeError: Cannot read properties of undefined (reading 'id')\n    at UserCard (https://app.example.com/assets/index-B3f9.js:12:3456)\n    at renderWithHooks (https://app.example.com/assets/vendor-9aF1.js:1:23456)\n    at async loadUser (https://app.example.com/assets/index-B3f9.js:40:12)",
+        "mechanism": "onerror",
+        "handled": false
+      },
+      "page": {
+        "url": "https://app.example.com/users/42"
+      }
+    },
+    {
+      "type": "exception",
+      "eventId": "0f8c2c1e-6d1c-4e0e-9d55-000000000077",
+      "timestamp": "2026-10-25T10:15:30.123Z",
+      "exception": {
+        "type": "TypeError",
+        "message": "Cannot read properties of undefined (reading 'id')",
+        "stack": "TypeError: Cannot read properties of undefined (reading 'id')\n    at UserCard (https://app.example.com/assets/index-B3f9.js:12:3456)\n    at renderWithHooks (https://app.example.com/assets/vendor-9aF1.js:1:23456)\n    at async loadUser (https://app.example.com/assets/index-B3f9.js:40:12)",
+        "mechanism": "onerror",
+        "handled": false
+      },
+      "page": {
+        "url": "https://app.example.com/users/42"
+      }
+    }
+  ]
+}
