@@ -1,6 +1,6 @@
 {
   "name": "@vigilon/browser",
-  "version": "0.2.8",
+  "version": "0.2.9",
   "description": "Vigilon error monitoring for browser applications",
   "license": "ISC",
   "author": "Vigilon",
