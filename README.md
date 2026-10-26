@@ -26,12 +26,14 @@ Every package lives in `packages/<name>/` and is published to npm under the `@vi
 | Package | Version | Description |
 |---|---|---|
 | [`@vigilon/node`](packages/node) | <a href="https://www.npmjs.com/package/@vigilon/node"><img src="https://img.shields.io/npm/v/@vigilon/node.svg" alt="npm"></a> | Node.js apps: Express, Fastify, AWS Lambda, plain HTTP servers. Starts OpenTelemetry auto-instrumentation through a `--import` preload, so you don't need to change your code. |
+| [`@vigilon/browser`](packages/browser) | <a href="https://www.npmjs.com/package/@vigilon/browser"><img src="https://img.shields.io/npm/v/@vigilon/browser.svg" alt="npm"></a> | Browser apps: captures uncaught errors and unhandled rejections. Early access. |
 
 ## Getting started
 
 1. Create an API key in the [Vigilon dashboard](https://app.vigilon.io) under your project's **Settings** page, **API Keys** tab.
 2. Pick the package for your runtime and follow its README to install and set it up:
    - **Node.js**: [`@vigilon/node`](packages/node#readme)
+   - **Browser**: [`@vigilon/browser`](packages/browser#readme) (early access)
 
 Full product documentation is at [vigilon.io/docs](https://vigilon.io/docs).
 
