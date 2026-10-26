@@ -53,6 +53,9 @@ jobs:
       - name: Check the @vigilon/browser size budget
         run: pnpm --filter @vigilon/browser size
 
+      - name: Test the release scripts
+        run: node --test scripts/release-notes.test.mjs
+
       - name: Smoke-test packed tarballs
         run: pnpm smoke
 
