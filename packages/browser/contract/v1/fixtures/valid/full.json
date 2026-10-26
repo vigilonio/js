@@ -1,0 +1,53 @@
+{
+  "schema": "vigilon.browser.event@1",
+  "sdk": {
+    "name": "@vigilon/browser",
+    "version": "0.1.0"
+  },
+  "sentAt": "2026-10-25T10:15:31.002Z",
+  "service": {
+    "name": "dashboard",
+    "version": "2026.10.25-1",
+    "environment": "production"
+  },
+  "events": [
+    {
+      "type": "exception",
+      "eventId": "0f8c2c1e-6d1c-4e0e-9d55-000000000002",
+      "timestamp": "2026-10-25T10:15:30.123Z",
+      "exception": {
+        "type": "TypeError",
+        "message": "Cannot read properties of undefined (reading 'id')",
+        "stack": "TypeError: Cannot read properties of undefined (reading 'id')\n    at UserCard (https://app.example.com/assets/index-B3f9.js:12:3456)\n    at renderWithHooks (https://app.example.com/assets/vendor-9aF1.js:1:23456)\n    at async loadUser (https://app.example.com/assets/index-B3f9.js:40:12)",
+        "mechanism": "onerror",
+        "handled": false,
+        "componentStack": "\n    at UserCard\n    at Route",
+        "cause": [
+          {
+            "type": "Error",
+            "message": "user fetch failed",
+            "stack": null
+          }
+        ]
+      },
+      "page": {
+        "url": "https://app.example.com/users/42",
+        "route": "/users/$id"
+      },
+      "debugIds": {
+        "https://app.example.com/assets/index-B3f9.js": "6f1c4a2e-8d3b-4c1a-9e7f-2b5d8a0c3e41"
+      },
+      "session": {
+        "id": "c0a8f1e2d3b4a5968778695a4b3c2d1e"
+      },
+      "user": {
+        "id": "user_123"
+      },
+      "traceId": "4bf92f3577b34da6a3ce929d0e0e4736",
+      "tags": {
+        "feature": "billing",
+        "plan": "starter"
+      }
+    }
+  ]
+}

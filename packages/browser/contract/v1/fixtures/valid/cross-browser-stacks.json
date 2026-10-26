@@ -1,0 +1,59 @@
+{
+  "schema": "vigilon.browser.event@1",
+  "sdk": {
+    "name": "@vigilon/browser",
+    "version": "0.1.0"
+  },
+  "sentAt": "2026-10-25T10:15:31.002Z",
+  "service": {
+    "name": "dashboard",
+    "environment": "production"
+  },
+  "events": [
+    {
+      "type": "exception",
+      "eventId": "0f8c2c1e-6d1c-4e0e-9d55-000000000003",
+      "timestamp": "2026-10-25T10:15:30.123Z",
+      "exception": {
+        "type": "TypeError",
+        "message": "Cannot read properties of undefined (reading 'id')",
+        "stack": "TypeError: Cannot read properties of undefined (reading 'id')\n    at UserCard (https://app.example.com/assets/index-B3f9.js:12:3456)\n    at renderWithHooks (https://app.example.com/assets/vendor-9aF1.js:1:23456)\n    at async loadUser (https://app.example.com/assets/index-B3f9.js:40:12)",
+        "mechanism": "onerror",
+        "handled": false
+      },
+      "page": {
+        "url": "https://app.example.com/users/42"
+      }
+    },
+    {
+      "type": "exception",
+      "eventId": "0f8c2c1e-6d1c-4e0e-9d55-000000000004",
+      "timestamp": "2026-10-25T10:15:30.123Z",
+      "exception": {
+        "type": "TypeError",
+        "message": "can't access property \"id\", user is undefined",
+        "stack": "UserCard@https://app.example.com/assets/index-B3f9.js:12:3456\nrenderWithHooks@https://app.example.com/assets/vendor-9aF1.js:1:23456\nasync*loadUser@https://app.example.com/assets/index-B3f9.js:40:12",
+        "mechanism": "onerror",
+        "handled": false
+      },
+      "page": {
+        "url": "https://app.example.com/users/42"
+      }
+    },
+    {
+      "type": "exception",
+      "eventId": "0f8c2c1e-6d1c-4e0e-9d55-000000000005",
+      "timestamp": "2026-10-25T10:15:30.123Z",
+      "exception": {
+        "type": "TypeError",
+        "message": "undefined is not an object (evaluating 'user.id')",
+        "stack": "UserCard@https://app.example.com/assets/index-B3f9.js:12:3456\nrenderWithHooks@https://app.example.com/assets/vendor-9aF1.js:1:23456\nglobal code@https://app.example.com/assets/index-B3f9.js:1:1",
+        "mechanism": "onerror",
+        "handled": false
+      },
+      "page": {
+        "url": "https://app.example.com/users/42"
+      }
+    }
+  ]
+}

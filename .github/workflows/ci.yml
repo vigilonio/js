@@ -1,10 +1,11 @@
 name: CI
 
 # Unprivileged validation for every PR (including forks) and every push to
-# main. Two jobs because the dev tooling and the SDK have different Node
-# floors: vitest/vite need Node 20.19+, while the package itself supports
-# 20.6+. The runtime-floor job therefore builds and runs the packed-tarball
-# smoke test on exactly 20.6.0 without the unit-test tooling.
+# main. The test and runtime-floor jobs are split because the dev tooling and
+# the SDK have different Node floors: vitest/vite need Node 20.19+, while
+# @vigilon/node supports 20.6+. The runtime-floor job therefore builds and runs
+# the packed-tarball smoke test on exactly 20.6.0 without the unit-test
+# tooling.
 on:
   pull_request:
   push:
@@ -49,8 +50,44 @@ jobs:
       - name: Run tests
         run: pnpm test
 
+      - name: Check the @vigilon/browser size budget
+        run: pnpm --filter @vigilon/browser size
+
       - name: Smoke-test packed tarballs
         run: pnpm smoke
+
+  # The keepalive transport regression test:
+  # real Chromium, Firefox, and WebKit deliver an error captured just before
+  # the page goes away, through a CORS preflight, on navigation and tab close.
+  # A separate job so installing the browsers never slows the unit tests.
+  browser-transport:
+    name: Browser transport (Chromium, Firefox, WebKit)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v7
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v6
+
+      - name: Set up Node.js 24
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build @vigilon/browser
+        run: pnpm --filter @vigilon/browser build
+
+      - name: Install Playwright browsers
+        run: pnpm --filter @vigilon/browser exec playwright install --with-deps chromium firefox webkit
+
+      - name: Run the transport regression test
+        run: pnpm --filter @vigilon/browser test:transport
 
   runtime-floor:
     name: Build, smoke (Node 20.6.0, declared engine minimum)

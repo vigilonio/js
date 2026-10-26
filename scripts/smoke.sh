@@ -6,7 +6,8 @@
 # Express span, which is what verifies the loader-hook wiring a consumer
 # actually depends on. A final variant drops the VIGILON_SERVICE_NAME and
 # VIGILON_SERVICE_VERSION variables to check that the defaults are derived
-# from the project's package.json.
+# from the project's package.json. Last, @vigilon/browser is imported from its
+# tarball as a server-side renderer would, with no window or document.
 set -euo pipefail
 
 repo_root=$(cd "$(dirname "$0")/.." && pwd)
@@ -27,11 +28,12 @@ cleanup() {
 trap cleanup EXIT
 
 (cd "$repo_root/packages/node" && pnpm pack --out "$tmp/node.tgz")
+(cd "$repo_root/packages/browser" && pnpm pack --out "$tmp/browser.tgz")
 
 cd "$tmp"
 npm init -y >/dev/null
 npm pkg set name=smoke-derived-service version=9.9.9
-npm install --no-save --no-audit --no-fund ./node.tgz express >/dev/null
+npm install --no-save --no-audit --no-fund ./node.tgz ./browser.tgz express >/dev/null
 cp "$repo_root"/scripts/smoke/*.mjs "$repo_root"/scripts/smoke/*.cjs .
 
 node collector.mjs > collector.port &
@@ -74,5 +76,7 @@ run_variant "derived defaults" "$spans derivedServiceName derivedServiceVersion"
   env -u VIGILON_SERVICE_NAME -u VIGILON_SERVICE_VERSION -u VIGILON_ENVIRONMENT \
   -u npm_package_name -u npm_package_version \
   ENVIRONMENT=smoke node --import @vigilon/node/register app.cjs
+
+node browser.mjs
 
 echo "smoke: OK"

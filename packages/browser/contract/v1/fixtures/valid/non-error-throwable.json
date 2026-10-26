@@ -1,0 +1,32 @@
+{
+  "schema": "vigilon.browser.event@1",
+  "sdk": {
+    "name": "@vigilon/browser",
+    "version": "0.1.0"
+  },
+  "sentAt": "2026-10-25T10:15:31.002Z",
+  "service": {
+    "name": "dashboard",
+    "environment": "production"
+  },
+  "events": [
+    {
+      "type": "exception",
+      "eventId": "0f8c2c1e-6d1c-4e0e-9d55-000000000006",
+      "timestamp": "2026-10-25T10:15:30.123Z",
+      "exception": {
+        "type": "",
+        "message": "plain string thrown",
+        "stack": null,
+        "mechanism": "unhandledrejection",
+        "handled": false
+      },
+      "page": {
+        "url": "https://app.example.com/users/42"
+      },
+      "session": null,
+      "user": null,
+      "traceId": null
+    }
+  ]
+}
