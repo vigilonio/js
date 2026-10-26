@@ -106,3 +106,18 @@ jobs:
         # workflow as a trusted publisher on npmjs.com and the OIDC publish
         # below works with no token.
         run: bash scripts/publish.sh latest
+
+      # Only after a successful publish, so a release page never announces
+      # versions that are not on npm. A retried run updates the notes of a
+      # release it already created instead of failing on it.
+      - name: Create the GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          tag="v$RELEASE_VERSION"
+          node scripts/release-notes.mjs "$tag" > "$RUNNER_TEMP/release-notes.md"
+          if gh release view "$tag" >/dev/null 2>&1; then
+            gh release edit "$tag" --notes-file "$RUNNER_TEMP/release-notes.md"
+          else
+            gh release create "$tag" --verify-tag --title "$tag" --notes-file "$RUNNER_TEMP/release-notes.md"
+          fi
