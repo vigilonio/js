@@ -32,7 +32,11 @@ repo_root=$(cd "$(dirname "$0")/.." && pwd)
 tmp=$(mktemp -d)
 trap 'rm -rf "$tmp"' EXIT
 
-packages=(packages/node)
+# Every publishable workspace package, dependencies first.
+packages=()
+while IFS= read -r dir; do
+  packages+=("$dir")
+done < <(node "$repo_root/scripts/workspace-packages.mjs")
 
 provenance=()
 if [ "${GITHUB_ACTIONS:-}" = "true" ]; then
