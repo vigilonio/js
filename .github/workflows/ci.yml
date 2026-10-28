@@ -1,11 +1,9 @@
 name: CI
 
 # Unprivileged validation for every PR (including forks) and every push to
-# main. The test and runtime-floor jobs are split because the dev tooling and
-# the SDK have different Node floors: vitest/vite need Node 20.19+, while
-# @vigilon/node supports 20.6+. The runtime-floor job therefore builds and runs
-# the packed-tarball smoke test on exactly 20.6.0 without the unit-test
-# tooling.
+# main. Every package requires Node 22.12+. The test job runs on the latest
+# Node 22 and 24; the runtime-floor job builds and runs the packed-tarball
+# smoke test on exactly 22.12.0, the declared engine minimum.
 on:
   pull_request:
   push:
@@ -26,7 +24,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node-version: [20, 24]
+        node-version: [22, 24]
 
     steps:
       - name: Check out code
@@ -93,7 +91,7 @@ jobs:
         run: pnpm --filter @vigilon/browser test:transport
 
   runtime-floor:
-    name: Build, smoke (Node 20.6.0, declared engine minimum)
+    name: Build, smoke (Node 22.12.0, declared engine minimum)
     runs-on: ubuntu-latest
 
     steps:
@@ -103,10 +101,10 @@ jobs:
       - name: Set up pnpm
         uses: pnpm/action-setup@v6
 
-      - name: Set up Node.js 20.6.0
+      - name: Set up Node.js 22.12.0
         uses: actions/setup-node@v6
         with:
-          node-version: 20.6.0
+          node-version: 22.12.0
           cache: pnpm
 
       - name: Install dependencies

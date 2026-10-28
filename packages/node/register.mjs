@@ -6,7 +6,7 @@ import { register as registerLoaderHook } from "node:module";
 // instrumentation cannot patch modules such as express or pg when the app is
 // ESM. Registering OpenTelemetry's loader hook here — before the SDK and the
 // app are loaded — lets the same instrumentations intercept ESM imports.
-// module.register() needs Node 20.6+, which is this package's engine floor.
+// module.register() exists on every Node version this package supports (22.12+).
 registerLoaderHook("@opentelemetry/instrumentation/hook.mjs", import.meta.url);
 
 // register() is idempotent (guards on Symbol.for("vigilon.register.started")),
