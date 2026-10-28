@@ -20,6 +20,8 @@ pnpm --filter @vigilon/browser test:transport   # Playwright, after `pnpm build`
 
 The transport test needs Playwright's Chromium, Firefox, and WebKit: `pnpm --filter @vigilon/browser exec playwright install chromium firefox webkit`.
 
+`@vigilon/bundler-plugins` tests run real Vite, Rollup, webpack, and esbuild builds of `packages/bundler-plugins/test/fixtures/app`, including one alongside `@sentry/vite-plugin`, and upload to a local stand-in for the source map upload API (`test/mock-api.ts`).
+
 `packages/browser/contract/v1` holds the JSON Schema and example envelopes for the request body `@vigilon/browser` sends; see `packages/browser/contract/README.md`.
 
 ## Releasing

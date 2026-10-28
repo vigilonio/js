@@ -1,0 +1,112 @@
+{
+  "name": "@vigilon/bundler-plugins",
+  "version": "0.2.10",
+  "description": "Vigilon build plugins for Vite, Rollup, webpack, and esbuild: debug IDs and source map upload",
+  "license": "ISC",
+  "author": "Vigilon",
+  "homepage": "https://vigilon.io",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vigilonio/js.git",
+    "directory": "packages/bundler-plugins"
+  },
+  "keywords": [
+    "vigilon",
+    "source-maps",
+    "debug-id",
+    "vite-plugin",
+    "rollup-plugin",
+    "webpack-plugin",
+    "esbuild-plugin"
+  ],
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.mts",
+        "default": "./dist/index.mjs"
+      },
+      "require": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.cjs"
+      }
+    },
+    "./vite": {
+      "import": {
+        "types": "./dist/vite.d.mts",
+        "default": "./dist/vite.mjs"
+      },
+      "require": {
+        "types": "./dist/vite.d.ts",
+        "default": "./dist/vite.cjs"
+      }
+    },
+    "./rollup": {
+      "import": {
+        "types": "./dist/rollup.d.mts",
+        "default": "./dist/rollup.mjs"
+      },
+      "require": {
+        "types": "./dist/rollup.d.ts",
+        "default": "./dist/rollup.cjs"
+      }
+    },
+    "./webpack": {
+      "import": {
+        "types": "./dist/webpack.d.mts",
+        "default": "./dist/webpack.mjs"
+      },
+      "require": {
+        "types": "./dist/webpack.d.ts",
+        "default": "./dist/webpack.cjs"
+      }
+    },
+    "./esbuild": {
+      "import": {
+        "types": "./dist/esbuild.d.mts",
+        "default": "./dist/esbuild.mjs"
+      },
+      "require": {
+        "types": "./dist/esbuild.d.ts",
+        "default": "./dist/esbuild.cjs"
+      }
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "clean": "rm -rf dist",
+    "build": "tsup",
+    "prepack": "npm run build",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "unplugin": "^3.4.0"
+  },
+  "devDependencies": {
+    "@jridgewell/trace-mapping": "^0.3.31",
+    "@sentry/vite-plugin": "5.4.1",
+    "@types/node": "^24.19.2",
+    "esbuild": "^0.28.2",
+    "rollup": "4.64.6",
+    "tsup": "^8.5.1",
+    "typescript": "^6.0.3",
+    "vite": "8.3.4",
+    "vitest": "^4.1.11",
+    "webpack": "5.111.1"
+  }
+}

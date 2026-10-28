@@ -132,6 +132,32 @@ describe("@vigilon/browser", () => {
     expect(second.user).toBeNull();
   });
 
+  it("reports the debug IDs of the scripts in the stack", async () => {
+    const scope = globalThis as unknown as Record<string, unknown>;
+    scope._vigilonDebugIds = {
+      "Error\n    at https://app.example.com/assets/index-3f9c2ab1.js:1:120":
+        "c4a1e7d2-5b3f-4e8a-9c6d-1f2e3a4b5c6d",
+      "Error\n    at https://app.example.com/assets/unrelated-1a2b3c4d.js:1:120":
+        "0b7e9a12-3c4d-4e5f-8a6b-7c8d9e0f1a2b",
+    };
+    try {
+      init(options);
+      const error = new TypeError("boom");
+      error.stack =
+        "TypeError: boom\n    at render (https://app.example.com/assets/index-3f9c2ab1.js:2:4410)";
+      captureException(error);
+      captureException("no stack");
+
+      const [withStack, withoutStack] = await sentEvents();
+      expect(withStack.debugIds).toEqual({
+        "https://app.example.com/assets/index-3f9c2ab1.js": "c4a1e7d2-5b3f-4e8a-9c6d-1f2e3a4b5c6d",
+      });
+      expect(withoutStack.debugIds).toBeUndefined();
+    } finally {
+      delete scope._vigilonDebugIds;
+    }
+  });
+
   it("lets beforeSend edit or drop events, and drops them when it throws", async () => {
     init({
       ...options,

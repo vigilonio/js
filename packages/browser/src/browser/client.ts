@@ -1,3 +1,4 @@
+import { DebugIdIndex } from "../core/debug-ids";
 import type { BrowserEvent, ExceptionMechanism } from "../core/envelope";
 import { limitException, toException } from "../core/exception";
 import {
@@ -71,6 +72,7 @@ export class BrowserClient {
   private readonly ignoreErrors: Pattern[];
   private readonly denyUrls: Pattern[];
   private readonly tags: Record<string, string> = {};
+  private readonly debugIds = new DebugIdIndex(globalThis as unknown as Record<string, unknown>);
   private userId: string | null = null;
   private readonly removeListeners: Array<() => void> = [];
 
@@ -177,12 +179,17 @@ export class BrowserClient {
     if (context.componentStack) {
       exception.componentStack = context.componentStack;
     }
+    const debugIds = this.debugIds.forStacks([
+      exception.stack,
+      ...(exception.cause ?? []).map((cause) => cause.stack),
+    ]);
     const session = sessionId();
     let event: BrowserEvent | null = {
       type: "exception",
       eventId: uuid(),
       timestamp: new Date().toISOString(),
       exception,
+      ...(debugIds ? { debugIds } : {}),
       page: {
         url: window.location.href,
         ...(context.route ? { route: context.route } : {}),

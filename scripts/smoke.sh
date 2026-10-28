@@ -7,7 +7,8 @@
 # actually depends on. A final variant drops the VIGILON_SERVICE_NAME and
 # VIGILON_SERVICE_VERSION variables to check that the defaults are derived
 # from the project's package.json. Last, @vigilon/browser is imported from its
-# tarball as a server-side renderer would, with no window or document.
+# tarball as a server-side renderer would, with no window or document, and
+# every @vigilon/bundler-plugins entry is loaded from its tarball.
 set -euo pipefail
 
 repo_root=$(cd "$(dirname "$0")/.." && pwd)
@@ -29,11 +30,12 @@ trap cleanup EXIT
 
 (cd "$repo_root/packages/node" && pnpm pack --out "$tmp/node.tgz")
 (cd "$repo_root/packages/browser" && pnpm pack --out "$tmp/browser.tgz")
+(cd "$repo_root/packages/bundler-plugins" && pnpm pack --out "$tmp/bundler-plugins.tgz")
 
 cd "$tmp"
 npm init -y >/dev/null
 npm pkg set name=smoke-derived-service version=9.9.9
-npm install --no-save --no-audit --no-fund ./node.tgz ./browser.tgz express >/dev/null
+npm install --no-save --no-audit --no-fund ./node.tgz ./browser.tgz ./bundler-plugins.tgz express >/dev/null
 cp "$repo_root"/scripts/smoke/*.mjs "$repo_root"/scripts/smoke/*.cjs .
 
 node collector.mjs > collector.port &
@@ -78,5 +80,6 @@ run_variant "derived defaults" "$spans derivedServiceName derivedServiceVersion"
   ENVIRONMENT=smoke node --import @vigilon/node/register app.cjs
 
 node browser.mjs
+node bundler-plugins.mjs
 
 echo "smoke: OK"

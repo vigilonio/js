@@ -27,6 +27,7 @@ Every package lives in `packages/<name>/` and is published to npm under the `@vi
 |---|---|---|
 | [`@vigilon/node`](packages/node) | <a href="https://www.npmjs.com/package/@vigilon/node"><img src="https://img.shields.io/npm/v/@vigilon/node.svg" alt="npm"></a> | Node.js apps: Express, Fastify, AWS Lambda, plain HTTP servers. Starts OpenTelemetry auto-instrumentation through a `--import` preload, so you don't need to change your code. |
 | [`@vigilon/browser`](packages/browser) | <a href="https://www.npmjs.com/package/@vigilon/browser"><img src="https://img.shields.io/npm/v/@vigilon/browser.svg" alt="npm"></a> | Browser apps: captures uncaught errors and unhandled rejections. Early access. |
+| [`@vigilon/bundler-plugins`](packages/bundler-plugins) | <a href="https://www.npmjs.com/package/@vigilon/bundler-plugins"><img src="https://img.shields.io/npm/v/@vigilon/bundler-plugins.svg" alt="npm"></a> | Vite, Rollup, webpack, and esbuild plugins that link each emitted script to its source map with a debug ID. Early access. |
 
 ## Getting started
 

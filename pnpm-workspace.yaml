@@ -4,3 +4,6 @@ packages:
 allowBuilds:
   esbuild: true
   protobufjs: false
+  # The plugin-order test only needs @sentry/vite-plugin's debug ID
+  # injection, not the Sentry CLI binary its install script downloads.
+  '@sentry/cli': false
