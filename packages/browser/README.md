@@ -78,6 +78,10 @@ Some noise is dropped by default: `Script error.` (an opaque error from a cross-
 
 `flush()` sends queued events now and `close()` flushes and stops capturing. Both resolve `true` when everything was sent.
 
+## Readable stack traces
+
+Production scripts are minified, so a raw stack trace points at minified code. [`@vigilon/bundler-plugins`](../bundler-plugins#readme) gives each script your build emits a debug ID that links it to its source map. The SDK sends the debug IDs of the scripts in an error's stack with the error, reading them from the runtime registries that build tools write: `_vigilonDebugIds`, then `_sentryDebugIds` and `_debugIds`. A build that already injects debug IDs for Sentry needs no second pass.
+
 ## Privacy
 
 The SDK removes the query string, the fragment, and any `user:password@` from the page URL and from every URL in a stack trace. It drops tags whose key looks like a credential (`password`, `token`, `secret`, `authorization`, `cookie`, and similar), and a `setUser` ID that looks like an email address. The session ID is a random value in `sessionStorage`, one per tab; the SDK sets no cookies. Vigilon applies the same rules again on its side.
