@@ -8,7 +8,7 @@ Vigilon provides OpenTelemetry bootstrap for Node.js apps with a preload entrypo
 npm install @vigilon/node
 ```
 
-Requires Node.js 20.6 or later.
+Requires Node.js 22.12 or later.
 
 ## Quick Start
 
@@ -253,7 +253,7 @@ If you bundle your Lambda with esbuild (or a similar bundler), keep `@vigilon/no
 
 **Traces stop when the process exits or is suspended.** Spans are exported in batches. Call `shutdown()` before exiting short-lived processes; see [Short-Lived Processes](#short-lived-processes). AWS Lambda is handled automatically.
 
-**`--import` fails with a `module.register` error.** The preload needs Node.js 20.6 or later.
+**`--import` fails with a `module.register` error.** The preload needs Node.js 22.12 or later; check `node --version`.
 
 ## Support
 
