@@ -20,7 +20,7 @@ A hashed file name never serves two different contents. In Rollup and Vite the p
 npm install --save-dev @vigilon/bundler-plugins
 ```
 
-Requires Node.js 20.19+ or 22.12+.
+Requires Node.js 22.12 or later.
 
 ## Set up
 

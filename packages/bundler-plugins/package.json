@@ -20,7 +20,7 @@
     "esbuild-plugin"
   ],
   "engines": {
-    "node": "^20.19.0 || >=22.12.0"
+    "node": ">=22.12.0"
   },
   "main": "./dist/index.cjs",
   "module": "./dist/index.mjs",

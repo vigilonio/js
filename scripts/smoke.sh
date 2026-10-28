@@ -80,13 +80,6 @@ run_variant "derived defaults" "$spans derivedServiceName derivedServiceVersion"
   ENVIRONMENT=smoke node --import @vigilon/node/register app.cjs
 
 node browser.mjs
-
-# The build plugins need Node 20.19 or 22.12 (as Vite and unplugin do), above
-# @vigilon/node's floor, so the runtime-floor job skips them.
-if node -e 'const [a, b] = process.versions.node.split(".").map(Number); process.exit((a === 20 && b >= 19) || (a === 22 && b >= 12) || a >= 23 ? 0 : 1)'; then
-  node bundler-plugins.mjs
-else
-  echo "smoke [bundler-plugins]: skipped on Node $(node --version), below the package's engine range"
-fi
+node bundler-plugins.mjs
 
 echo "smoke: OK"
