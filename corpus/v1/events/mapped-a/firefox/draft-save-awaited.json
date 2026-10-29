@@ -1,0 +1,39 @@
+{
+  "schema": "vigilon.browser.event@1",
+  "sdk": {
+    "name": "@vigilon/browser",
+    "version": "0.2.12"
+  },
+  "service": {
+    "name": "corpus",
+    "environment": "corpus",
+    "version": "corpus-a"
+  },
+  "sentAt": "2026-01-01T00:00:00.000Z",
+  "events": [
+    {
+      "type": "exception",
+      "eventId": "85f9d21f-709c-4d02-9413-54b2a35670d0",
+      "timestamp": "2026-01-01T00:00:00.000Z",
+      "exception": {
+        "type": "Error",
+        "message": "draft-title-missing",
+        "stack": "Be@https://corpus.vigilon.test/assets/index-CBlyPtJs.js:10:9017\nU@https://corpus.vigilon.test/assets/index-CBlyPtJs.js:10:9090\nasync*Ve@https://corpus.vigilon.test/assets/index-CBlyPtJs.js:10:9123\n@https://corpus.vigilon.test/assets/index-CBlyPtJs.js:10:14152\nsetTimeout handler*@https://corpus.vigilon.test/assets/index-CBlyPtJs.js:10:14133\n",
+        "mechanism": "unhandledrejection",
+        "handled": false
+      },
+      "page": {
+        "url": "https://corpus.vigilon.test/"
+      },
+      "session": {
+        "id": "corpus-session"
+      },
+      "user": null,
+      "traceId": null,
+      "tags": {},
+      "debugIds": {
+        "https://corpus.vigilon.test/assets/index-CBlyPtJs.js": "c60127de-b1e2-48cf-becc-2588b5bb6070"
+      }
+    }
+  ]
+}

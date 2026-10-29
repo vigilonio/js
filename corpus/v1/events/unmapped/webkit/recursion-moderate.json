@@ -1,0 +1,36 @@
+{
+  "schema": "vigilon.browser.event@1",
+  "sdk": {
+    "name": "@vigilon/browser",
+    "version": "0.2.12"
+  },
+  "service": {
+    "name": "corpus",
+    "environment": "corpus",
+    "version": "corpus-a"
+  },
+  "sentAt": "2026-01-01T00:00:00.000Z",
+  "events": [
+    {
+      "type": "exception",
+      "eventId": "b9d3346d-4576-4347-879f-85c0a003381a",
+      "timestamp": "2026-01-01T00:00:00.000Z",
+      "exception": {
+        "type": "TypeError",
+        "message": "undefined is not an object (evaluating 'e.root.depth')",
+        "stack": "Q@https://corpus.vigilon.test/assets/index-CeR2v4rx.js:9:12576\nQ@https://corpus.vigilon.test/assets/index-CeR2v4rx.js:9:12557\nQ@https://corpus.vigilon.test/assets/index-CeR2v4rx.js:9:12557\nQ@https://corpus.vigilon.test/assets/index-CeR2v4rx.js:9:12557\nQ@https://corpus.vigilon.test/assets/index-CeR2v4rx.js:9:12557\nQ@https://corpus.vigilon.test/assets/index-CeR2v4rx.js:9:12557\nQ@https://corpus.vigilon.test/assets/index-CeR2v4rx.js:9:12557",
+        "mechanism": "onerror",
+        "handled": false
+      },
+      "page": {
+        "url": "https://corpus.vigilon.test/"
+      },
+      "session": {
+        "id": "corpus-session"
+      },
+      "user": null,
+      "traceId": null,
+      "tags": {}
+    }
+  ]
+}

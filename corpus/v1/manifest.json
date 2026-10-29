@@ -1,0 +1,68 @@
+{
+  "corpusVersion": 1,
+  "origin": "https://corpus.vigilon.test",
+  "sdk": "@vigilon/browser@0.2.12",
+  "playwright": "1.64.1",
+  "engines": {
+    "chromium": "156.0.8078.4",
+    "firefox": "157.0",
+    "webkit": "27.2"
+  },
+  "builds": {
+    "mapped-a": {
+      "release": "corpus-a",
+      "sourceMaps": true
+    },
+    "mapped-b": {
+      "release": "corpus-b",
+      "sourceMaps": true
+    },
+    "unmapped": {
+      "release": "corpus-a",
+      "sourceMaps": false
+    }
+  },
+  "cases": [
+    "helper-from-cart",
+    "helper-from-invoice",
+    "summary-subtotal-missing",
+    "summary-shipping-missing",
+    "recursion-shallow",
+    "recursion-moderate",
+    "recursion-deep",
+    "draft-save-direct",
+    "draft-save-awaited",
+    "statements-from-billing",
+    "statements-from-reports",
+    "invoices-network-cause",
+    "invoices-parse-cause",
+    "sync-one-failure",
+    "sync-two-failures",
+    "price-tag-in-dashboard",
+    "price-tag-in-settings",
+    "profile-request-failed",
+    "report-request-failed",
+    "read-undefined-id",
+    "read-undefined-name",
+    "read-undefined-computed-id",
+    "read-undefined-computed-name",
+    "read-null-email",
+    "read-null-computed-email",
+    "call-missing-method",
+    "call-missing-computed-method",
+    "undefined-variable",
+    "spread-undefined",
+    "iterate-number",
+    "write-undefined-name",
+    "write-undefined-computed-name",
+    "construct-missing-class",
+    "parse-invalid-json",
+    "invalid-array-length",
+    "in-operator-on-undefined"
+  ],
+  "unreported": [
+    "mapped-a/webkit/parse-invalid-json",
+    "mapped-b/webkit/parse-invalid-json",
+    "unmapped/webkit/parse-invalid-json"
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "schema": "vigilon.browser.event@1",
+  "sdk": {
+    "name": "@vigilon/browser",
+    "version": "0.2.12"
+  },
+  "service": {
+    "name": "corpus",
+    "environment": "corpus",
+    "version": "corpus-a"
+  },
+  "sentAt": "2026-01-01T00:00:00.000Z",
+  "events": [
+    {
+      "type": "exception",
+      "eventId": "e8a17c32-ed3e-4626-b5ac-645aab5709a1",
+      "timestamp": "2026-01-01T00:00:00.000Z",
+      "exception": {
+        "type": "SyntaxError",
+        "message": "Expected property name or '}' in JSON at position 1 (line 1 column 2)",
+        "stack": "SyntaxError: Expected property name or '}' in JSON at position 1 (line 1 column 2)\n    at JSON.parse (<anonymous>)\n    at Ie (https://corpus.vigilon.test/assets/index-CeR2v4rx.js:9:8815)\n    at https://corpus.vigilon.test/assets/index-CeR2v4rx.js:9:14152",
+        "mechanism": "onerror",
+        "handled": false
+      },
+      "page": {
+        "url": "https://corpus.vigilon.test/"
+      },
+      "session": {
+        "id": "corpus-session"
+      },
+      "user": null,
+      "traceId": null,
+      "tags": {}
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "schema": "vigilon.browser.event@1",
+  "sdk": {
+    "name": "@vigilon/browser",
+    "version": "0.2.12"
+  },
+  "service": {
+    "name": "corpus",
+    "environment": "corpus",
+    "version": "corpus-b"
+  },
+  "sentAt": "2026-01-01T00:00:00.000Z",
+  "events": [
+    {
+      "type": "exception",
+      "eventId": "a00e0afa-261b-4c7a-95a5-02b816dbeb70",
+      "timestamp": "2026-01-01T00:00:00.000Z",
+      "exception": {
+        "type": "ReferenceError",
+        "message": "missingGlobalHelper is not defined",
+        "stack": "Ae@https://corpus.vigilon.test/assets/index-CgNAj55e.js:10:8629\n@https://corpus.vigilon.test/assets/index-CgNAj55e.js:10:14152\nsetTimeout handler*@https://corpus.vigilon.test/assets/index-CgNAj55e.js:10:14133\n",
+        "mechanism": "onerror",
+        "handled": false
+      },
+      "page": {
+        "url": "https://corpus.vigilon.test/"
+      },
+      "session": {
+        "id": "corpus-session"
+      },
+      "user": null,
+      "traceId": null,
+      "tags": {},
+      "debugIds": {
+        "https://corpus.vigilon.test/assets/index-CgNAj55e.js": "e95e7030-aa25-4c55-b740-0d0791ec7381"
+      }
+    }
+  ]
+}

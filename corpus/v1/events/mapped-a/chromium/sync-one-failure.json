@@ -1,0 +1,39 @@
+{
+  "schema": "vigilon.browser.event@1",
+  "sdk": {
+    "name": "@vigilon/browser",
+    "version": "0.2.12"
+  },
+  "service": {
+    "name": "corpus",
+    "environment": "corpus",
+    "version": "corpus-a"
+  },
+  "sentAt": "2026-01-01T00:00:00.000Z",
+  "events": [
+    {
+      "type": "exception",
+      "eventId": "983a3263-e602-4443-b595-d3d3c665427b",
+      "timestamp": "2026-01-01T00:00:00.000Z",
+      "exception": {
+        "type": "AggregateError",
+        "message": "sync-failed",
+        "stack": "AggregateError: sync-failed\n    at G (https://corpus.vigilon.test/assets/index-CBlyPtJs.js:10:9344)\n    at https://corpus.vigilon.test/assets/index-CBlyPtJs.js:10:14152",
+        "mechanism": "onerror",
+        "handled": false
+      },
+      "page": {
+        "url": "https://corpus.vigilon.test/"
+      },
+      "session": {
+        "id": "corpus-session"
+      },
+      "user": null,
+      "traceId": null,
+      "tags": {},
+      "debugIds": {
+        "https://corpus.vigilon.test/assets/index-CBlyPtJs.js": "c60127de-b1e2-48cf-becc-2588b5bb6070"
+      }
+    }
+  ]
+}

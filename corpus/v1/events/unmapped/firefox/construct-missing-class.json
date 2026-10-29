@@ -1,0 +1,36 @@
+{
+  "schema": "vigilon.browser.event@1",
+  "sdk": {
+    "name": "@vigilon/browser",
+    "version": "0.2.12"
+  },
+  "service": {
+    "name": "corpus",
+    "environment": "corpus",
+    "version": "corpus-a"
+  },
+  "sentAt": "2026-01-01T00:00:00.000Z",
+  "events": [
+    {
+      "type": "exception",
+      "eventId": "c62de696-c3d7-4c60-b514-9bebaa804750",
+      "timestamp": "2026-01-01T00:00:00.000Z",
+      "exception": {
+        "type": "TypeError",
+        "message": "e.Client is not a constructor",
+        "stack": "Fe@https://corpus.vigilon.test/assets/index-CeR2v4rx.js:9:8791\n@https://corpus.vigilon.test/assets/index-CeR2v4rx.js:9:14152\nsetTimeout handler*@https://corpus.vigilon.test/assets/index-CeR2v4rx.js:9:14133\n",
+        "mechanism": "onerror",
+        "handled": false
+      },
+      "page": {
+        "url": "https://corpus.vigilon.test/"
+      },
+      "session": {
+        "id": "corpus-session"
+      },
+      "user": null,
+      "traceId": null,
+      "tags": {}
+    }
+  ]
+}

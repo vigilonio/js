@@ -50,6 +50,9 @@ export const consoleLogger: Logger = {
  */
 export class DebugIdBuild {
   private readonly chunks = new Map<string, DebugIdChunk>();
+  // Every map file recorded, by debug ID: identical copies of a script share
+  // an ID and are uploaded once, but each copy's map is deleted.
+  private readonly mapFiles = new Map<string, Set<string>>();
 
   constructor(
     readonly options: VigilonPluginOptions,
@@ -79,13 +82,13 @@ export class DebugIdBuild {
   /**
    * Records a written script and map for upload, under their final names.
    * The debug ID is read back from the script, so an adapter can record after
-   * the bundler has renamed files.
+   * the bundler has renamed files. Returns false when the script has none.
    */
-  record(codeFileName: string, code: Buffer, mapFileName: string, map: Buffer): void {
+  record(codeFileName: string, code: Buffer, mapFileName: string, map: Buffer): boolean {
     const parsed = safeParse(map);
     const existing = existingDebugId(code.toString("utf8"), parsed ?? {});
     if (existing === null) {
-      return;
+      return false;
     }
     this.chunks.set(existing.debugId, {
       debugId: existing.debugId,
@@ -94,6 +97,9 @@ export class DebugIdBuild {
       code,
       map,
     });
+    const mapFiles = this.mapFiles.get(existing.debugId) ?? new Set<string>();
+    this.mapFiles.set(existing.debugId, mapFiles.add(mapFileName));
+    return true;
   }
 
   /**
@@ -103,7 +109,9 @@ export class DebugIdBuild {
    */
   async finish(outputDir: string, ownsSourceMaps: boolean): Promise<void> {
     const chunks = [...this.chunks.values()];
+    const mapFiles = [...this.mapFiles.values()].flatMap((files) => [...files]);
     this.chunks.clear();
+    this.mapFiles.clear();
     if (chunks.length === 0) {
       return;
     }
@@ -121,10 +129,8 @@ export class DebugIdBuild {
       // The build's own maps are kept after a failed upload, so a retry can
       // still send them.
       if (ownsSourceMaps || (uploaded && this.options.deleteSourceMapsAfterUpload)) {
-        await Promise.all(
-          chunks.map((chunk) => rm(join(outputDir, chunk.mapFileName), { force: true })),
-        );
-        this.debug(`deleted ${chunks.length} source map(s)`);
+        await Promise.all(mapFiles.map((file) => rm(join(outputDir, file), { force: true })));
+        this.debug(`deleted ${mapFiles.length} source map(s)`);
       }
     }
   }

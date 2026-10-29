@@ -1,0 +1,41 @@
+{
+  "schema": "vigilon.browser.event@1",
+  "sdk": {
+    "name": "@vigilon/browser",
+    "version": "0.2.12"
+  },
+  "service": {
+    "name": "corpus",
+    "environment": "corpus",
+    "version": "corpus-a"
+  },
+  "sentAt": "2026-01-01T00:00:00.000Z",
+  "events": [
+    {
+      "type": "exception",
+      "eventId": "2291006b-7645-43cd-8159-2689c19b92ec",
+      "timestamp": "2026-01-01T00:00:00.000Z",
+      "exception": {
+        "type": "TypeError",
+        "message": "undefined is not an object (evaluating 'e.currency.toUpperCase')",
+        "stack": "q@https://corpus.vigilon.test/assets/index-CBlyPtJs.js:10:9705\nos@https://corpus.vigilon.test/assets/vendor-CsFWd-YR.js:9:49199\nXc@https://corpus.vigilon.test/assets/vendor-CsFWd-YR.js:9:71837\nZd@https://corpus.vigilon.test/assets/vendor-CsFWd-YR.js:9:127842\nJd@https://corpus.vigilon.test/assets/vendor-CsFWd-YR.js:9:126925\nqd@https://corpus.vigilon.test/assets/vendor-CsFWd-YR.js:9:126764\nFd@https://corpus.vigilon.test/assets/vendor-CsFWd-YR.js:9:123500\njf@https://corpus.vigilon.test/assets/vendor-CsFWd-YR.js:9:135775\nS@https://corpus.vigilon.test/assets/vendor-CsFWd-YR.js:2:9487",
+        "mechanism": "react_error_boundary",
+        "handled": true,
+        "componentStack": "\nq@https://corpus.vigilon.test/assets/index-CBlyPtJs.js:10:9667\ndiv@unknown:0:0\nYe@https://corpus.vigilon.test/assets/index-CBlyPtJs.js:10:9756\nmain@unknown:0:0\nXe@unknown:0:0\n$e@"
+      },
+      "page": {
+        "url": "https://corpus.vigilon.test/"
+      },
+      "session": {
+        "id": "corpus-session"
+      },
+      "user": null,
+      "traceId": null,
+      "tags": {},
+      "debugIds": {
+        "https://corpus.vigilon.test/assets/vendor-CsFWd-YR.js": "d43f2ffa-f903-4bac-b860-a5b192d1d8ce",
+        "https://corpus.vigilon.test/assets/index-CBlyPtJs.js": "c60127de-b1e2-48cf-becc-2588b5bb6070"
+      }
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "schema": "vigilon.browser.event@1",
+  "sdk": {
+    "name": "@vigilon/browser",
+    "version": "0.2.12"
+  },
+  "service": {
+    "name": "corpus",
+    "environment": "corpus",
+    "version": "corpus-b"
+  },
+  "sentAt": "2026-01-01T00:00:00.000Z",
+  "events": [
+    {
+      "type": "exception",
+      "eventId": "6f3266ec-f85c-4db1-a66d-d825f84cfe6c",
+      "timestamp": "2026-01-01T00:00:00.000Z",
+      "exception": {
+        "type": "TypeError",
+        "message": "Cannot read properties of undefined (reading 'toUpperCase')",
+        "stack": "TypeError: Cannot read properties of undefined (reading 'toUpperCase')\n    at q (https://corpus.vigilon.test/assets/index-CgNAj55e.js:10:9706)\n    at os (https://corpus.vigilon.test/assets/vendor-CsFWd-YR.js:9:49198)\n    at Xc (https://corpus.vigilon.test/assets/vendor-CsFWd-YR.js:9:71835)\n    at _l (https://corpus.vigilon.test/assets/vendor-CsFWd-YR.js:9:82728)\n    at Zd (https://corpus.vigilon.test/assets/vendor-CsFWd-YR.js:9:127840)\n    at Jd (https://corpus.vigilon.test/assets/vendor-CsFWd-YR.js:9:126923)\n    at qd (https://corpus.vigilon.test/assets/vendor-CsFWd-YR.js:9:126762)\n    at Fd (https://corpus.vigilon.test/assets/vendor-CsFWd-YR.js:9:123498)\n    at jf (https://corpus.vigilon.test/assets/vendor-CsFWd-YR.js:9:135773)\n    at MessagePort.S (https://corpus.vigilon.test/assets/vendor-CsFWd-YR.js:2:9486)",
+        "mechanism": "react_error_boundary",
+        "handled": true,
+        "componentStack": "\n    at q (https://corpus.vigilon.test/assets/index-CgNAj55e.js:10:9653)\n    at section (<anonymous>)\n    at Ze (https://corpus.vigilon.test/assets/index-CgNAj55e.js:10:9944)\n    at main (<anonymous>)\n    at Qe (<anonymous>)\n    at $e (https://corpus.vigilon.test/assets/index-CgNAj55e.js:10:10122)"
+      },
+      "page": {
+        "url": "https://corpus.vigilon.test/"
+      },
+      "session": {
+        "id": "corpus-session"
+      },
+      "user": null,
+      "traceId": null,
+      "tags": {},
+      "debugIds": {
+        "https://corpus.vigilon.test/assets/vendor-CsFWd-YR.js": "d43f2ffa-f903-4bac-b860-a5b192d1d8ce",
+        "https://corpus.vigilon.test/assets/index-CgNAj55e.js": "e95e7030-aa25-4c55-b740-0d0791ec7381"
+      }
+    }
+  ]
+}

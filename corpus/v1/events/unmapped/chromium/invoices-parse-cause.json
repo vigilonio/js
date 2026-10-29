@@ -1,0 +1,43 @@
+{
+  "schema": "vigilon.browser.event@1",
+  "sdk": {
+    "name": "@vigilon/browser",
+    "version": "0.2.12"
+  },
+  "service": {
+    "name": "corpus",
+    "environment": "corpus",
+    "version": "corpus-a"
+  },
+  "sentAt": "2026-01-01T00:00:00.000Z",
+  "events": [
+    {
+      "type": "exception",
+      "eventId": "73bb4011-09cb-4f08-890a-80d93bed0eb5",
+      "timestamp": "2026-01-01T00:00:00.000Z",
+      "exception": {
+        "type": "Error",
+        "message": "invoices-load-failed",
+        "stack": "Error: invoices-load-failed\n    at W (https://corpus.vigilon.test/assets/index-CeR2v4rx.js:9:9218)\n    at https://corpus.vigilon.test/assets/index-CeR2v4rx.js:9:14152",
+        "mechanism": "onerror",
+        "handled": false,
+        "cause": [
+          {
+            "type": "SyntaxError",
+            "message": "Unexpected token '<', \"<html>\" is not valid JSON",
+            "stack": "SyntaxError: Unexpected token '<', \"<html>\" is not valid JSON\n    at JSON.parse (<anonymous>)\n    at We (https://corpus.vigilon.test/assets/index-CeR2v4rx.js:9:9451)\n    at W (https://corpus.vigilon.test/assets/index-CeR2v4rx.js:9:9199)\n    at https://corpus.vigilon.test/assets/index-CeR2v4rx.js:9:14152"
+          }
+        ]
+      },
+      "page": {
+        "url": "https://corpus.vigilon.test/"
+      },
+      "session": {
+        "id": "corpus-session"
+      },
+      "user": null,
+      "traceId": null,
+      "tags": {}
+    }
+  ]
+}
