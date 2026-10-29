@@ -1,6 +1,6 @@
 {
   "name": "@vigilon/cli",
-  "version": "0.2.12",
+  "version": "0.2.13",
   "description": "Vigilon command line: debug IDs and source map upload for any build",
   "license": "ISC",
   "author": "Vigilon",
