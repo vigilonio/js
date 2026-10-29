@@ -1,0 +1,50 @@
+{
+  "name": "@vigilon/cli",
+  "version": "0.2.12",
+  "description": "Vigilon command line: debug IDs and source map upload for any build",
+  "license": "ISC",
+  "author": "Vigilon",
+  "homepage": "https://vigilon.io",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vigilonio/js.git",
+    "directory": "packages/cli"
+  },
+  "keywords": [
+    "vigilon",
+    "source-maps",
+    "debug-id",
+    "cli"
+  ],
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "type": "module",
+  "bin": {
+    "vigilon": "./dist/bin.mjs"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "clean": "rm -rf dist",
+    "build": "tsup",
+    "prepack": "npm run build",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@jridgewell/trace-mapping": "^0.3.31",
+    "@types/node": "^24.19.2",
+    "esbuild": "^0.28.2",
+    "tsup": "^8.5.1",
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.11"
+  }
+}
