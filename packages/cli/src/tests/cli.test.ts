@@ -181,6 +181,7 @@ describe("usage", () => {
     expect(await run(["--help"], io)).toBe(0);
     expect(output.out[0]).toContain("sourcemaps upload");
     expect(await run(["--version"], io)).toBe(0);
-    expect(output.out[1]).toMatch(/^\d+\.\d+\.\d+$/);
+    // The package's own version: a release, or a beta while a PR is published.
+    expect(output.out[1]).toBe(JSON.parse(await readFile(new URL("../../package.json", import.meta.url), "utf8")).version);
   });
 });
