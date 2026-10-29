@@ -71,6 +71,22 @@
     },
     {
       "outcome": "accepted-collision",
+      "reason": "same-frames",
+      "note": "The three computed reads go through one shared accessor, so only its arguments differ, and arguments are not part of a frame.",
+      "events": {
+        "cases": [
+          "read-undefined-computed-id",
+          "read-undefined-computed-name",
+          "read-null-computed-email"
+        ],
+        "builds": [
+          "mapped-a",
+          "mapped-b"
+        ]
+      }
+    },
+    {
+      "outcome": "accepted-collision",
       "reason": "async-boundary",
       "events": {
         "cases": [
@@ -253,6 +269,48 @@
         "engines": [
           "chromium",
           "webkit"
+        ],
+        "builds": [
+          "unmapped"
+        ]
+      }
+    },
+    {
+      "outcome": "accepted-split",
+      "reason": "engine-omits-value",
+      "note": "Chromium's message for spreading undefined does not say the value was undefined, as Firefox's and WebKit's do.",
+      "events": {
+        "cases": [
+          "spread-undefined"
+        ],
+        "engines": [
+          "chromium"
+        ],
+        "builds": [
+          "unmapped"
+        ]
+      },
+      "versus": {
+        "cases": [
+          "spread-undefined"
+        ],
+        "engines": [
+          "firefox",
+          "webkit"
+        ],
+        "builds": [
+          "unmapped"
+        ]
+      }
+    },
+    {
+      "outcome": "accepted-collision",
+      "reason": "engine-omits-value",
+      "note": "Chromium words spreading undefined and iterating a number the same way, and so does Firefox for iterating a number.",
+      "events": {
+        "cases": [
+          "spread-undefined",
+          "iterate-number"
         ],
         "builds": [
           "unmapped"
