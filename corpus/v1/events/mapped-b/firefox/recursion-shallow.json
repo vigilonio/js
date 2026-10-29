@@ -1,0 +1,39 @@
+{
+  "schema": "vigilon.browser.event@1",
+  "sdk": {
+    "name": "@vigilon/browser",
+    "version": "0.2.12"
+  },
+  "service": {
+    "name": "corpus",
+    "environment": "corpus",
+    "version": "corpus-b"
+  },
+  "sentAt": "2026-01-01T00:00:00.000Z",
+  "events": [
+    {
+      "type": "exception",
+      "eventId": "e3d1478c-bee9-4623-b3a0-a0d2e9927b34",
+      "timestamp": "2026-01-01T00:00:00.000Z",
+      "exception": {
+        "type": "TypeError",
+        "message": "can't access property \"depth\", e.root is undefined",
+        "stack": "Q@https://corpus.vigilon.test/assets/index-CgNAj55e.js:10:12556\nQ@https://corpus.vigilon.test/assets/index-CgNAj55e.js:10:12556\nQ@https://corpus.vigilon.test/assets/index-CgNAj55e.js:10:12556\n@https://corpus.vigilon.test/assets/index-CgNAj55e.js:10:14152\nsetTimeout handler*@https://corpus.vigilon.test/assets/index-CgNAj55e.js:10:14133\n",
+        "mechanism": "onerror",
+        "handled": false
+      },
+      "page": {
+        "url": "https://corpus.vigilon.test/"
+      },
+      "session": {
+        "id": "corpus-session"
+      },
+      "user": null,
+      "traceId": null,
+      "tags": {},
+      "debugIds": {
+        "https://corpus.vigilon.test/assets/index-CgNAj55e.js": "e95e7030-aa25-4c55-b740-0d0791ec7381"
+      }
+    }
+  ]
+}

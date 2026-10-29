@@ -1,0 +1,36 @@
+{
+  "schema": "vigilon.browser.event@1",
+  "sdk": {
+    "name": "@vigilon/browser",
+    "version": "0.2.12"
+  },
+  "service": {
+    "name": "corpus",
+    "environment": "corpus",
+    "version": "corpus-a"
+  },
+  "sentAt": "2026-01-01T00:00:00.000Z",
+  "events": [
+    {
+      "type": "exception",
+      "eventId": "6776cf45-c7a4-44b2-8158-fd0c3a0008ec",
+      "timestamp": "2026-01-01T00:00:00.000Z",
+      "exception": {
+        "type": "Error",
+        "message": "statements-unavailable",
+        "stack": "Error: statements-unavailable\n    at e (https://corpus.vigilon.test/assets/statements-CkPRySQD.js:1:50)",
+        "mechanism": "unhandledrejection",
+        "handled": false
+      },
+      "page": {
+        "url": "https://corpus.vigilon.test/"
+      },
+      "session": {
+        "id": "corpus-session"
+      },
+      "user": null,
+      "traceId": null,
+      "tags": {}
+    }
+  ]
+}

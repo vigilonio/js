@@ -1,0 +1,36 @@
+{
+  "schema": "vigilon.browser.event@1",
+  "sdk": {
+    "name": "@vigilon/browser",
+    "version": "0.2.12"
+  },
+  "service": {
+    "name": "corpus",
+    "environment": "corpus",
+    "version": "corpus-a"
+  },
+  "sentAt": "2026-01-01T00:00:00.000Z",
+  "events": [
+    {
+      "type": "exception",
+      "eventId": "4fd52727-a813-41e6-be07-79c08de88ffb",
+      "timestamp": "2026-01-01T00:00:00.000Z",
+      "exception": {
+        "type": "TypeError",
+        "message": "e is not iterable",
+        "stack": "TypeError: e is not iterable\n    at je (https://corpus.vigilon.test/assets/index-CeR2v4rx.js:9:8661)\n    at https://corpus.vigilon.test/assets/index-CeR2v4rx.js:9:14152",
+        "mechanism": "onerror",
+        "handled": false
+      },
+      "page": {
+        "url": "https://corpus.vigilon.test/"
+      },
+      "session": {
+        "id": "corpus-session"
+      },
+      "user": null,
+      "traceId": null,
+      "tags": {}
+    }
+  ]
+}

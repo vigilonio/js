@@ -1,0 +1,39 @@
+{
+  "schema": "vigilon.browser.event@1",
+  "sdk": {
+    "name": "@vigilon/browser",
+    "version": "0.2.12"
+  },
+  "service": {
+    "name": "corpus",
+    "environment": "corpus",
+    "version": "corpus-a"
+  },
+  "sentAt": "2026-01-01T00:00:00.000Z",
+  "events": [
+    {
+      "type": "exception",
+      "eventId": "9fc6ad7b-73cc-41da-b894-61049792c40c",
+      "timestamp": "2026-01-01T00:00:00.000Z",
+      "exception": {
+        "type": "Error",
+        "message": "draft-title-missing",
+        "stack": "Error: draft-title-missing\n    at Be (https://corpus.vigilon.test/assets/index-CBlyPtJs.js:10:9017)\n    at U (https://corpus.vigilon.test/assets/index-CBlyPtJs.js:10:9090)",
+        "mechanism": "unhandledrejection",
+        "handled": false
+      },
+      "page": {
+        "url": "https://corpus.vigilon.test/"
+      },
+      "session": {
+        "id": "corpus-session"
+      },
+      "user": null,
+      "traceId": null,
+      "tags": {},
+      "debugIds": {
+        "https://corpus.vigilon.test/assets/index-CBlyPtJs.js": "c60127de-b1e2-48cf-becc-2588b5bb6070"
+      }
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "schema": "vigilon.browser.event@1",
+  "sdk": {
+    "name": "@vigilon/browser",
+    "version": "0.2.12"
+  },
+  "service": {
+    "name": "corpus",
+    "environment": "corpus",
+    "version": "corpus-b"
+  },
+  "sentAt": "2026-01-01T00:00:00.000Z",
+  "events": [
+    {
+      "type": "exception",
+      "eventId": "73e5990f-61e4-44d1-a5d5-763e1b1ba355",
+      "timestamp": "2026-01-01T00:00:00.000Z",
+      "exception": {
+        "type": "TypeError",
+        "message": "Cannot set properties of undefined (setting 'name')",
+        "stack": "TypeError: Cannot set properties of undefined (setting 'name')\n    at Pe (https://corpus.vigilon.test/assets/index-CgNAj55e.js:10:8769)\n    at https://corpus.vigilon.test/assets/index-CgNAj55e.js:10:14152",
+        "mechanism": "onerror",
+        "handled": false
+      },
+      "page": {
+        "url": "https://corpus.vigilon.test/"
+      },
+      "session": {
+        "id": "corpus-session"
+      },
+      "user": null,
+      "traceId": null,
+      "tags": {},
+      "debugIds": {
+        "https://corpus.vigilon.test/assets/index-CgNAj55e.js": "e95e7030-aa25-4c55-b740-0d0791ec7381"
+      }
+    }
+  ]
+}

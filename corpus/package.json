@@ -1,0 +1,24 @@
+{
+  "name": "vigilon-grouping-corpus",
+  "private": true,
+  "version": "0.0.0",
+  "description": "Browser errors from real Chromium, Firefox, and WebKit, with the grouping each pair of them should get",
+  "type": "module",
+  "scripts": {
+    "generate": "node scripts/generate.mjs",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "react": "19.3.0",
+    "react-dom": "19.3.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.64.1",
+    "@vigilon/browser": "workspace:*",
+    "@vigilon/bundler-plugins": "workspace:*",
+    "ajv": "^8.20.0",
+    "ajv-formats": "^3.0.1",
+    "vite": "8.3.4",
+    "vitest": "^4.1.11"
+  }
+}

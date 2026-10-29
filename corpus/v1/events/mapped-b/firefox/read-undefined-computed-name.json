@@ -1,0 +1,39 @@
+{
+  "schema": "vigilon.browser.event@1",
+  "sdk": {
+    "name": "@vigilon/browser",
+    "version": "0.2.12"
+  },
+  "service": {
+    "name": "corpus",
+    "environment": "corpus",
+    "version": "corpus-b"
+  },
+  "sentAt": "2026-01-01T00:00:00.000Z",
+  "events": [
+    {
+      "type": "exception",
+      "eventId": "c56c4269-4ecf-42c7-9c76-952d8cf1b7d8",
+      "timestamp": "2026-01-01T00:00:00.000Z",
+      "exception": {
+        "type": "TypeError",
+        "message": "can't access property \"name\", e is undefined",
+        "stack": "V@https://corpus.vigilon.test/assets/index-CgNAj55e.js:10:8585\n@https://corpus.vigilon.test/assets/index-CgNAj55e.js:10:14152\nsetTimeout handler*@https://corpus.vigilon.test/assets/index-CgNAj55e.js:10:14133\n",
+        "mechanism": "onerror",
+        "handled": false
+      },
+      "page": {
+        "url": "https://corpus.vigilon.test/"
+      },
+      "session": {
+        "id": "corpus-session"
+      },
+      "user": null,
+      "traceId": null,
+      "tags": {},
+      "debugIds": {
+        "https://corpus.vigilon.test/assets/index-CgNAj55e.js": "e95e7030-aa25-4c55-b740-0d0791ec7381"
+      }
+    }
+  ]
+}

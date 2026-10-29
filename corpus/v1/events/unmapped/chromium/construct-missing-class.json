@@ -1,0 +1,36 @@
+{
+  "schema": "vigilon.browser.event@1",
+  "sdk": {
+    "name": "@vigilon/browser",
+    "version": "0.2.12"
+  },
+  "service": {
+    "name": "corpus",
+    "environment": "corpus",
+    "version": "corpus-a"
+  },
+  "sentAt": "2026-01-01T00:00:00.000Z",
+  "events": [
+    {
+      "type": "exception",
+      "eventId": "41889f33-fe34-4b2c-aa25-ea6b67b4a3a2",
+      "timestamp": "2026-01-01T00:00:00.000Z",
+      "exception": {
+        "type": "TypeError",
+        "message": "e.Client is not a constructor",
+        "stack": "TypeError: e.Client is not a constructor\n    at Fe (https://corpus.vigilon.test/assets/index-CeR2v4rx.js:9:8791)\n    at https://corpus.vigilon.test/assets/index-CeR2v4rx.js:9:14152",
+        "mechanism": "onerror",
+        "handled": false
+      },
+      "page": {
+        "url": "https://corpus.vigilon.test/"
+      },
+      "session": {
+        "id": "corpus-session"
+      },
+      "user": null,
+      "traceId": null,
+      "tags": {}
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "schema": "vigilon.browser.event@1",
+  "sdk": {
+    "name": "@vigilon/browser",
+    "version": "0.2.12"
+  },
+  "service": {
+    "name": "corpus",
+    "environment": "corpus",
+    "version": "corpus-a"
+  },
+  "sentAt": "2026-01-01T00:00:00.000Z",
+  "events": [
+    {
+      "type": "exception",
+      "eventId": "92c5afb6-bc66-4d9a-931c-3566c4512590",
+      "timestamp": "2026-01-01T00:00:00.000Z",
+      "exception": {
+        "type": "Error",
+        "message": "invoices-load-failed",
+        "stack": "W@https://corpus.vigilon.test/assets/index-CBlyPtJs.js:10:9223",
+        "mechanism": "onerror",
+        "handled": false,
+        "cause": [
+          {
+            "type": "TypeError",
+            "message": "Failed to fetch",
+            "stack": "Ue@https://corpus.vigilon.test/assets/index-CBlyPtJs.js:10:9405\nW@https://corpus.vigilon.test/assets/index-CBlyPtJs.js:10:9200"
+          }
+        ]
+      },
+      "page": {
+        "url": "https://corpus.vigilon.test/"
+      },
+      "session": {
+        "id": "corpus-session"
+      },
+      "user": null,
+      "traceId": null,
+      "tags": {},
+      "debugIds": {
+        "https://corpus.vigilon.test/assets/index-CBlyPtJs.js": "c60127de-b1e2-48cf-becc-2588b5bb6070"
+      }
+    }
+  ]
+}

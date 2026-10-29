@@ -1,0 +1,37 @@
+{
+  "schema": "vigilon.browser.event@1",
+  "sdk": {
+    "name": "@vigilon/browser",
+    "version": "0.2.12"
+  },
+  "service": {
+    "name": "corpus",
+    "environment": "corpus",
+    "version": "corpus-a"
+  },
+  "sentAt": "2026-01-01T00:00:00.000Z",
+  "events": [
+    {
+      "type": "exception",
+      "eventId": "70bf4c9f-47de-4930-b076-3146037d3f3d",
+      "timestamp": "2026-01-01T00:00:00.000Z",
+      "exception": {
+        "type": "TypeError",
+        "message": "can't access property \"toUpperCase\", e.currency is undefined",
+        "stack": "q@https://corpus.vigilon.test/assets/index-CeR2v4rx.js:9:9695\nos@https://corpus.vigilon.test/assets/vendor-DkSVlVUq.js:8:49198\nXc@https://corpus.vigilon.test/assets/vendor-DkSVlVUq.js:8:71835\n_l@https://corpus.vigilon.test/assets/vendor-DkSVlVUq.js:8:82728\nZd@https://corpus.vigilon.test/assets/vendor-DkSVlVUq.js:8:127842\nJd@https://corpus.vigilon.test/assets/vendor-DkSVlVUq.js:8:126925\nqd@https://corpus.vigilon.test/assets/vendor-DkSVlVUq.js:8:126762\nFd@https://corpus.vigilon.test/assets/vendor-DkSVlVUq.js:8:123498\njf@https://corpus.vigilon.test/assets/vendor-DkSVlVUq.js:8:135773\nS@https://corpus.vigilon.test/assets/vendor-DkSVlVUq.js:1:9487\nEventHandlerNonNull*r<@https://corpus.vigilon.test/assets/vendor-DkSVlVUq.js:1:9880\ne/<@https://corpus.vigilon.test/assets/vendor-DkSVlVUq.js:1:23\ni<@https://corpus.vigilon.test/assets/vendor-DkSVlVUq.js:1:11476\ne/<@https://corpus.vigilon.test/assets/vendor-DkSVlVUq.js:1:23\ns<@https://corpus.vigilon.test/assets/vendor-DkSVlVUq.js:1:15290\ne/<@https://corpus.vigilon.test/assets/vendor-DkSVlVUq.js:1:23\nc<@https://corpus.vigilon.test/assets/vendor-DkSVlVUq.js:9:50637\ne/<@https://corpus.vigilon.test/assets/vendor-DkSVlVUq.js:1:23\n@https://corpus.vigilon.test/assets/index-CeR2v4rx.js:9:9629\n",
+        "mechanism": "react_error_boundary",
+        "handled": true,
+        "componentStack": "\nq@https://corpus.vigilon.test/assets/index-CeR2v4rx.js:9:9643\ndiv@unknown:0:0\nYe@https://corpus.vigilon.test/assets/index-CeR2v4rx.js:9:9732\nmain@unknown:0:0\nXe@unknown:0:0\n$e@https://corpus.vigilon.test/assets/index-CeR2v4rx.js:9:10122"
+      },
+      "page": {
+        "url": "https://corpus.vigilon.test/"
+      },
+      "session": {
+        "id": "corpus-session"
+      },
+      "user": null,
+      "traceId": null,
+      "tags": {}
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "schema": "vigilon.browser.event@1",
+  "sdk": {
+    "name": "@vigilon/browser",
+    "version": "0.2.12"
+  },
+  "service": {
+    "name": "corpus",
+    "environment": "corpus",
+    "version": "corpus-a"
+  },
+  "sentAt": "2026-01-01T00:00:00.000Z",
+  "events": [
+    {
+      "type": "exception",
+      "eventId": "4c5441e3-6588-4531-956d-8d1d5d6b44f7",
+      "timestamp": "2026-01-01T00:00:00.000Z",
+      "exception": {
+        "type": "TypeError",
+        "message": "undefined is not an object (evaluating 'e.currency.toUpperCase')",
+        "stack": "q@https://corpus.vigilon.test/assets/index-CeR2v4rx.js:9:9705\nos@https://corpus.vigilon.test/assets/vendor-DkSVlVUq.js:8:49199\nXc@https://corpus.vigilon.test/assets/vendor-DkSVlVUq.js:8:71837\nZd@https://corpus.vigilon.test/assets/vendor-DkSVlVUq.js:8:127842\nJd@https://corpus.vigilon.test/assets/vendor-DkSVlVUq.js:8:126925\nqd@https://corpus.vigilon.test/assets/vendor-DkSVlVUq.js:8:126764\nFd@https://corpus.vigilon.test/assets/vendor-DkSVlVUq.js:8:123500\njf@https://corpus.vigilon.test/assets/vendor-DkSVlVUq.js:8:135775\nS@https://corpus.vigilon.test/assets/vendor-DkSVlVUq.js:1:9487",
+        "mechanism": "react_error_boundary",
+        "handled": true,
+        "componentStack": "\nq@https://corpus.vigilon.test/assets/index-CeR2v4rx.js:9:9667\nsection@unknown:0:0\nZe@https://corpus.vigilon.test/assets/index-CeR2v4rx.js:9:9958\nmain@unknown:0:0\nQe@unknown:0:0\n$e@"
+      },
+      "page": {
+        "url": "https://corpus.vigilon.test/"
+      },
+      "session": {
+        "id": "corpus-session"
+      },
+      "user": null,
+      "traceId": null,
+      "tags": {}
+    }
+  ]
+}

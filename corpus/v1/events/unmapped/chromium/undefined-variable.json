@@ -1,0 +1,36 @@
+{
+  "schema": "vigilon.browser.event@1",
+  "sdk": {
+    "name": "@vigilon/browser",
+    "version": "0.2.12"
+  },
+  "service": {
+    "name": "corpus",
+    "environment": "corpus",
+    "version": "corpus-a"
+  },
+  "sentAt": "2026-01-01T00:00:00.000Z",
+  "events": [
+    {
+      "type": "exception",
+      "eventId": "ff2bbfa5-db74-45bf-8eef-6f5a5806f038",
+      "timestamp": "2026-01-01T00:00:00.000Z",
+      "exception": {
+        "type": "ReferenceError",
+        "message": "missingGlobalHelper is not defined",
+        "stack": "ReferenceError: missingGlobalHelper is not defined\n    at Ae (https://corpus.vigilon.test/assets/index-CeR2v4rx.js:9:8629)\n    at https://corpus.vigilon.test/assets/index-CeR2v4rx.js:9:14152",
+        "mechanism": "onerror",
+        "handled": false
+      },
+      "page": {
+        "url": "https://corpus.vigilon.test/"
+      },
+      "session": {
+        "id": "corpus-session"
+      },
+      "user": null,
+      "traceId": null,
+      "tags": {}
+    }
+  ]
+}

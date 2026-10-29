@@ -1,0 +1,37 @@
+{
+  "schema": "vigilon.browser.event@1",
+  "sdk": {
+    "name": "@vigilon/browser",
+    "version": "0.2.12"
+  },
+  "service": {
+    "name": "corpus",
+    "environment": "corpus",
+    "version": "corpus-a"
+  },
+  "sentAt": "2026-01-01T00:00:00.000Z",
+  "events": [
+    {
+      "type": "exception",
+      "eventId": "55310a3d-9546-4b41-b1c5-a558f9382df1",
+      "timestamp": "2026-01-01T00:00:00.000Z",
+      "exception": {
+        "type": "TypeError",
+        "message": "Cannot read properties of undefined (reading 'toUpperCase')",
+        "stack": "TypeError: Cannot read properties of undefined (reading 'toUpperCase')\n    at q (https://corpus.vigilon.test/assets/index-CeR2v4rx.js:9:9706)\n    at os (https://corpus.vigilon.test/assets/vendor-DkSVlVUq.js:8:49198)\n    at Xc (https://corpus.vigilon.test/assets/vendor-DkSVlVUq.js:8:71835)\n    at _l (https://corpus.vigilon.test/assets/vendor-DkSVlVUq.js:8:82728)\n    at Zd (https://corpus.vigilon.test/assets/vendor-DkSVlVUq.js:8:127840)\n    at Jd (https://corpus.vigilon.test/assets/vendor-DkSVlVUq.js:8:126923)\n    at qd (https://corpus.vigilon.test/assets/vendor-DkSVlVUq.js:8:126762)\n    at Fd (https://corpus.vigilon.test/assets/vendor-DkSVlVUq.js:8:123498)\n    at jf (https://corpus.vigilon.test/assets/vendor-DkSVlVUq.js:8:135773)\n    at MessagePort.S (https://corpus.vigilon.test/assets/vendor-DkSVlVUq.js:1:9486)",
+        "mechanism": "react_error_boundary",
+        "handled": true,
+        "componentStack": "\n    at q (https://corpus.vigilon.test/assets/index-CeR2v4rx.js:9:9653)\n    at section (<anonymous>)\n    at Ze (https://corpus.vigilon.test/assets/index-CeR2v4rx.js:9:9944)\n    at main (<anonymous>)\n    at Qe (<anonymous>)\n    at $e (https://corpus.vigilon.test/assets/index-CeR2v4rx.js:9:10122)"
+      },
+      "page": {
+        "url": "https://corpus.vigilon.test/"
+      },
+      "session": {
+        "id": "corpus-session"
+      },
+      "user": null,
+      "traceId": null,
+      "tags": {}
+    }
+  ]
+}

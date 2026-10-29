@@ -1,0 +1,36 @@
+{
+  "schema": "vigilon.browser.event@1",
+  "sdk": {
+    "name": "@vigilon/browser",
+    "version": "0.2.12"
+  },
+  "service": {
+    "name": "corpus",
+    "environment": "corpus",
+    "version": "corpus-a"
+  },
+  "sentAt": "2026-01-01T00:00:00.000Z",
+  "events": [
+    {
+      "type": "exception",
+      "eventId": "0e4189a6-16ec-4540-8e2f-caa4daeac9d7",
+      "timestamp": "2026-01-01T00:00:00.000Z",
+      "exception": {
+        "type": "Error",
+        "message": "statements-unavailable",
+        "stack": "e@https://corpus.vigilon.test/assets/statements-CkPRySQD.js:1:50\nasync*n@https://corpus.vigilon.test/assets/statements-CkPRySQD.js:1:138\nst/<@https://corpus.vigilon.test/assets/index-CeR2v4rx.js:9:12463\npromise callback*st@https://corpus.vigilon.test/assets/index-CeR2v4rx.js:9:12439\n@https://corpus.vigilon.test/assets/index-CeR2v4rx.js:9:14152\nsetTimeout handler*@https://corpus.vigilon.test/assets/index-CeR2v4rx.js:9:14133\n",
+        "mechanism": "unhandledrejection",
+        "handled": false
+      },
+      "page": {
+        "url": "https://corpus.vigilon.test/"
+      },
+      "session": {
+        "id": "corpus-session"
+      },
+      "user": null,
+      "traceId": null,
+      "tags": {}
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "schema": "vigilon.browser.event@1",
+  "sdk": {
+    "name": "@vigilon/browser",
+    "version": "0.2.12"
+  },
+  "service": {
+    "name": "corpus",
+    "environment": "corpus",
+    "version": "corpus-a"
+  },
+  "sentAt": "2026-01-01T00:00:00.000Z",
+  "events": [
+    {
+      "type": "exception",
+      "eventId": "a7db58f6-0ee7-4db1-aae2-8652c3589744",
+      "timestamp": "2026-01-01T00:00:00.000Z",
+      "exception": {
+        "type": "TypeError",
+        "message": "can't access property \"toUpperCase\", e.currency is undefined",
+        "stack": "q@https://corpus.vigilon.test/assets/index-CBlyPtJs.js:10:9695\nos@https://corpus.vigilon.test/assets/vendor-CsFWd-YR.js:9:49198\nXc@https://corpus.vigilon.test/assets/vendor-CsFWd-YR.js:9:71835\n_l@https://corpus.vigilon.test/assets/vendor-CsFWd-YR.js:9:82728\nZd@https://corpus.vigilon.test/assets/vendor-CsFWd-YR.js:9:127842\nJd@https://corpus.vigilon.test/assets/vendor-CsFWd-YR.js:9:126925\nqd@https://corpus.vigilon.test/assets/vendor-CsFWd-YR.js:9:126762\nFd@https://corpus.vigilon.test/assets/vendor-CsFWd-YR.js:9:123498\njf@https://corpus.vigilon.test/assets/vendor-CsFWd-YR.js:9:135773\nS@https://corpus.vigilon.test/assets/vendor-CsFWd-YR.js:2:9487\nEventHandlerNonNull*r<@https://corpus.vigilon.test/assets/vendor-CsFWd-YR.js:2:9880\ne/<@https://corpus.vigilon.test/assets/vendor-CsFWd-YR.js:2:23\ni<@https://corpus.vigilon.test/assets/vendor-CsFWd-YR.js:2:11476\ne/<@https://corpus.vigilon.test/assets/vendor-CsFWd-YR.js:2:23\ns<@https://corpus.vigilon.test/assets/vendor-CsFWd-YR.js:2:15290\ne/<@https://corpus.vigilon.test/assets/vendor-CsFWd-YR.js:2:23\nc<@https://corpus.vigilon.test/assets/vendor-CsFWd-YR.js:10:50637\ne/<@https://corpus.vigilon.test/assets/vendor-CsFWd-YR.js:2:23\n@https://corpus.vigilon.test/assets/index-CBlyPtJs.js:10:9629\n",
+        "mechanism": "react_error_boundary",
+        "handled": true,
+        "componentStack": "\nq@https://corpus.vigilon.test/assets/index-CBlyPtJs.js:10:9643\nsection@unknown:0:0\nZe@https://corpus.vigilon.test/assets/index-CBlyPtJs.js:10:9934\nmain@unknown:0:0\nQe@unknown:0:0\n$e@https://corpus.vigilon.test/assets/index-CBlyPtJs.js:10:10122"
+      },
+      "page": {
+        "url": "https://corpus.vigilon.test/"
+      },
+      "session": {
+        "id": "corpus-session"
+      },
+      "user": null,
+      "traceId": null,
+      "tags": {},
+      "debugIds": {
+        "https://corpus.vigilon.test/assets/vendor-CsFWd-YR.js": "d43f2ffa-f903-4bac-b860-a5b192d1d8ce",
+        "https://corpus.vigilon.test/assets/index-CBlyPtJs.js": "c60127de-b1e2-48cf-becc-2588b5bb6070"
+      }
+    }
+  ]
+}

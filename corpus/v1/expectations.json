@@ -1,0 +1,333 @@
+{
+  "branches": {
+    "frames": [
+      "mapped-a",
+      "mapped-b"
+    ],
+    "fallback": [
+      "unmapped"
+    ]
+  },
+  "reasons": {
+    "same-frames": "Different bugs whose contributing frames are identical: the same function calls the same helper from two lines.",
+    "async-boundary": "Different bugs told apart only by a caller past an await, which not every engine keeps in the stack.",
+    "message-only": "Different bugs on the fallback branch whose exception type and message are the same.",
+    "engine-omits-value": "An engine leaves out of its message a value the other engines report, such as the property name of a computed access or whether a property was read or written.",
+    "different-branch": "The same bug grouped on the frames branch in a source-mapped build and on the fallback branch in an unmapped one.",
+    "stack-truncated": "The same bug, but one engine cut the stack short before the callers: Chromium keeps ten frames, so deep recursion leaves only the recursive function."
+  },
+  "bugs": {
+    "helper-from-cart": "cart-total-missing",
+    "helper-from-invoice": "invoice-amount-missing",
+    "summary-subtotal-missing": "summary-subtotal-missing",
+    "summary-shipping-missing": "summary-shipping-missing",
+    "recursion-shallow": "tree-root-missing",
+    "recursion-moderate": "tree-root-missing",
+    "recursion-deep": "tree-root-missing",
+    "draft-save-direct": "draft-title-missing",
+    "draft-save-awaited": "draft-title-missing",
+    "statements-from-billing": "billing-statements-unavailable",
+    "statements-from-reports": "report-statements-unavailable",
+    "invoices-network-cause": "invoices-load-failed",
+    "invoices-parse-cause": "invoices-load-failed",
+    "sync-one-failure": "sync-failed",
+    "sync-two-failures": "sync-failed",
+    "price-tag-in-dashboard": "price-tag-currency-missing",
+    "price-tag-in-settings": "price-tag-currency-missing",
+    "profile-request-failed": "profile-request-failed",
+    "report-request-failed": "report-request-failed",
+    "read-undefined-id": "read-undefined-id",
+    "read-undefined-name": "read-undefined-name",
+    "read-undefined-computed-id": "read-undefined-computed-id",
+    "read-undefined-computed-name": "read-undefined-computed-name",
+    "read-null-email": "read-null-email",
+    "read-null-computed-email": "read-null-computed-email",
+    "call-missing-method": "call-missing-method",
+    "call-missing-computed-method": "call-missing-computed-method",
+    "undefined-variable": "undefined-variable",
+    "spread-undefined": "spread-undefined",
+    "iterate-number": "iterate-number",
+    "write-undefined-name": "write-undefined-name",
+    "write-undefined-computed-name": "write-undefined-computed-name",
+    "construct-missing-class": "construct-missing-class",
+    "parse-invalid-json": "parse-invalid-json",
+    "invalid-array-length": "invalid-array-length",
+    "in-operator-on-undefined": "in-operator-on-undefined"
+  },
+  "accepted": [
+    {
+      "outcome": "accepted-collision",
+      "reason": "same-frames",
+      "events": {
+        "cases": [
+          "summary-subtotal-missing",
+          "summary-shipping-missing"
+        ],
+        "builds": [
+          "mapped-a",
+          "mapped-b"
+        ]
+      }
+    },
+    {
+      "outcome": "accepted-collision",
+      "reason": "async-boundary",
+      "events": {
+        "cases": [
+          "statements-from-billing",
+          "statements-from-reports"
+        ],
+        "builds": [
+          "mapped-a",
+          "mapped-b"
+        ]
+      }
+    },
+    {
+      "outcome": "accepted-collision",
+      "reason": "message-only",
+      "events": {
+        "cases": [
+          "helper-from-cart",
+          "helper-from-invoice",
+          "summary-subtotal-missing",
+          "summary-shipping-missing"
+        ],
+        "builds": [
+          "unmapped"
+        ]
+      }
+    },
+    {
+      "outcome": "accepted-collision",
+      "reason": "message-only",
+      "events": {
+        "cases": [
+          "statements-from-billing",
+          "statements-from-reports"
+        ],
+        "builds": [
+          "unmapped"
+        ]
+      }
+    },
+    {
+      "outcome": "accepted-collision",
+      "reason": "message-only",
+      "events": {
+        "cases": [
+          "profile-request-failed",
+          "report-request-failed"
+        ],
+        "builds": [
+          "unmapped"
+        ]
+      }
+    },
+    {
+      "outcome": "accepted-collision",
+      "reason": "message-only",
+      "note": "A dot access and a computed access of the same property read the same way in Chromium and Firefox.",
+      "events": {
+        "cases": [
+          "read-undefined-id",
+          "read-undefined-computed-id"
+        ],
+        "builds": [
+          "unmapped"
+        ]
+      }
+    },
+    {
+      "outcome": "accepted-collision",
+      "reason": "message-only",
+      "events": {
+        "cases": [
+          "read-undefined-name",
+          "read-undefined-computed-name"
+        ],
+        "builds": [
+          "unmapped"
+        ]
+      }
+    },
+    {
+      "outcome": "accepted-collision",
+      "reason": "message-only",
+      "events": {
+        "cases": [
+          "read-null-email",
+          "read-null-computed-email"
+        ],
+        "builds": [
+          "unmapped"
+        ]
+      }
+    },
+    {
+      "outcome": "accepted-collision",
+      "reason": "engine-omits-value",
+      "note": "WebKit quotes the expression of a computed access, not the property it read.",
+      "events": {
+        "cases": [
+          "read-undefined-computed-id",
+          "read-undefined-computed-name"
+        ],
+        "engines": [
+          "webkit"
+        ],
+        "builds": [
+          "unmapped"
+        ]
+      }
+    },
+    {
+      "outcome": "accepted-collision",
+      "reason": "engine-omits-value",
+      "note": "Firefox words a read and a write of a property on undefined the same way, so joining its reads with the other engines' reads joins reads and writes.",
+      "events": {
+        "cases": [
+          "read-undefined-name",
+          "read-undefined-computed-name",
+          "write-undefined-name",
+          "write-undefined-computed-name"
+        ],
+        "builds": [
+          "unmapped"
+        ]
+      }
+    },
+    {
+      "outcome": "accepted-split",
+      "reason": "engine-omits-value",
+      "note": "WebKit's message for a computed access has no property name, so it cannot join the other engines' groups without joining every property.",
+      "events": {
+        "cases": [
+          "read-undefined-computed-id",
+          "read-undefined-computed-name",
+          "read-null-computed-email",
+          "write-undefined-computed-name"
+        ],
+        "engines": [
+          "webkit"
+        ],
+        "builds": [
+          "unmapped"
+        ]
+      },
+      "versus": {
+        "cases": [
+          "read-undefined-computed-id",
+          "read-undefined-computed-name",
+          "read-null-computed-email",
+          "write-undefined-computed-name"
+        ],
+        "engines": [
+          "chromium",
+          "firefox"
+        ],
+        "builds": [
+          "unmapped"
+        ]
+      }
+    },
+    {
+      "outcome": "accepted-split",
+      "reason": "engine-omits-value",
+      "note": "Firefox's message for the in operator has no property name.",
+      "events": {
+        "cases": [
+          "in-operator-on-undefined"
+        ],
+        "engines": [
+          "firefox"
+        ],
+        "builds": [
+          "unmapped"
+        ]
+      },
+      "versus": {
+        "cases": [
+          "in-operator-on-undefined"
+        ],
+        "engines": [
+          "chromium",
+          "webkit"
+        ],
+        "builds": [
+          "unmapped"
+        ]
+      }
+    },
+    {
+      "outcome": "accepted-split",
+      "reason": "stack-truncated",
+      "events": {
+        "cases": [
+          "recursion-deep"
+        ],
+        "engines": [
+          "chromium"
+        ],
+        "builds": [
+          "mapped-a",
+          "mapped-b"
+        ]
+      },
+      "versus": {
+        "cases": [
+          "recursion-shallow",
+          "recursion-moderate"
+        ],
+        "builds": [
+          "mapped-a",
+          "mapped-b"
+        ]
+      }
+    },
+    {
+      "outcome": "accepted-split",
+      "reason": "stack-truncated",
+      "events": {
+        "cases": [
+          "recursion-deep"
+        ],
+        "engines": [
+          "chromium"
+        ],
+        "builds": [
+          "mapped-a",
+          "mapped-b"
+        ]
+      },
+      "versus": {
+        "cases": [
+          "recursion-deep"
+        ],
+        "engines": [
+          "firefox",
+          "webkit"
+        ],
+        "builds": [
+          "mapped-a",
+          "mapped-b"
+        ]
+      }
+    },
+    {
+      "outcome": "accepted-split",
+      "reason": "different-branch",
+      "events": {
+        "builds": [
+          "mapped-a",
+          "mapped-b"
+        ]
+      },
+      "versus": {
+        "builds": [
+          "unmapped"
+        ]
+      }
+    }
+  ]
+}

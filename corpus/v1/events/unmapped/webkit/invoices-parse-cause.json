@@ -1,0 +1,43 @@
+{
+  "schema": "vigilon.browser.event@1",
+  "sdk": {
+    "name": "@vigilon/browser",
+    "version": "0.2.12"
+  },
+  "service": {
+    "name": "corpus",
+    "environment": "corpus",
+    "version": "corpus-a"
+  },
+  "sentAt": "2026-01-01T00:00:00.000Z",
+  "events": [
+    {
+      "type": "exception",
+      "eventId": "dff4437c-bff0-422d-bd52-a13cb60e1342",
+      "timestamp": "2026-01-01T00:00:00.000Z",
+      "exception": {
+        "type": "Error",
+        "message": "invoices-load-failed",
+        "stack": "W@https://corpus.vigilon.test/assets/index-CeR2v4rx.js:9:9223",
+        "mechanism": "onerror",
+        "handled": false,
+        "cause": [
+          {
+            "type": "SyntaxError",
+            "message": "JSON Parse error: Unrecognized token '<'",
+            "stack": "parse@[native code]\nW@https://corpus.vigilon.test/assets/index-CeR2v4rx.js:9:9200"
+          }
+        ]
+      },
+      "page": {
+        "url": "https://corpus.vigilon.test/"
+      },
+      "session": {
+        "id": "corpus-session"
+      },
+      "user": null,
+      "traceId": null,
+      "tags": {}
+    }
+  ]
+}

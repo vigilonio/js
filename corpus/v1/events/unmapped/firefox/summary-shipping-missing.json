@@ -1,0 +1,36 @@
+{
+  "schema": "vigilon.browser.event@1",
+  "sdk": {
+    "name": "@vigilon/browser",
+    "version": "0.2.12"
+  },
+  "service": {
+    "name": "corpus",
+    "environment": "corpus",
+    "version": "corpus-a"
+  },
+  "sentAt": "2026-01-01T00:00:00.000Z",
+  "events": [
+    {
+      "type": "exception",
+      "eventId": "c0c4209e-9d47-4c37-ada7-a90d3f5c81ee",
+      "timestamp": "2026-01-01T00:00:00.000Z",
+      "exception": {
+        "type": "TypeError",
+        "message": "price-missing",
+        "stack": "H@https://corpus.vigilon.test/assets/index-CeR2v4rx.js:9:8888\nZ@https://corpus.vigilon.test/assets/index-CeR2v4rx.js:9:12510\n@https://corpus.vigilon.test/assets/index-CeR2v4rx.js:9:14152\nsetTimeout handler*@https://corpus.vigilon.test/assets/index-CeR2v4rx.js:9:14133\n",
+        "mechanism": "onerror",
+        "handled": false
+      },
+      "page": {
+        "url": "https://corpus.vigilon.test/"
+      },
+      "session": {
+        "id": "corpus-session"
+      },
+      "user": null,
+      "traceId": null,
+      "tags": {}
+    }
+  ]
+}
