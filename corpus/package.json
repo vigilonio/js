@@ -1,7 +1,7 @@
 {
   "name": "vigilon-grouping-corpus",
   "private": true,
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Browser errors from real Chromium, Firefox, and WebKit, with the grouping each pair of them should get",
   "type": "module",
   "scripts": {

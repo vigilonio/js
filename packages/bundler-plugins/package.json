@@ -1,6 +1,6 @@
 {
   "name": "@vigilon/bundler-plugins",
-  "version": "0.2.13",
+  "version": "0.2.14",
   "description": "Vigilon build plugins for Vite, Rollup, webpack, and esbuild: debug IDs and source map upload",
   "license": "ISC",
   "author": "Vigilon",
