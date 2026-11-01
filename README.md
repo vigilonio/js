@@ -28,6 +28,7 @@ Every package lives in `packages/<name>/` and is published to npm under the `@vi
 | [`@vigilon/node`](packages/node) | <a href="https://www.npmjs.com/package/@vigilon/node"><img src="https://img.shields.io/npm/v/@vigilon/node.svg" alt="npm"></a> | Node.js apps: Express, Fastify, AWS Lambda, plain HTTP servers. Starts OpenTelemetry auto-instrumentation through a `--import` preload, so you don't need to change your code. |
 | [`@vigilon/browser`](packages/browser) | <a href="https://www.npmjs.com/package/@vigilon/browser"><img src="https://img.shields.io/npm/v/@vigilon/browser.svg" alt="npm"></a> | Browser apps: captures uncaught errors and unhandled rejections. Early access. |
 | [`@vigilon/react`](packages/react) | <a href="https://www.npmjs.com/package/@vigilon/react"><img src="https://img.shields.io/npm/v/@vigilon/react.svg" alt="npm"></a> | React apps: everything in `@vigilon/browser`, plus an error boundary, the React 19 root error handlers, and route templates from TanStack Router and React Router. Early access. |
+| [`@vigilon/nextjs`](packages/nextjs) | <a href="https://www.npmjs.com/package/@vigilon/nextjs"><img src="https://img.shields.io/npm/v/@vigilon/nextjs.svg" alt="npm"></a> | Next.js apps: server traces from the Node.js runtime and browser errors from the client under one service, with source map upload for Turbopack and webpack builds. Browser errors are in early access. |
 | [`@vigilon/bundler-plugins`](packages/bundler-plugins) | <a href="https://www.npmjs.com/package/@vigilon/bundler-plugins"><img src="https://img.shields.io/npm/v/@vigilon/bundler-plugins.svg" alt="npm"></a> | Vite, Rollup, webpack, and esbuild plugins that link each emitted script to its source map with a debug ID. Early access. |
 | [`@vigilon/cli`](packages/cli) | <a href="https://www.npmjs.com/package/@vigilon/cli"><img src="https://img.shields.io/npm/v/@vigilon/cli.svg" alt="npm"></a> | Command line: debug IDs and source map upload for any build output, for CI and other bundlers. Early access. |
 
@@ -38,6 +39,7 @@ Every package lives in `packages/<name>/` and is published to npm under the `@vi
    - **Node.js**: [`@vigilon/node`](packages/node#readme)
    - **Browser**: [`@vigilon/browser`](packages/browser#readme) (early access)
    - **React**: [`@vigilon/react`](packages/react#readme) (early access)
+   - **Next.js**: [`@vigilon/nextjs`](packages/nextjs#readme)
 
 Full product documentation is at [vigilon.io/docs](https://vigilon.io/docs).
 

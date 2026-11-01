@@ -10,7 +10,8 @@
 # tarball as a server-side renderer would, with no window or document, and
 # every @vigilon/bundler-plugins entry is loaded from its tarball, and the
 # packed @vigilon/cli bin injects debug IDs into a small build output. Every
-# @vigilon/react entry is loaded from its tarball without a DOM as well.
+# @vigilon/react entry is loaded from its tarball without a DOM as well, and
+# so is every @vigilon/nextjs entry.
 set -euo pipefail
 
 repo_root=$(cd "$(dirname "$0")/.." && pwd)
@@ -35,11 +36,12 @@ trap cleanup EXIT
 (cd "$repo_root/packages/bundler-plugins" && pnpm pack --out "$tmp/bundler-plugins.tgz")
 (cd "$repo_root/packages/cli" && pnpm pack --out "$tmp/cli.tgz")
 (cd "$repo_root/packages/react" && pnpm pack --out "$tmp/react.tgz")
+(cd "$repo_root/packages/nextjs" && pnpm pack --out "$tmp/nextjs.tgz")
 
 cd "$tmp"
 npm init -y >/dev/null
 npm pkg set name=smoke-derived-service version=9.9.9
-npm install --no-save --no-audit --no-fund ./node.tgz ./browser.tgz ./bundler-plugins.tgz ./cli.tgz ./react.tgz express react@19.3.0 >/dev/null
+npm install --no-save --no-audit --no-fund ./node.tgz ./browser.tgz ./bundler-plugins.tgz ./cli.tgz ./react.tgz ./nextjs.tgz express react@19.3.0 >/dev/null
 cp "$repo_root"/scripts/smoke/*.mjs "$repo_root"/scripts/smoke/*.cjs "$repo_root"/scripts/smoke/*.sh .
 
 node collector.mjs > collector.port &
@@ -85,6 +87,7 @@ run_variant "derived defaults" "$spans derivedServiceName derivedServiceVersion"
 
 node browser.mjs
 node react.mjs
+node nextjs.mjs
 node bundler-plugins.mjs
 bash cli.sh
 
