@@ -1,6 +1,6 @@
 // @vitest-environment node
 import { describe, expect, it } from "vitest";
-import { captureException, close, flush, init, setTag, setUser } from "../../index";
+import { captureException, close, flush, init, setRoute, setTag, setUser } from "../../index";
 
 describe("@vigilon/browser during SSR", () => {
   it("imports and runs as a no-op without window or document", async () => {
@@ -10,6 +10,7 @@ describe("@vigilon/browser during SSR", () => {
     ).toBe(false);
     expect(captureException(new Error("server"))).toBeNull();
     setUser({ id: "u" });
+    setRoute("/u/:id");
     setTag("a", "b");
     expect(await flush()).toBe(true);
     expect(await close()).toBe(true);

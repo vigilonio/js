@@ -58,6 +58,18 @@ setTag("plan", "pro");
 
 `captureException` accepts any thrown value. Non-`Error` values are recorded with their string or JSON form as the message, and an error's `cause` chain is captured up to five levels.
 
+## Pages
+
+Vigilon groups an error's affected pages by route template, such as `/users/:id`, so a page with IDs in its URL still counts as one page. Without a template it derives one from the URL path, replacing segments that look like IDs. If your router knows the template, set it on every navigation:
+
+```ts
+import { setRoute } from "@vigilon/browser";
+
+setRoute("/users/:id"); // the template, never the URL; pass null to clear it
+```
+
+`@vigilon/react` does this for TanStack Router and React Router.
+
 ## Configuration
 
 | Option | Default | |
