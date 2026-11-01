@@ -59,7 +59,7 @@ export interface VigilonBrowserOptions {
 export interface CaptureContext {
   mechanism?: ExceptionMechanism;
   handled?: boolean;
-  /** Overrides the route template for this event. */
+  /** Overrides the route template set with setRoute, for this event only. */
   route?: string;
   componentStack?: string;
 }
@@ -74,6 +74,7 @@ export class BrowserClient {
   private readonly tags: Record<string, string> = {};
   private readonly debugIds = new DebugIdIndex(globalThis as unknown as Record<string, unknown>);
   private userId: string | null = null;
+  private route: string | null = null;
   private readonly removeListeners: Array<() => void> = [];
 
   constructor(private readonly options: VigilonBrowserOptions) {
@@ -149,6 +150,10 @@ export class BrowserClient {
     this.tags[key] = String(value);
   }
 
+  setRoute(route: string | null): void {
+    this.route = route === null || route === "" ? null : String(route);
+  }
+
   flush(timeoutMs?: number): Promise<boolean> {
     return this.transport.flush(timeoutMs);
   }
@@ -184,6 +189,7 @@ export class BrowserClient {
       ...(exception.cause ?? []).map((cause) => cause.stack),
     ]);
     const session = sessionId();
+    const route = context.route ?? this.route;
     let event: BrowserEvent | null = {
       type: "exception",
       eventId: uuid(),
@@ -192,7 +198,7 @@ export class BrowserClient {
       ...(debugIds ? { debugIds } : {}),
       page: {
         url: window.location.href,
-        ...(context.route ? { route: context.route } : {}),
+        ...(route ? { route } : {}),
       },
       session: session === null ? null : { id: session },
       user: this.userId === null ? null : { id: this.userId },

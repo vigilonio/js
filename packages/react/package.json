@@ -1,0 +1,92 @@
+{
+  "name": "@vigilon/react",
+  "version": "0.2.14",
+  "description": "Vigilon error monitoring for React applications",
+  "license": "ISC",
+  "author": "Vigilon",
+  "homepage": "https://vigilon.io",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vigilonio/js.git",
+    "directory": "packages/react"
+  },
+  "keywords": [
+    "vigilon",
+    "error-monitoring",
+    "react",
+    "error-boundary",
+    "observability"
+  ],
+  "sideEffects": false,
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.mts",
+        "default": "./dist/index.mjs"
+      },
+      "require": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.cjs"
+      }
+    },
+    "./tanstack-router": {
+      "import": {
+        "types": "./dist/tanstack-router.d.mts",
+        "default": "./dist/tanstack-router.mjs"
+      },
+      "require": {
+        "types": "./dist/tanstack-router.d.ts",
+        "default": "./dist/tanstack-router.cjs"
+      }
+    },
+    "./react-router": {
+      "import": {
+        "types": "./dist/react-router.d.mts",
+        "default": "./dist/react-router.mjs"
+      },
+      "require": {
+        "types": "./dist/react-router.d.ts",
+        "default": "./dist/react-router.cjs"
+      }
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "clean": "rm -rf dist",
+    "build": "tsup",
+    "prepack": "npm run build",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@vigilon/browser": "workspace:*"
+  },
+  "peerDependencies": {
+    "react": ">=18.0.0"
+  },
+  "devDependencies": {
+    "@tanstack/react-router": "1.170.44",
+    "@types/node": "^24.19.2",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "happy-dom": "^20.0.0",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "react-router": "7.18.4",
+    "tsup": "^8.5.0",
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.10"
+  }
+}

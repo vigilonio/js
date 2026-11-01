@@ -67,6 +67,16 @@ export function setUser(user: { id: string } | null): void {
   client?.setUser(user);
 }
 
+/**
+ * Sets the route template of the current page, such as `/users/:id`, for
+ * later events; pass null to clear it. Vigilon groups pages by it, so it must
+ * be a template, never a URL with IDs in it. Without one, Vigilon derives the
+ * page from the URL. Router integrations call this on every navigation.
+ */
+export function setRoute(route: string | null): void {
+  client?.setRoute(route);
+}
+
 /** Attaches a tag to later events. */
 export function setTag(key: string, value: string): void {
   client?.setTag(key, value);

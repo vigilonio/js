@@ -5,6 +5,7 @@ import {
   close,
   flush,
   init,
+  setRoute,
   setTag,
   setUser,
   type VigilonBrowserOptions,
@@ -130,6 +131,22 @@ describe("@vigilon/browser", () => {
     expect(first.user).toEqual({ id: "user_1" });
     expect(first.tags).toEqual({ plan: "pro" });
     expect(second.user).toBeNull();
+  });
+
+  it("sends the route set with setRoute until it changes, and lets a capture override it", async () => {
+    init(options);
+    captureException(new Error("before"));
+    setRoute("/users/:id");
+    captureException(new Error("set"));
+    captureException(new Error("overridden"), { route: "/settings" });
+    setRoute(null);
+    captureException(new Error("cleared"));
+
+    const [before, set, overridden, cleared] = await sentEvents();
+    expect(before.page.route).toBeUndefined();
+    expect(set.page.route).toBe("/users/:id");
+    expect(overridden.page.route).toBe("/settings");
+    expect(cleared.page.route).toBeUndefined();
   });
 
   it("reports the debug IDs of the scripts in the stack", async () => {
