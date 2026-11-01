@@ -4,16 +4,20 @@ import {
   createRoute,
   createRouter,
 } from "@tanstack/react-router";
-import { createMemoryRouter } from "react-router";
+import { createMemoryRouter, data } from "react-router";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { reactRouterRouteTemplate, trackReactRouter } from "../react-router";
 import { tanStackRouteTemplate, trackTanStackRouter } from "../tanstack-router";
 
-const { setRoute } = vi.hoisted(() => ({ setRoute: vi.fn() }));
-vi.mock("@vigilon/browser", () => ({ setRoute }));
+const { setRoute, captureException } = vi.hoisted(() => ({
+  setRoute: vi.fn(),
+  captureException: vi.fn((_error: unknown, _context?: unknown) => "event-1"),
+}));
+vi.mock("@vigilon/browser", () => ({ setRoute, captureException }));
 
 beforeEach(() => {
   setRoute.mockClear();
+  captureException.mockClear();
 });
 
 describe("trackTanStackRouter", () => {
@@ -119,5 +123,119 @@ describe("trackReactRouter", () => {
 
   it("clears the route when nothing matches", () => {
     expect(reactRouterRouteTemplate([])).toBeNull();
+  });
+
+  it("reports a loader error once, after setting the page it was loading", async () => {
+    const error = new Error("user could not be loaded");
+    const router = createMemoryRouter(
+      [
+        {
+          path: "/",
+          children: [
+            { index: true },
+            {
+              path: "users/:id",
+              loader: () => {
+                throw error;
+              },
+            },
+            { path: "settings" },
+          ],
+        },
+      ],
+      { initialEntries: ["/"] },
+    );
+    let routeWhenReported: unknown;
+    captureException.mockImplementation(() => {
+      routeWhenReported = setRoute.mock.lastCall?.[0];
+      return "event-1";
+    });
+    const stop = trackReactRouter(router);
+
+    await router.navigate("/users/7");
+    expect(captureException).toHaveBeenCalledTimes(1);
+    expect(captureException).toHaveBeenCalledWith(error, {
+      mechanism: "react_error_boundary",
+      handled: true,
+    });
+    expect(routeWhenReported).toBe("/users/:id");
+
+    // The error stays in the router state until the next navigation; it is
+    // not reported again on later state changes.
+    await router.navigate("/settings");
+    expect(captureException).toHaveBeenCalledTimes(1);
+    stop();
+    router.dispose();
+  });
+
+  it("reports a server error response, by its status, once", async () => {
+    let attempt = 0;
+    const router = createMemoryRouter(
+      [
+        {
+          path: "/",
+          children: [
+            { path: "settings" },
+            {
+              path: "users/:id",
+              loader: () => {
+                attempt += 1;
+                // A loader rethrowing a failed upstream response, then a data() error.
+                if (attempt === 1) throw new Response("upstream down", { status: 503, statusText: "Service Unavailable" });
+                throw data({ reason: "secret detail" }, { status: 500 });
+              },
+            },
+          ],
+        },
+      ],
+      { initialEntries: ["/"] },
+    );
+    const stop = trackReactRouter(router);
+
+    await router.navigate("/users/7");
+    expect(captureException).toHaveBeenCalledTimes(1);
+    const [reported, context] = captureException.mock.calls[0] ?? [];
+    expect(reported).toBeInstanceOf(Error);
+    expect(reported).toMatchObject({ name: "RouteErrorResponse", message: "503 Service Unavailable" });
+    expect(context).toEqual({ mechanism: "react_error_boundary", handled: true });
+
+    await router.navigate("/settings");
+    expect(captureException).toHaveBeenCalledTimes(1);
+
+    await router.navigate("/users/8");
+    expect(captureException).toHaveBeenCalledTimes(2);
+    // Reported by status alone: the response body is not sent.
+    const serverError = captureException.mock.calls[1]?.[0] as Error;
+    expect(serverError.message).toBe("500 Internal Server Error");
+    expect(serverError.cause).toBeUndefined();
+    expect(Object.keys(serverError)).toEqual(["name"]);
+    stop();
+    router.dispose();
+  });
+
+  it("does not report error responses a loader throws on purpose, or an unmatched URL", async () => {
+    const router = createMemoryRouter(
+      [
+        {
+          path: "/",
+          children: [
+            {
+              path: "users/:id",
+              loader: () => {
+                throw data("Not found", { status: 404 });
+              },
+            },
+          ],
+        },
+      ],
+      { initialEntries: ["/"] },
+    );
+    const stop = trackReactRouter(router);
+    await router.navigate("/users/7");
+    await router.navigate("/nowhere");
+    expect(router.state.errors).not.toBeNull();
+    expect(captureException).not.toHaveBeenCalled();
+    stop();
+    router.dispose();
   });
 });

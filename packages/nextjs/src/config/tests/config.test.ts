@@ -45,6 +45,27 @@ describe("withVigilon", () => {
     expect(config.experimental).toEqual({ ppr: true, clientTraceMetadata: ["baggage", "traceparent"] });
   });
 
+  it("accepts a config typed with interfaces, as Next.js's NextConfig is", () => {
+    // Interfaces have no implicit index signature; Next.js declares
+    // NextConfig, ExperimentalConfig, and the compiler options this way.
+    interface ExperimentalConfig {
+      clientTraceMetadata?: string[];
+      ppr?: boolean;
+    }
+    interface CompilerConfig {
+      removeConsole?: boolean;
+      runAfterProductionCompile?: (metadata: { projectDir: string; distDir: string }) => Promise<void>;
+    }
+    interface NextConfig {
+      reactStrictMode?: boolean;
+      experimental?: ExperimentalConfig;
+      compiler?: CompilerConfig;
+    }
+    const nextConfig: NextConfig = { reactStrictMode: true, experimental: { ppr: true } };
+    const config: NextConfig = withVigilon(nextConfig);
+    expect(config.experimental).toEqual({ ppr: true, clientTraceMetadata: ["traceparent"] });
+  });
+
   it("leaves source maps and the build alone without an upload token", () => {
     const config = withVigilon({});
     expect(config.productionBrowserSourceMaps).toBeUndefined();

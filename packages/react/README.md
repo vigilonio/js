@@ -34,7 +34,7 @@ React 19 reports render errors through these root options rather than the window
 
 - errors that no error boundary catches (`react_uncaught`),
 - errors an error boundary catches, including your router's (`react_error_boundary`),
-- errors React recovers from, such as hydration mismatches (`react_recoverable`).
+- errors React recovers from, such as hydration mismatches (`react_recoverable`). When React recovered by rendering again, it wraps the error in one of its own; the error your code threw is reported.
 
 Each handler reports the error, then calls your own callback for that option if you pass one, or logs the error with `console.error` as React would:
 
@@ -93,7 +93,9 @@ const router = createBrowserRouter(routes);
 trackReactRouter(router);
 ```
 
-Both return a function that stops tracking. With TanStack Router the template is set before the destination's loaders run, so a loader error carries the page it was loading. React Router apps that use `<BrowserRouter>` rather than a data router, and other routers, can call `setRoute` themselves on each navigation; without a template, Vigilon derives the page from the URL path.
+Both return a function that stops tracking. With TanStack Router the template is set before the destination's loaders run, so a loader error carries the page it was loading.
+
+React Router renders a route's `errorElement` for an error thrown by a loader or action without throwing it, so no React error handler sees it; `trackReactRouter` reports it instead, as an error boundary would. Of the error responses a loader or action throws, such as a `Response` or a `data()` error, only server errors (status 500 and above) are reported, by their status and without the response body; a 404 or other client error response, such as `throw data("Not found", { status: 404 })`, is expected control flow and is not. React Router apps that use `<BrowserRouter>` rather than a data router, and other routers, can call `setRoute` themselves on each navigation; without a template, Vigilon derives the page from the URL path.
 
 ## Configuration and privacy
 

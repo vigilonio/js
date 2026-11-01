@@ -76,6 +76,8 @@ export default function GlobalError({ error }: { error: Error & { digest?: strin
 }
 ```
 
+Errors thrown on the server, in a Server Component or a Server Action, reach these boundaries with their message redacted and a `digest`. Next.js already records them on the server, so `useReportError` skips any error that has a `digest` rather than reporting the redacted copy again.
+
 `@vigilon/nextjs` re-exports `@vigilon/react`, including `ErrorBoundary` for your own boundaries inside client components.
 
 ## Source maps
