@@ -1,4 +1,4 @@
-import { act, Component, type ReactNode, StrictMode } from "react";
+import { act, Component, type ReactNode, StrictMode, startTransition } from "react";
 import { createRoot, type Root } from "react-dom/client";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
@@ -167,6 +167,40 @@ describe("rootErrorHandlers", () => {
       handled: true,
       componentStack: "\n    at App",
     });
+  });
+
+  it("reports the error React recovered from, not React's wrapper around it", () => {
+    let thrown = false;
+    const error = new Error("ticker failed its first render");
+    function FlakyOnce(): ReactNode {
+      if (!thrown) {
+        thrown = true;
+        throw error;
+      }
+      return "recovered";
+    }
+    root = createRoot(container, rootErrorHandlers());
+    // A concurrent render that throws is retried synchronously; when the retry
+    // succeeds React reports the first error, wrapped, as recoverable.
+    act(() => startTransition(() => root?.render(<FlakyOnce />)));
+    expect(container.textContent).toBe("recovered");
+    expect(captureException).toHaveBeenCalledTimes(1);
+    expect(captureException.mock.calls[0]?.[0]).toBe(error);
+    expect(captureException.mock.calls[0]?.[1]).toMatchObject({ mechanism: "react_recoverable" });
+  });
+
+  it("unwraps React's production recovery wrappers too", () => {
+    const handlers = rootErrorHandlers({ onRecoverableError: () => undefined });
+    for (const code of [422, 423, 520]) {
+      const cause = new Error(`thrown ${code}`);
+      const wrapper = new Error(`Minified React error #${code}; visit https://react.dev/errors/${code}`, { cause });
+      handlers.onRecoverableError(wrapper, {});
+      expect(captureException.mock.lastCall?.[0]).toBe(cause);
+    }
+    // A hydration mismatch is not a wrapper, and is reported as it is.
+    const mismatch = new Error("Minified React error #418; visit https://react.dev/errors/418");
+    handlers.onRecoverableError(mismatch, {});
+    expect(captureException.mock.lastCall?.[0]).toBe(mismatch);
   });
 
   it("reports a thrown non-object every time, since it cannot be told apart", () => {

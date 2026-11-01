@@ -102,4 +102,20 @@ describe("useReportError", () => {
     });
     act(() => root.unmount());
   });
+
+  it("skips an error from the server, which Next.js redacts and records there", () => {
+    (globalThis as { IS_REACT_ACT_ENVIRONMENT?: boolean }).IS_REACT_ACT_ENVIRONMENT = true;
+    // What error.tsx receives for a Server Component error in production.
+    const error = Object.assign(new Error("An error occurred in the Server Components render."), {
+      digest: "3247174154",
+    });
+    function ErrorPage() {
+      useReportError(error);
+      return null;
+    }
+    const root = createRoot(document.createElement("div"));
+    act(() => root.render(<ErrorPage />));
+    expect(captureException).not.toHaveBeenCalled();
+    act(() => root.unmount());
+  });
 });

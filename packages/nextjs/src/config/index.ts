@@ -18,16 +18,18 @@ export interface VigilonNextConfigOptions {
   onUploadError?: "error" | "warn";
 }
 
-/** The parts of a Next.js config this wrapper reads and sets. */
+/**
+ * The parts of a Next.js config this wrapper reads and sets. It has no index
+ * signatures, so a config typed with Next.js's own `NextConfig` interface
+ * stays assignable to it.
+ */
 export interface NextConfigLike {
   serverExternalPackages?: string[];
   productionBrowserSourceMaps?: boolean;
-  experimental?: { clientTraceMetadata?: string[]; [key: string]: unknown };
+  experimental?: { clientTraceMetadata?: string[] };
   compiler?: {
     runAfterProductionCompile?: (metadata: { projectDir: string; distDir: string }) => Promise<void>;
-    [key: string]: unknown;
   };
-  [key: string]: unknown;
 }
 
 const SERVER_PACKAGES = ["@vigilon/nextjs", "@vigilon/node"];
@@ -49,25 +51,28 @@ const SERVER_PACKAGES = ["@vigilon/nextjs", "@vigilon/node"];
  * export default withVigilon({ reactStrictMode: true });
  * ```
  */
-export function withVigilon<T extends NextConfigLike>(
+export function withVigilon<T extends object>(
   config: T,
   options: VigilonNextConfigOptions = {},
 ): T & NextConfigLike {
+  // T is the app's own config type (Next.js's NextConfig, or a literal),
+  // which this package does not import; read the parts it changes.
+  const base = config as NextConfigLike;
   const uploadToken = options.uploadToken ?? process.env.VIGILON_SOURCE_MAP_TOKEN;
-  const experimental = config.experimental ?? {};
+  const experimental = base.experimental ?? {};
   const wrapped: NextConfigLike = {
     ...config,
-    serverExternalPackages: unique([...(config.serverExternalPackages ?? []), ...SERVER_PACKAGES]),
+    serverExternalPackages: unique([...(base.serverExternalPackages ?? []), ...SERVER_PACKAGES]),
     experimental: {
       ...experimental,
       clientTraceMetadata: unique([...(experimental.clientTraceMetadata ?? []), "traceparent"]),
     },
   };
   if (uploadToken) {
-    const previous = config.compiler?.runAfterProductionCompile;
+    const previous = base.compiler?.runAfterProductionCompile;
     wrapped.productionBrowserSourceMaps = true;
     wrapped.compiler = {
-      ...config.compiler,
+      ...base.compiler,
       runAfterProductionCompile: async (metadata) => {
         await previous?.(metadata);
         const staticDir = join(metadata.distDir, "static");
