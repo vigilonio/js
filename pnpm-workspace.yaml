@@ -8,3 +8,9 @@ allowBuilds:
   # The plugin-order test only needs @sentry/vite-plugin's debug ID
   # injection, not the Sentry CLI binary its install script downloads.
   '@sentry/cli': false
+
+overrides:
+  # tsup 8 pins esbuild ^0.27, which has GHSA-g7r4-m6w7-qqqr. tsup 9 moves
+  # to ^0.28 but needs Node >= 22.18, and CI still builds on 22.12.0.
+  # Drop this once we're on tsup 9.
+  'tsup>esbuild': ^0.28.2
