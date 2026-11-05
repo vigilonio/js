@@ -1,6 +1,6 @@
 {
   "name": "@vigilon/nextjs",
-  "version": "0.2.19",
+  "version": "0.2.20",
   "description": "Vigilon monitoring for Next.js applications: server traces and browser errors",
   "license": "ISC",
   "author": "Vigilon",

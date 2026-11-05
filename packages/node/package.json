@@ -1,6 +1,6 @@
 {
   "name": "@vigilon/node",
-  "version": "0.2.19",
+  "version": "0.2.20",
   "description": "Vigilon OpenTelemetry bootstrap for Node.js apps",
   "license": "ISC",
   "author": "Vigilon",
