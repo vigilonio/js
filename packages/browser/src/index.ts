@@ -8,12 +8,22 @@ import {
   BrowserClient,
   invalidOptions,
   SDK_VERSION,
+  type BreadcrumbInput,
   type CaptureContext,
   type VigilonBrowserOptions,
 } from "./browser/client";
 
-export type { CaptureContext, VigilonBrowserOptions } from "./browser/client";
 export type {
+  BreadcrumbInput,
+  BreadcrumbOptions,
+  CaptureContext,
+  VigilonBrowserOptions,
+} from "./browser/client";
+export type { ConsoleLevel } from "./browser/breadcrumbs";
+export type {
+  Breadcrumb,
+  BreadcrumbCategory,
+  BreadcrumbLevel,
   BrowserEvent,
   BrowserException,
   ExceptionCause,
@@ -75,6 +85,15 @@ export function setUser(user: { id: string } | null): void {
  */
 export function setRoute(route: string | null): void {
   client?.setRoute(route);
+}
+
+/**
+ * Records a breadcrumb, sent with later errors among the 50 most recent. Use
+ * it for steps of your own (`checkout started`); navigations, clicks, console
+ * warnings and errors, and requests are recorded automatically.
+ */
+export function addBreadcrumb(breadcrumb: BreadcrumbInput): void {
+  client?.addBreadcrumb(breadcrumb);
 }
 
 /** Attaches a tag to later events. */

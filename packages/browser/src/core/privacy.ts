@@ -19,6 +19,12 @@ const DENIED_TAG_KEY_FRAGMENTS = [
 
 const EMAIL_LIKE = /[^\s@]+@[^\s@]+\.[^\s@]+/;
 
+/** True when a tag or breadcrumb data key looks like it names a credential. */
+export function isDeniedKey(key: string): boolean {
+  const lowered = key.toLowerCase();
+  return DENIED_TAG_KEY_FRAGMENTS.some((fragment) => lowered.includes(fragment));
+}
+
 /** Applies the deny-list, the entry cap, and the key and value length caps. */
 export function sanitizeTags(
   tags: Record<string, string>,
@@ -29,12 +35,7 @@ export function sanitizeTags(
     if (count === LIMITS.tagEntries) {
       break;
     }
-    const lowered = key.toLowerCase();
-    if (
-      key.length === 0 ||
-      key.length > LIMITS.tagKeyLength ||
-      DENIED_TAG_KEY_FRAGMENTS.some((fragment) => lowered.includes(fragment))
-    ) {
+    if (key.length === 0 || key.length > LIMITS.tagKeyLength || isDeniedKey(key)) {
       continue;
     }
     result[key] = truncate(String(tags[key]), LIMITS.tagValueLength);

@@ -62,8 +62,10 @@ describe("@vigilon/browser", () => {
   });
 
   it("warns once when serviceVersion is missing", () => {
+    // Held before init: console breadcrumbs wrap console.warn once it runs.
+    const warn = console.warn;
     expect(init({ ...options, serviceVersion: undefined })).toBe(true);
-    expect(console.warn).toHaveBeenCalledWith(expect.stringContaining("serviceVersion"));
+    expect(warn).toHaveBeenCalledWith(expect.stringContaining("serviceVersion"));
   });
 
   it("sends a manual capture with the envelope, page, and session", async () => {

@@ -25,7 +25,9 @@ export function truncateStack(stack: string): string {
  * user:password@ userinfo. Vigilon applies the same scrub again when it
  * receives an event, so a stack scrubbed here is left unchanged there.
  */
-const USERINFO = /^([a-z][a-z0-9+.-]*:\/\/)[^/?#@\s]*@/i;
+// The scheme is optional: a protocol-relative URL (//user:pass@host) carries
+// userinfo too.
+const USERINFO = /^((?:[a-z][a-z0-9+.-]*:)?\/\/)[^/?#@\s]*@/i;
 // A URL inside free text: scheme:// up to the next whitespace.
 const URL_IN_TEXT = /\b[a-z][a-z0-9+.-]*:\/\/\S+/gi;
 // A stack frame's :line:column and closing punctuation survive the scrub.
