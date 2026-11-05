@@ -14,11 +14,13 @@ Install only this package: it re-exports the `@vigilon/browser` API and pins the
 
 ## Set up
 
-Call `init` once, before the first render, then pass the root error handlers to `createRoot` (or `hydrateRoot`):
+In the [Vigilon dashboard](https://app.vigilon.io), open your project's **Settings** page, then the **API Keys** tab, and create a key of kind `Browser`. Under **Allowed origins**, you can list the origins your app is served from, one per line; `https://*.example.com` covers every subdomain, and an empty list accepts any origin. Requests from any other origin get HTTP `403`. The key ships to every visitor's browser, so never use a `Server` key here.
 
-```tsx
-import { init, rootErrorHandlers } from "@vigilon/react";
-import { createRoot } from "react-dom/client";
+Call `init` once, in a module of its own:
+
+```ts
+// instrument.ts
+import { init } from "@vigilon/react";
 
 init({
   apiKey: "your-api-key",
@@ -26,9 +28,21 @@ init({
   environment: "production",
   serviceVersion: "2026.10.31-1",
 });
+```
+
+Import it first in your entry point, above every other import, then pass the root error handlers to `createRoot` (or `hydrateRoot`):
+
+```tsx
+// main.tsx
+import "./instrument";
+import { rootErrorHandlers } from "@vigilon/react";
+import { createRoot } from "react-dom/client";
+import { App } from "./App";
 
 createRoot(document.getElementById("root")!, rootErrorHandlers()).render(<App />);
 ```
+
+Imports run before the importing module's own code, so an `init` call written in `main.tsx` itself would run only after `App` and everything it imports had loaded: errors thrown while those modules load would be missed, and a router tracked at module level would be tracked before `init`.
 
 React 19 reports render errors through these root options rather than the window `error` event, so without them Vigilon does not see:
 
@@ -92,6 +106,8 @@ import { trackReactRouter } from "@vigilon/react/react-router";
 const router = createBrowserRouter(routes);
 trackReactRouter(router);
 ```
+
+Track the router after `init` has run, which importing `instrument.ts` first in your entry point guarantees. Tracking sets the current page's template at once, and before `init` that is lost, so the first page's errors would carry a template derived from the URL instead.
 
 Both return a function that stops tracking. With TanStack Router the template is set before the destination's loaders run, so a loader error carries the page it was loading.
 

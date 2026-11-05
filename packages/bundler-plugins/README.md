@@ -2,8 +2,6 @@
 
 Build plugins for Vite, Rollup, webpack, and esbuild that link each script your build emits to its source map, so browser errors reported by [`@vigilon/browser`](../browser#readme) can be shown against your original source.
 
-> **Early access.** Source map upload is not available yet. Until it is, run the plugin without an upload token: it gives every script a debug ID and uploads nothing.
-
 ## How it works
 
 At the end of a production build the plugin gives every emitted script one **debug ID**, a UUID derived from the script and its source map. It writes the ID into the script as a `//# debugId=` comment and a small runtime registration, and into the source map as `debugId`. `@vigilon/browser` reads the registration and sends the IDs of the scripts in an error's stack with the error, so Vigilon can find the right source map no matter what the file is called or where it is served from.
@@ -21,6 +19,12 @@ npm install --save-dev @vigilon/bundler-plugins
 ```
 
 Requires Node.js 22.12 or later.
+
+## Upload token
+
+In the [Vigilon dashboard](https://app.vigilon.io), open your project's **Settings** page, then the **Source Maps** tab, and create an upload token. It starts with `vg_sm_` and is shown once. Set it as `VIGILON_SOURCE_MAP_TOKEN` where your production build runs, for example as a CI secret, and the plugin picks it up. Without a token, the plugin still gives every script a debug ID and uploads nothing.
+
+Keep the token out of your client code: anyone with it can replace your project's source maps. The **Source Maps** tab also lists the uploaded source maps, and why Vigilon rejected any it could not use.
 
 ## Set up
 
@@ -88,7 +92,7 @@ The plugin needs source map files. If your build produces none, it turns on hidd
 
 | Option | Default | Description |
 |---|---|---|
-| `uploadToken` | `VIGILON_SOURCE_MAP_TOKEN` | A source map upload token for the project. Without one, debug IDs are injected and nothing is uploaded. Never use a project API key here: API keys are public in the browser. |
+| `uploadToken` | `VIGILON_SOURCE_MAP_TOKEN` | A source map upload token for the project, starting with `vg_sm_`. Without one, debug IDs are injected and nothing is uploaded. An API key does not work here. |
 | `apiUrl` | `VIGILON_API_URL`, then `https://api.vigilon.io` | The Vigilon API. |
 | `deleteSourceMapsAfterUpload` | `false` | Delete the build's own `.map` files once they are uploaded. |
 | `onUploadError` | `"error"` | What a failed upload, or a script Vigilon reports as unusable, does to the build: `"error"` fails it, `"warn"` logs a warning. |

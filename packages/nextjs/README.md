@@ -14,6 +14,15 @@ npm install @vigilon/nextjs
 
 ## Set up
 
+### API keys
+
+In the [Vigilon dashboard](https://app.vigilon.io), open your project's **Settings** page, then the **API Keys** tab, and create two keys:
+
+- one of kind `Server` for the Node.js runtime, set as `VIGILON_API_KEY`;
+- one of kind `Browser` for the client, set as `NEXT_PUBLIC_VIGILON_API_KEY`.
+
+Under the browser key's **Allowed origins**, you can list your site's origins, one per line; `https://*.example.com` covers every subdomain, and an empty list accepts any origin. Requests from any other origin get HTTP `403`. The browser key is built into your client JavaScript, where anyone can read it, so never use the server key there.
+
 ### `next.config.ts`
 
 ```ts
@@ -84,13 +93,15 @@ Errors thrown on the server, in a Server Component or a Server Action, reach the
 
 With a source map upload token, `withVigilon()` builds browser source maps and, once Next.js has compiled, gives every script a debug ID, uploads the scripts and their maps, and deletes every map so none is deployed. Before that it marks, in each map's `ignoreList`, the sources that are not files in your project, such as the precompiled Next.js code a webpack build maps, so Vigilon treats their frames as library code rather than yours. Files outside the project directory that exist on disk, such as a shared package in a monorepo, stay yours. It runs in Next.js's `compiler.runAfterProductionCompile` hook (Next.js 15.4 or later), so it works with both Turbopack and webpack.
 
+Create the upload token on your project's **Settings** page, **Source Maps** tab, and set it as `VIGILON_SOURCE_MAP_TOKEN` where `next build` runs, such as a CI secret. Never give it a `NEXT_PUBLIC_` name: anyone with it can replace your source maps.
+
 ```bash
 VIGILON_SOURCE_MAP_TOKEN=vg_sm_... next build
 ```
 
 | Option | Default | |
 |---|---|---|
-| `uploadToken` | `VIGILON_SOURCE_MAP_TOKEN` | A source map upload token for the project. Without one, no source maps are built or uploaded. Never use a project API key here: API keys are public in the browser. |
+| `uploadToken` | `VIGILON_SOURCE_MAP_TOKEN` | A source map upload token for the project, starting with `vg_sm_`. Without one, no source maps are built or uploaded. An API key does not work here. |
 | `apiUrl` | `VIGILON_API_URL`, then `https://api.vigilon.io` | The Vigilon API. |
 | `onUploadError` | `"error"` | `"warn"` keeps a failed upload from failing the build. The maps are deleted either way. |
 
