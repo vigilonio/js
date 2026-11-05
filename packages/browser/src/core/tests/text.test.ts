@@ -27,6 +27,12 @@ describe("URL scrub", () => {
     expect(scrubUrl("https://app.example.com/a#x?y")).toBe("https://app.example.com/a");
   });
 
+  it("removes the userinfo of a protocol-relative URL, and leaves an @ in a path alone", () => {
+    expect(scrubUrl("//alice:secret@example.com/path?token=x")).toBe("//example.com/path");
+    expect(scrubUrl("/users/jane@example.com")).toBe("/users/jane@example.com");
+    expect(scrubUrl("//cdn.example.com/a/b@2x.png")).toBe("//cdn.example.com/a/b@2x.png");
+  });
+
   it("scrubs URLs inside a stack and keeps line, column, and punctuation", () => {
     const stack = [
       "TypeError: boom",

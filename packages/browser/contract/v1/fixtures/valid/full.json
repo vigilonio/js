@@ -47,7 +47,60 @@
       "tags": {
         "feature": "billing",
         "plan": "starter"
-      }
+      },
+      "breadcrumbs": [
+        {
+          "timestamp": "2026-10-25T10:15:20.000Z",
+          "category": "navigation",
+          "data": {
+            "from": "/users",
+            "to": "/users/42",
+            "route": "/users/$id"
+          }
+        },
+        {
+          "timestamp": "2026-10-25T10:15:24.512Z",
+          "category": "click",
+          "message": "button#load-user.btn.btn-primary"
+        },
+        {
+          "timestamp": "2026-10-25T10:15:24.530Z",
+          "category": "fetch",
+          "level": "error",
+          "data": {
+            "method": "GET",
+            "url": "https://api.example.com/v1/users/42",
+            "status_code": 500,
+            "duration_ms": 182
+          }
+        },
+        {
+          "timestamp": "2026-10-25T10:15:28.901Z",
+          "category": "xhr",
+          "data": {
+            "method": "POST",
+            "url": "https://app.example.com/legacy/track",
+            "status_code": 0,
+            "duration_ms": 12
+          }
+        },
+        {
+          "timestamp": "2026-10-25T10:15:29.004Z",
+          "category": "console",
+          "level": "warning",
+          "message": "user cache miss for 42"
+        },
+        {
+          "timestamp": "2026-10-25T10:15:30.001Z",
+          "category": "custom",
+          "level": "info",
+          "message": "checkout step 2",
+          "data": {
+            "step": 2,
+            "express": true
+          }
+        }
+      ]
     }
   ]
 }

@@ -30,6 +30,26 @@ export interface BrowserException {
   cause?: ExceptionCause[];
 }
 
+export type BreadcrumbCategory =
+  | "navigation"
+  | "click"
+  | "console"
+  | "fetch"
+  | "xhr"
+  | "custom";
+
+export type BreadcrumbLevel = "debug" | "info" | "warning" | "error";
+
+/** Something that happened before an error, recorded by the SDK or the app. */
+export interface Breadcrumb {
+  /** ISO 8601. */
+  timestamp: string;
+  category: BreadcrumbCategory;
+  level?: BreadcrumbLevel;
+  message?: string;
+  data?: Record<string, string | number | boolean>;
+}
+
 export interface BrowserEvent {
   type: "exception";
   eventId: string;
@@ -41,6 +61,8 @@ export interface BrowserEvent {
   user?: { id: string } | null;
   traceId?: string | null;
   tags?: Record<string, string>;
+  /** Oldest first. */
+  breadcrumbs?: Breadcrumb[];
 }
 
 export interface BrowserEventEnvelope {

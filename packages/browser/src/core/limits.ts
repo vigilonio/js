@@ -21,6 +21,16 @@ export const LIMITS = {
   tagEntries: 20,
   tagKeyLength: 64,
   tagValueLength: 256,
+  breadcrumbEntries: 50,
+  breadcrumbMessageLength: 256,
+  breadcrumbDataEntries: 8,
+  breadcrumbDataKeyLength: 32,
+  breadcrumbDataValueLength: 256,
+  /**
+   * UTF-8 bytes of an event's breadcrumbs as JSON: the one limit in bytes,
+   * since it bounds the request body.
+   */
+  breadcrumbsBytes: 16 * 1024,
 } as const;
 
 /** service.name and service.environment character set. */

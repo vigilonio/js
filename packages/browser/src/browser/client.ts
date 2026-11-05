@@ -1,5 +1,12 @@
+import { BreadcrumbBuffer, sanitizeBreadcrumbs } from "../core/breadcrumbs";
 import { DebugIdIndex } from "../core/debug-ids";
-import type { BrowserEvent, ExceptionMechanism } from "../core/envelope";
+import type {
+  Breadcrumb,
+  BreadcrumbCategory,
+  BreadcrumbLevel,
+  BrowserEvent,
+  ExceptionMechanism,
+} from "../core/envelope";
 import { limitException, toException } from "../core/exception";
 import {
   DEFAULT_DENY_URLS,
@@ -19,6 +26,15 @@ import {
 import { scrubUrl, truncate } from "../core/text";
 import { Transport } from "../core/transport";
 import { uuid } from "../core/uuid";
+import {
+  instrumentClicks,
+  instrumentConsole,
+  instrumentFetch,
+  instrumentNavigation,
+  instrumentXhr,
+  type ConsoleLevel,
+  type RecordBreadcrumb,
+} from "./breadcrumbs";
 import { sessionId } from "./session";
 
 declare const __VIGILON_SDK_VERSION__: string;
@@ -27,6 +43,29 @@ export const SDK_NAME = "@vigilon/browser";
 export const SDK_VERSION = __VIGILON_SDK_VERSION__;
 const DEFAULT_ENDPOINT = "https://ingest.vigilon.io";
 const EVENTS_PATH = "/v1/browser/events";
+
+/** Which breadcrumbs the SDK records by itself. Each is on unless set to false. */
+export interface BreadcrumbOptions {
+  /** Path changes through the History API. */
+  navigation?: boolean;
+  /** Clicks, as the clicked element's selector. The element's text is never recorded. */
+  click?: boolean;
+  /** Console calls. Defaults to `["warn", "error"]`; `true` records every level. */
+  console?: boolean | ConsoleLevel[];
+  /** fetch requests: method, URL without query or fragment, status, duration. */
+  fetch?: boolean;
+  /** XMLHttpRequest requests, recorded like fetch. */
+  xhr?: boolean;
+}
+
+/** A breadcrumb added with addBreadcrumb. */
+export interface BreadcrumbInput {
+  /** Defaults to `custom`. */
+  category?: BreadcrumbCategory;
+  level?: BreadcrumbLevel;
+  message?: string;
+  data?: Record<string, string | number | boolean>;
+}
 
 export interface VigilonBrowserOptions {
   /** A project API key from the Vigilon dashboard. */
@@ -52,6 +91,14 @@ export interface VigilonBrowserOptions {
   sampleRate?: number;
   /** At most this many events per page load. Defaults to 100. */
   maxEventsPerPage?: number;
+  /**
+   * The breadcrumbs recorded automatically and sent with each error (the 50
+   * most recent). `false` turns automatic breadcrumbs off; addBreadcrumb
+   * still works.
+   */
+  breadcrumbs?: false | BreadcrumbOptions;
+  /** Inspect, edit, or drop (return null) each breadcrumb as it is recorded. */
+  beforeBreadcrumb?: (breadcrumb: Breadcrumb) => Breadcrumb | null;
   /** Log SDK diagnostics to the console. */
   debug?: boolean;
 }
@@ -76,11 +123,15 @@ export class BrowserClient {
   private userId: string | null = null;
   private route: string | null = null;
   private readonly removeListeners: Array<() => void> = [];
+  private readonly breadcrumbs = new BreadcrumbBuffer(LIMITS.breadcrumbEntries);
+  private readonly ownEventsUrl: string;
+  private inBeforeBreadcrumb = false;
 
   constructor(private readonly options: VigilonBrowserOptions) {
     const endpoint = (options.endpoint ?? DEFAULT_ENDPOINT).replace(/\/+$/, "");
+    this.ownEventsUrl = `${endpoint}${EVENTS_PATH}`;
     this.transport = new Transport({
-      url: `${endpoint}${EVENTS_PATH}`,
+      url: this.ownEventsUrl,
       apiKey: options.apiKey,
       envelope: {
         schema: SCHEMA_ID,
@@ -127,6 +178,16 @@ export class BrowserClient {
       }
     });
     this.listen(window, "pagehide", () => this.transport.flushOnUnload());
+    this.installBreadcrumbs();
+  }
+
+  addBreadcrumb(input: BreadcrumbInput): void {
+    this.recordBreadcrumb({
+      category: input.category ?? "custom",
+      ...(input.level ? { level: input.level } : {}),
+      ...(input.message !== undefined ? { message: String(input.message) } : {}),
+      ...(input.data ? { data: input.data } : {}),
+    });
   }
 
   capture(error: unknown, context: CaptureContext = {}, sourceUrl?: string): string | null {
@@ -205,6 +266,10 @@ export class BrowserClient {
       traceId: null,
       tags: { ...this.tags },
     };
+    const breadcrumbs = this.breadcrumbs.snapshot();
+    if (breadcrumbs.length > 0) {
+      event.breadcrumbs = breadcrumbs;
+    }
     if (
       isIgnoredError(event, this.ignoreErrors) ||
       isDeniedUrl(event, sourceUrl, this.denyUrls)
@@ -230,6 +295,79 @@ export class BrowserClient {
     }
     this.transport.enqueue(limited);
     return limited.eventId;
+  }
+
+  private installBreadcrumbs(): void {
+    const options = this.options.breadcrumbs;
+    if (options === false) {
+      return;
+    }
+    const enabled = options ?? {};
+    const record: RecordBreadcrumb = (breadcrumb) => this.recordBreadcrumb(breadcrumb);
+    const isOwnRequest = (url: string) => this.isOwnRequest(url);
+    const consoleLevels: ConsoleLevel[] =
+      enabled.console === true
+        ? ["debug", "info", "log", "warn", "error"]
+        : Array.isArray(enabled.console)
+          ? enabled.console
+          : enabled.console === false
+            ? []
+            : ["warn", "error"];
+    const installers: Array<[boolean, () => () => void]> = [
+      [enabled.navigation !== false, () => instrumentNavigation(record)],
+      [enabled.click !== false, () => instrumentClicks(record)],
+      [consoleLevels.length > 0, () => instrumentConsole(record, consoleLevels)],
+      [enabled.fetch !== false, () => instrumentFetch(record, isOwnRequest)],
+      [enabled.xhr !== false, () => instrumentXhr(record, isOwnRequest)],
+    ];
+    for (const [on, install] of installers) {
+      if (!on) {
+        continue;
+      }
+      try {
+        this.removeListeners.push(install());
+      } catch (failure) {
+        this.debug(`breadcrumbs not installed: ${String(failure)}`);
+      }
+    }
+  }
+
+  private recordBreadcrumb(input: Omit<Breadcrumb, "timestamp">): void {
+    // What beforeBreadcrumb itself does (logging, a request) is not recorded:
+    // its console call would run the hook again, without end.
+    if (this.inBeforeBreadcrumb) {
+      return;
+    }
+    try {
+      let breadcrumb: Breadcrumb | null = { timestamp: new Date().toISOString(), ...input };
+      if (this.options.beforeBreadcrumb) {
+        this.inBeforeBreadcrumb = true;
+        try {
+          breadcrumb = this.options.beforeBreadcrumb(breadcrumb);
+        } catch (failure) {
+          this.debug(`beforeBreadcrumb threw; breadcrumb dropped: ${String(failure)}`);
+          return;
+        } finally {
+          this.inBeforeBreadcrumb = false;
+        }
+      }
+      // Stored already scrubbed and capped, so the buffer never holds what
+      // the event format would remove; sanitized again when an event is sent.
+      const [sanitized] = sanitizeBreadcrumbs(breadcrumb === null ? [] : [breadcrumb]);
+      if (sanitized) {
+        this.breadcrumbs.add(sanitized);
+      }
+    } catch (failure) {
+      this.debug(`breadcrumb dropped: ${String(failure)}`);
+    }
+  }
+
+  private isOwnRequest(url: string): boolean {
+    try {
+      return new URL(url, window.location.href).href.startsWith(this.ownEventsUrl);
+    } catch {
+      return false;
+    }
   }
 
   private listen(target: EventTarget, type: string, handler: (event: Event) => void): void {
@@ -273,6 +411,10 @@ export function limitEvent(event: BrowserEvent): BrowserEvent {
   limited.tags = sanitizeTags(event.tags ?? {});
   if (event.debugIds) {
     limited.debugIds = sanitizeDebugIds(event.debugIds);
+  }
+  const breadcrumbs = sanitizeBreadcrumbs(event.breadcrumbs);
+  if (breadcrumbs.length > 0) {
+    limited.breadcrumbs = breadcrumbs;
   }
   return limited;
 }

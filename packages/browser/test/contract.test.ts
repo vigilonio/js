@@ -4,7 +4,16 @@ import Ajv2020 from "ajv/dist/2020";
 import addFormats from "ajv-formats";
 import ts from "typescript";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { captureException, close, flush, init, setTag, setUser } from "../src/index";
+import {
+  addBreadcrumb,
+  captureException,
+  close,
+  flush,
+  init,
+  setTag,
+  setUser,
+  type Breadcrumb,
+} from "../src/index";
 
 // Conformance against the event format's JSON Schema in contract/v1.
 const contractDir = join(__dirname, "..", "contract", "v1");
@@ -25,9 +34,9 @@ function schemaErrors(envelope: unknown): string {
 }
 
 describe("contract v1", () => {
-  it("pins contract version 1.0.0", () => {
+  it("pins contract version 1.1.0", () => {
     const manifest = JSON.parse(readFileSync(join(contractDir, "manifest.json"), "utf8"));
-    expect(manifest).toEqual({ schema: "vigilon.browser.event@1", contractVersion: "1.0.0" });
+    expect(manifest).toEqual({ schema: "vigilon.browser.event@1", contractVersion: "1.1.0" });
   });
 
   it.each(validFixtures)("valid fixture $name validates against the schema", ({ text }) => {
@@ -85,7 +94,20 @@ describe("every envelope the SDK sends conforms", () => {
       serviceVersion: "v".repeat(250),
       endpoint: "https://ingest.example.com",
       beforeSend: (event) =>
-        event.exception.message === "with debug ids"
+        event.exception.message === "with edited breadcrumbs"
+          ? {
+              ...event,
+              breadcrumbs: [
+                ...Array.from({ length: 60 }, (_, i) => ({
+                  timestamp: new Date().toISOString(),
+                  category: "custom" as const,
+                  message: `step ${i} ${"界".repeat(300)}`,
+                })),
+                { timestamp: "not a time", category: "custom" } as Breadcrumb,
+                { timestamp: new Date().toISOString(), category: "unknown" } as unknown as Breadcrumb,
+              ],
+            }
+          : event.exception.message === "with debug ids"
           ? {
               ...event,
               debugIds: {
@@ -97,6 +119,26 @@ describe("every envelope the SDK sends conforms", () => {
           : event,
     });
     setUser({ id: "user_1" });
+    // Breadcrumbs of every kind, some past every cap.
+    window.history.pushState(null, "", "/settings?tab=1#x");
+    const button = document.createElement("button");
+    button.id = "save";
+    button.className = "btn primary extra";
+    button.textContent = "Save Jane's card";
+    document.body.append(button);
+    button.click();
+    console.warn("cache miss", { id: 1 });
+    console.error(new Error("render failed"));
+    addBreadcrumb({
+      category: "fetch",
+      level: "error",
+      data: { method: "GET", url: "https://api.example.com/x?token=t", status_code: 500, duration_ms: 12 },
+    });
+    addBreadcrumb({
+      message: `https://user:${"p".repeat(300)}@example.com/ ${"m".repeat(300)}`,
+      data: Object.fromEntries(Array.from({ length: 12 }, (_, i) => [`key${i}`, "v".repeat(300)])),
+    });
+    addBreadcrumb({ data: { authorization: "Bearer x", nested: { a: 1 } as unknown as string } });
     for (let i = 0; i < 25; i += 1) setTag(`tag${i}`, "x".repeat(300));
     setTag("k".repeat(80), "too long a key");
 
@@ -117,6 +159,7 @@ describe("every envelope the SDK sends conforms", () => {
         stack: Array.from({ length: 400 }, (_, i) => `    at f${i} (https://a.example.com/x.js?q=${i}:1:1)`).join("\n"),
       }),
       new Error("with debug ids"),
+      new Error("with edited breadcrumbs"),
     ];
     throwables.forEach((throwable, index) =>
       captureException(throwable, {
@@ -131,6 +174,24 @@ describe("every envelope the SDK sends conforms", () => {
     expect(events).toHaveLength(throwables.length + 1);
     for (const body of bodies) {
       expect(schemaErrors(body)).toBe("");
+      for (const event of (body as { events: { breadcrumbs?: unknown[] }[] }).events) {
+        expect(new TextEncoder().encode(JSON.stringify(event.breadcrumbs ?? [])).length).toBeLessThanOrEqual(
+          16 * 1024,
+        );
+      }
     }
+    const categories = new Set(
+      events.flatMap((event) =>
+        ((event as { breadcrumbs?: { category: string }[] }).breadcrumbs ?? []).map(
+          (breadcrumb) => breadcrumb.category,
+        ),
+      ),
+    );
+    expect([...categories].sort()).toEqual(["click", "console", "custom", "fetch", "navigation"]);
+    const sent = JSON.stringify(bodies);
+    expect(sent).not.toContain("Jane");
+    expect(sent).not.toContain("pppp");
+    expect(sent).not.toContain("token=");
+    expect(sent).not.toContain("Bearer");
   });
 });

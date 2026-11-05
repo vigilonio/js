@@ -70,6 +70,35 @@ setRoute("/users/:id"); // the template, never the URL; pass null to clear it
 
 `@vigilon/react` does this for TanStack Router and React Router.
 
+## Breadcrumbs
+
+Each error carries the breadcrumbs recorded before it, the 50 most recent, so you can see what led up to it:
+
+- **navigation**: path changes through the History API, as `from` and `to` paths;
+- **click**: the clicked element as a selector, such as `button#save.btn.primary` (tag, id, and up to two classes; never the element's text);
+- **console**: `console.warn` and `console.error` calls, as their first argument only (an object loses keys that look like a credential);
+- **fetch** and **xhr**: the method, the URL without its query string or fragment, the status (`0` when the request failed), and the duration. Requests the SDK sends to Vigilon are never recorded.
+
+Add your own steps with `addBreadcrumb`:
+
+```ts
+import { addBreadcrumb } from "@vigilon/browser";
+
+addBreadcrumb({ message: "checkout started", data: { step: 1 } });
+```
+
+Turn sources off, or record more console levels, with the `breadcrumbs` option, and edit or drop single breadcrumbs with `beforeBreadcrumb`:
+
+```ts
+init({
+  // ...
+  breadcrumbs: { console: ["log", "warn", "error"], xhr: false },
+  beforeBreadcrumb(breadcrumb) {
+    return breadcrumb.category === "click" ? null : breadcrumb;
+  },
+});
+```
+
 ## Configuration
 
 | Option | Default | |
@@ -82,6 +111,8 @@ setRoute("/users/:id"); // the template, never the URL; pass null to clear it
 | `ignoreErrors` | see below | More errors to drop, as strings (substring match) or regular expressions, matched against the message and against `type: message`. |
 | `denyUrls` | see below | More script URLs whose errors are dropped. |
 | `beforeSend` | none | `(event) => event \| null`. Edit or drop each event before it is sent. |
+| `breadcrumbs` | all on | `false` turns automatic breadcrumbs off (`addBreadcrumb` still works), or an object turning off `navigation`, `click`, `fetch`, or `xhr`. `console` takes `true` (every level), `false`, or a list of levels; the default is `["warn", "error"]`. |
+| `beforeBreadcrumb` | none | `(breadcrumb) => breadcrumb \| null`. Edit or drop each breadcrumb as it is recorded. |
 | `sampleRate` | `1` | The fraction of errors to send. |
 | `maxEventsPerPage` | `100` | At most this many events per page load. |
 | `debug` | `false` | Log SDK diagnostics to the console. |
@@ -96,9 +127,9 @@ Production scripts are minified, so a raw stack trace points at minified code. [
 
 ## Privacy
 
-The SDK removes the query string, the fragment, and any `user:password@` from the page URL and from every URL in a stack trace. It drops tags whose key looks like a credential (`password`, `token`, `secret`, `authorization`, `cookie`, and similar), and a `setUser` ID that looks like an email address. The session ID is a random value in `sessionStorage`, one per tab; the SDK sets no cookies. Vigilon applies the same rules again on its side.
+The SDK removes the query string, the fragment, and any `user:password@` from the page URL and from every URL in a stack trace. It drops tags whose key looks like a credential (`password`, `token`, `secret`, `authorization`, `cookie`, and similar), and a `setUser` ID that looks like an email address. The session ID is a random value in `sessionStorage`, one per tab; the SDK sets no cookies. In breadcrumbs it removes the query string, the fragment, and `user:password@` from every URL and path, drops data keys that look like a credential, records clicks without the element's text, and keeps console breadcrumbs to the first argument of warnings and errors unless you ask for more levels. Vigilon applies the same rules again on its side.
 
-**Error messages are sent as they are.** A message is free text, so it can contain whatever your code put in it, and Vigilon cannot scrub it reliably. If your messages can carry personal data, scrub them in `beforeSend`:
+**Error messages are sent as they are**, and so are console messages in breadcrumbs, apart from their URLs. A message is free text, so it can contain whatever your code put in it, and Vigilon cannot scrub it reliably. If your messages can carry personal data, scrub them in `beforeSend` (and console breadcrumbs in `beforeBreadcrumb`):
 
 ```ts
 init({
