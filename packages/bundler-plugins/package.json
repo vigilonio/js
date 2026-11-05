@@ -99,14 +99,14 @@
   },
   "devDependencies": {
     "@jridgewell/trace-mapping": "^0.3.31",
-    "@sentry/vite-plugin": "5.4.1",
+    "@sentry/vite-plugin": "11.11.0",
     "@types/node": "^24.19.2",
     "esbuild": "^0.28.2",
     "rollup": "4.64.6",
     "tsup": "^8.5.1",
     "typescript": "^6.0.3",
     "vite": "8.3.4",
-    "vitest": "^4.1.11",
+    "vitest": "^4.1.12",
     "webpack": "5.111.1"
   }
 }
