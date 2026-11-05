@@ -12,7 +12,7 @@ Requires Node.js 22.12 or later.
 
 ## Quick Start
 
-Create an API key in the [Vigilon dashboard](https://app.vigilon.io) under your project's **Settings** page, **API Keys** tab. Then start your app with the key set and the Vigilon preload:
+Create an API key of kind `Server` in the [Vigilon dashboard](https://app.vigilon.io) under your project's **Settings** page, **API Keys** tab (a `Browser` key is refused for traces and metrics). Then start your app with the key set and the Vigilon preload:
 
 ```bash
 VIGILON_API_KEY=your-api-key node --import @vigilon/node/register server.js

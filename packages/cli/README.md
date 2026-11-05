@@ -2,9 +2,13 @@
 
 The Vigilon command line. It links the scripts in any build output to their source maps with debug IDs and uploads them to [Vigilon](https://vigilon.io), so browser errors reported by [`@vigilon/browser`](../browser#readme) can be shown against your original source. Use it in CI, or with a bundler that [`@vigilon/bundler-plugins`](../bundler-plugins#readme) does not cover.
 
-> **Early access.** Source map upload is not available yet. Until it is, `sourcemaps inject` works and `sourcemaps upload` has nowhere to send to.
-
 Requires Node.js 22.12 or later. No dependencies.
+
+## Upload token
+
+In the [Vigilon dashboard](https://app.vigilon.io), open your project's **Settings** page, then the **Source Maps** tab, and create an upload token. It starts with `vg_sm_` and is shown once. Set it as `VIGILON_SOURCE_MAP_TOKEN` where your production build runs, for example as a CI secret. `sourcemaps inject` needs no token.
+
+Keep the token out of your client code: anyone with it can replace your project's source maps. The **Source Maps** tab also lists the uploaded source maps, and why Vigilon rejected any it could not use.
 
 ## Usage
 
@@ -27,7 +31,7 @@ Uploads every script that has a debug ID, with its source map, and waits for Vig
 
 | Option | Default | Description |
 |---|---|---|
-| `--token <token>` | `VIGILON_SOURCE_MAP_TOKEN` | A source map upload token for the project. Never use a project API key here: API keys are public in the browser. |
+| `--token <token>` | `VIGILON_SOURCE_MAP_TOKEN` | A source map upload token for the project, starting with `vg_sm_`. An API key does not work here. |
 | `--api-url <url>` | `VIGILON_API_URL`, then `https://api.vigilon.io` | The Vigilon API. |
 | `--delete-after-upload` | off | Delete the source maps once they are uploaded, so they are never deployed. |
 | `--warn-only` | off | Print a warning and exit 0 instead of failing. |
