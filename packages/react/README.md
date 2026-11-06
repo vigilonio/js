@@ -2,8 +2,6 @@
 
 Error monitoring for React applications. Everything in [`@vigilon/browser`](../browser#readme), plus what React needs: an error boundary, the React 19 root error handlers, and route templates from TanStack Router and React Router.
 
-> **Early access.** Browser error monitoring is not yet generally available. The ingest endpoint accepts events only from projects enabled for early access and answers `403` for the rest, which the SDK does not retry.
-
 ## Install
 
 ```bash
