@@ -2,8 +2,6 @@
 
 Vigilon for Next.js: server traces and errors from the Node.js runtime, and browser errors from the client, reported under one service. It wraps [`@vigilon/node`](../node#readme) on the server and [`@vigilon/react`](../react#readme) in the browser.
 
-> **Early access.** Browser error monitoring is not yet generally available. The ingest endpoint accepts browser events only from projects enabled for early access and answers `403` for the rest, which the SDK does not retry.
-
 Requires Next.js 15.3 or later, and Node.js 22.12 or later for the build and the server. Automatic source map upload needs Next.js 15.4 or later.
 
 ## Install
