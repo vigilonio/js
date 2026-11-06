@@ -285,6 +285,16 @@ describe("configuration from the environment", () => {
     });
   });
 
+  it("throws without starting or taking the guard on a placeholder API key", () => {
+    vi.stubEnv("VIGILON_API_KEY", "[YOUR_API_KEY]");
+
+    expect(() => registerFromEnv()).toThrow(/VIGILON_API_KEY is a placeholder/);
+    expect(startMock).not.toHaveBeenCalled();
+    expect(
+      (globalThis as Record<symbol, unknown>)[REGISTER_STATE_KEY],
+    ).toBeUndefined();
+  });
+
   it("throws without starting or taking the guard when a required setting is missing", () => {
     vi.stubEnv("VIGILON_SERVICE_NAME", "");
 

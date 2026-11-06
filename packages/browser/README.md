@@ -107,7 +107,7 @@ init({
 
 | Option | Default | |
 |---|---|---|
-| `apiKey` | required | A project API key of kind `Browser`. |
+| `apiKey` | required | A project API key of kind `Browser`. `init` returns `false` for a placeholder in square brackets, such as `[YOUR_BROWSER_API_KEY]`. |
 | `serviceName` | required | The Service this app reports as: 1 to 100 letters, digits, and `. _ : / -`. |
 | `environment` | required | The deployment environment, with the same character set. |
 | `serviceVersion` | none | The release. |

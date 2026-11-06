@@ -61,7 +61,7 @@ Vigilon reads its configuration from, in order of priority, arguments passed to 
 | OTLP endpoint | `VIGILON_OTEL_ENDPOINT` | No, defaults to `https://ingest.vigilon.io` |
 | Excluded URLs | `VIGILON_EXCLUDED_URLS` | No |
 
-If the API key, service name, or environment cannot be resolved, Vigilon throws on startup with a message listing every missing setting and the sources it checked. Set the `VIGILON_*` variable named in the message to fix it.
+If the API key, service name, or environment cannot be resolved, Vigilon throws on startup with a message listing every missing setting and the sources it checked. Set the `VIGILON_*` variable named in the message to fix it. A value in square brackets, such as `[YOUR_API_KEY]`, is a placeholder and counts as a missing API key.
 
 ### Service name
 

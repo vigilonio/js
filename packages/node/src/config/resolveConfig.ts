@@ -65,14 +65,19 @@ export class VigilonConfigError extends Error {
  * variables, and the nearest package.json, in that order of priority.
  *
  * Throws a VigilonConfigError naming every missing required setting and the
- * sources that were checked for it.
+ * sources that were checked for it. A placeholder API key counts as missing.
  */
 export function resolveConfig(
   overrides: ConfigOverrides = {},
   { env = process.env, packageJson = memoize(findNearestPackageJson) }: ResolveConfigOptions = {},
 ): ResolvedConfig {
-  const apiKey =
+  const providedApiKey =
     explicit(overrides.apiKey) ?? fromEnv(env, ["VIGILON_API_KEY"]);
+  const placeholderApiKey =
+    providedApiKey && isPlaceholder(providedApiKey.value)
+      ? providedApiKey
+      : undefined;
+  const apiKey = placeholderApiKey ? undefined : providedApiKey;
   const serviceName =
     explicit(overrides.serviceName) ??
     fromEnv(env, SERVICE_NAME_ENV_VARS) ??
@@ -85,7 +90,11 @@ export function resolveConfig(
     fromPackageJson(packageJson, "version");
 
   const missing: string[] = [];
-  if (!apiKey) {
+  if (placeholderApiKey) {
+    missing.push(
+      `the API key from ${placeholderApiKey.source} is a placeholder. Set a real API key.`,
+    );
+  } else if (!apiKey) {
     missing.push(describeMissing("an API key", ["VIGILON_API_KEY"], "apiKey"));
   }
   if (!serviceName) {
@@ -179,6 +188,11 @@ function fromPackageJson(
 ): Resolved | undefined {
   const value = packageJson()?.[field]?.trim();
   return value ? { value, source: PACKAGE_JSON_SOURCE } : undefined;
+}
+
+/** A value in square brackets, such as [YOUR_API_KEY], left over from a guide. */
+function isPlaceholder(value: string): boolean {
+  return /^\[.*\]$/.test(value);
 }
 
 function describeMissing(
