@@ -2,8 +2,6 @@
 
 Error monitoring for browser applications. Captures uncaught errors and unhandled promise rejections, and errors you report yourself, and sends them to [Vigilon](https://vigilon.io), where they appear on the Errors page as Error Groups with origin `browser`.
 
-> **Early access.** Browser error monitoring is not yet generally available. The ingest endpoint accepts events only from projects enabled for early access and answers `403` for the rest, which the SDK does not retry.
-
 Zero dependencies, about 7 KB gzipped, and no side effects on import.
 
 ## Install
