@@ -54,6 +54,26 @@ describe("@vigilon/browser", () => {
     expect(requests).toHaveLength(0);
   });
 
+  it.each(["[YOUR_BROWSER_API_KEY]", " [YOUR_BROWSER_API_KEY]\n", "[]"])(
+    "refuses the placeholder API key %j and says why",
+    async (apiKey) => {
+      expect(init({ ...options, apiKey })).toBe(false);
+
+      expect(console.error).toHaveBeenCalledWith(
+        "[Vigilon] not started: apiKey is a placeholder, set a real API key",
+      );
+      expect(captureException(new Error("not sent"))).toBeNull();
+      expect(await sentEvents()).toHaveLength(0);
+    },
+  );
+
+  it.each(["vg_live_abc123", "[open", "close]", "a[b]c"])(
+    "does not validate the format of the API key %j",
+    (apiKey) => {
+      expect(init({ ...options, apiKey })).toBe(true);
+    },
+  );
+
   it("refuses invalid options without throwing", () => {
     expect(init({ ...options, apiKey: "" })).toBe(false);
     expect(init({ ...options, serviceName: "has spaces" })).toBe(false);

@@ -141,6 +141,33 @@ describe("validation", () => {
     expect(config).toMatchObject({ apiKey: "key", serviceName: "svc", environment: "prod" });
   });
 
+  it("refuses a placeholder API key from the environment", () => {
+    const run = () =>
+      resolve({ ...baseEnv, VIGILON_API_KEY: "[YOUR_API_KEY]" }, { serviceName: "api" });
+
+    expect(run).toThrow(VigilonConfigError);
+    expect(run).toThrow("the API key from VIGILON_API_KEY is a placeholder");
+  });
+
+  it("refuses a placeholder API key passed to register(), naming that source", () => {
+    expect(() =>
+      resolve(baseEnv, { apiKey: "  [YOUR_API_KEY]  ", serviceName: "api" }),
+    ).toThrow("the API key from register() argument is a placeholder");
+  });
+
+  it("lists a placeholder API key alongside other missing settings", () => {
+    const run = () => resolve({ VIGILON_API_KEY: "[YOUR_API_KEY]" }, { serviceName: "api" });
+
+    expect(run).toThrow("is a placeholder");
+    expect(run).toThrow("could not determine an environment");
+  });
+
+  it("does not validate the format of any other key", () => {
+    for (const apiKey of ["key", "vg_live_abc123", "[open", "close]", "a[b]c"]) {
+      expect(resolve(baseEnv, { apiKey, serviceName: "api" }).apiKey).toBe(apiKey);
+    }
+  });
+
   it("lists every missing setting and the sources checked in one error", () => {
     let error: unknown;
     try {

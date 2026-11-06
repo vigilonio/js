@@ -424,6 +424,9 @@ export function invalidOptions(options: VigilonBrowserOptions): string | null {
   if (!options || typeof options.apiKey !== "string" || options.apiKey.length === 0) {
     return "apiKey is required";
   }
+  if (/^\s*\[.*\]\s*$/.test(options.apiKey)) {
+    return "apiKey is a placeholder, set a real API key";
+  }
   for (const [name, value] of [
     ["serviceName", options.serviceName],
     ["environment", options.environment],
