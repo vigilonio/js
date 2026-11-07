@@ -2,7 +2,7 @@
   "schema": "vigilon.browser.event@1",
   "sdk": {
     "name": "@vigilon/browser",
-    "version": "0.2.12"
+    "version": "0.2.22"
   },
   "service": {
     "name": "corpus",
@@ -18,14 +18,14 @@
       "exception": {
         "type": "Error",
         "message": "invoices-load-failed",
-        "stack": "W@https://corpus.vigilon.test/assets/index-CeR2v4rx.js:9:9218\n@https://corpus.vigilon.test/assets/index-CeR2v4rx.js:9:14152\nsetTimeout handler*@https://corpus.vigilon.test/assets/index-CeR2v4rx.js:9:14133\n",
+        "stack": "U@https://corpus.vigilon.test/assets/index-DWFogeJH.js:9:13626\n@https://corpus.vigilon.test/assets/index-DWFogeJH.js:9:19342\nsetTimeout handler*@https://corpus.vigilon.test/assets/index-DWFogeJH.js:9:19323\n",
         "mechanism": "onerror",
         "handled": false,
         "cause": [
           {
             "type": "SyntaxError",
             "message": "JSON.parse: unexpected character at line 1 column 1 of the JSON data",
-            "stack": "We@https://corpus.vigilon.test/assets/index-CeR2v4rx.js:9:9451\nW@https://corpus.vigilon.test/assets/index-CeR2v4rx.js:9:9199\n@https://corpus.vigilon.test/assets/index-CeR2v4rx.js:9:14152\nsetTimeout handler*@https://corpus.vigilon.test/assets/index-CeR2v4rx.js:9:14133\n"
+            "stack": "gt@https://corpus.vigilon.test/assets/index-DWFogeJH.js:9:13859\nU@https://corpus.vigilon.test/assets/index-DWFogeJH.js:9:13607\n@https://corpus.vigilon.test/assets/index-DWFogeJH.js:9:19342\nsetTimeout handler*@https://corpus.vigilon.test/assets/index-DWFogeJH.js:9:19323\n"
           }
         ]
       },

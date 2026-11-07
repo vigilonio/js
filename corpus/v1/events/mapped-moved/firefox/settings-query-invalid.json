@@ -1,0 +1,39 @@
+{
+  "schema": "vigilon.browser.event@1",
+  "sdk": {
+    "name": "@vigilon/browser",
+    "version": "0.2.22"
+  },
+  "service": {
+    "name": "corpus",
+    "environment": "corpus",
+    "version": "corpus-a"
+  },
+  "sentAt": "2026-01-01T00:00:00.000Z",
+  "events": [
+    {
+      "type": "exception",
+      "eventId": "18df21ad-aa60-40b2-86ae-1e0f09e4e2b8",
+      "timestamp": "2026-01-01T00:00:00.000Z",
+      "exception": {
+        "type": "ValidationError",
+        "message": "Invalid response: theme missing",
+        "stack": "Et@https://corpus.vigilon.test/assets/index-r9Eq6dS5.js:10:15748\nparse@https://corpus.vigilon.test/assets/index-r9Eq6dS5.js:10:15914\nqueryFn@https://corpus.vigilon.test/assets/index-r9Eq6dS5.js:10:16327\nasync*@https://corpus.vigilon.test/assets/index-r9Eq6dS5.js:10:20628\nsetTimeout handler*@https://corpus.vigilon.test/assets/index-r9Eq6dS5.js:10:20609\n",
+        "mechanism": "unhandledrejection",
+        "handled": false
+      },
+      "page": {
+        "url": "https://corpus.vigilon.test/"
+      },
+      "session": {
+        "id": "corpus-session"
+      },
+      "user": null,
+      "traceId": null,
+      "tags": {},
+      "debugIds": {
+        "https://corpus.vigilon.test/assets/index-r9Eq6dS5.js": "160297ab-b4d5-4822-8a86-2c13914419b0"
+      }
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "schema": "vigilon.browser.event@1",
+  "sdk": {
+    "name": "@vigilon/browser",
+    "version": "0.2.22"
+  },
+  "service": {
+    "name": "corpus",
+    "environment": "corpus",
+    "version": "corpus-b"
+  },
+  "sentAt": "2026-01-01T00:00:00.000Z",
+  "events": [
+    {
+      "type": "exception",
+      "eventId": "031978e4-b27a-4acc-bad3-c3699e050463",
+      "timestamp": "2026-01-01T00:00:00.000Z",
+      "exception": {
+        "type": "ValidationError",
+        "message": "Invalid response: rows missing",
+        "stack": "ValidationError: Invalid response: rows missing\n    at Object.parse (https://corpus.vigilon.test/assets/index-DFrqdHjv.js:10:15125)\n    at queryFn (https://corpus.vigilon.test/assets/index-DFrqdHjv.js:10:15380)",
+        "mechanism": "unhandledrejection",
+        "handled": false
+      },
+      "page": {
+        "url": "https://corpus.vigilon.test/"
+      },
+      "session": {
+        "id": "corpus-session"
+      },
+      "user": null,
+      "traceId": null,
+      "tags": {},
+      "debugIds": {
+        "https://corpus.vigilon.test/assets/index-DFrqdHjv.js": "b744111d-9269-43e0-af89-a1c2757fdeb3"
+      }
+    }
+  ]
+}

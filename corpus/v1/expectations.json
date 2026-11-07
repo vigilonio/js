@@ -2,7 +2,9 @@
   "branches": {
     "frames": [
       "mapped-a",
-      "mapped-b"
+      "mapped-b",
+      "mapped-moved",
+      "mapped-nosources"
     ],
     "fallback": [
       "unmapped"
@@ -14,7 +16,8 @@
     "message-only": "Different bugs on the fallback branch whose exception type and message are the same.",
     "engine-omits-value": "An engine leaves out of its message a value the other engines report, such as the property name of a computed access or whether a property was read or written.",
     "different-branch": "The same bug grouped on the frames branch in a source-mapped build and on the fallback branch in an unmapped one.",
-    "stack-truncated": "The same bug, but one engine cut the stack short before the callers: Chromium keeps ten frames, so deep recursion leaves only the recursive function."
+    "stack-truncated": "The same bug, but one engine cut the stack short before the callers: Chromium keeps ten frames, so deep recursion leaves only the recursive function.",
+    "source-unavailable": "A build whose source maps carry no source text gives no failing line to group on: its events of one bug split from those of builds whose maps carry it, and different bugs told apart only by their failing line collide."
   },
   "bugs": {
     "helper-from-cart": "cart-total-missing",
@@ -52,7 +55,13 @@
     "construct-missing-class": "construct-missing-class",
     "parse-invalid-json": "parse-invalid-json",
     "invalid-array-length": "invalid-array-length",
-    "in-operator-on-undefined": "in-operator-on-undefined"
+    "in-operator-on-undefined": "in-operator-on-undefined",
+    "profile-query-invalid": "profile-query-invalid",
+    "report-query-invalid": "report-query-invalid",
+    "settings-query-invalid": "settings-query-invalid",
+    "invoices-query-failed": "invoices-query-failed",
+    "plans-query-failed": "plans-query-failed",
+    "export-query-timed-out": "export-query-timed-out"
   },
   "accepted": [
     {
@@ -65,7 +74,9 @@
         ],
         "builds": [
           "mapped-a",
-          "mapped-b"
+          "mapped-b",
+          "mapped-moved",
+          "mapped-nosources"
         ]
       }
     },
@@ -81,7 +92,9 @@
         ],
         "builds": [
           "mapped-a",
-          "mapped-b"
+          "mapped-b",
+          "mapped-moved",
+          "mapped-nosources"
         ]
       }
     },
@@ -95,7 +108,9 @@
         ],
         "builds": [
           "mapped-a",
-          "mapped-b"
+          "mapped-b",
+          "mapped-moved",
+          "mapped-nosources"
         ]
       }
     },
@@ -134,6 +149,20 @@
         "cases": [
           "profile-request-failed",
           "report-request-failed"
+        ],
+        "builds": [
+          "unmapped"
+        ]
+      }
+    },
+    {
+      "outcome": "accepted-collision",
+      "reason": "message-only",
+      "note": "The two statuses differ only in digits, which message normalisation masks.",
+      "events": {
+        "cases": [
+          "invoices-query-failed",
+          "plans-query-failed"
         ],
         "builds": [
           "unmapped"
@@ -210,6 +239,50 @@
         ],
         "builds": [
           "unmapped"
+        ]
+      }
+    },
+    {
+      "outcome": "accepted-collision",
+      "reason": "source-unavailable",
+      "note": "Same-named query functions in one module, told apart only by the line that fails.",
+      "events": {
+        "cases": [
+          "profile-query-invalid",
+          "report-query-invalid",
+          "settings-query-invalid"
+        ],
+        "builds": [
+          "mapped-nosources"
+        ]
+      }
+    },
+    {
+      "outcome": "accepted-collision",
+      "reason": "source-unavailable",
+      "events": {
+        "cases": [
+          "invoices-query-failed",
+          "plans-query-failed"
+        ],
+        "builds": [
+          "mapped-nosources"
+        ]
+      }
+    },
+    {
+      "outcome": "accepted-split",
+      "reason": "source-unavailable",
+      "events": {
+        "builds": [
+          "mapped-nosources"
+        ]
+      },
+      "versus": {
+        "builds": [
+          "mapped-a",
+          "mapped-b",
+          "mapped-moved"
         ]
       }
     },
@@ -329,7 +402,9 @@
         ],
         "builds": [
           "mapped-a",
-          "mapped-b"
+          "mapped-b",
+          "mapped-moved",
+          "mapped-nosources"
         ]
       },
       "versus": {
@@ -339,7 +414,9 @@
         ],
         "builds": [
           "mapped-a",
-          "mapped-b"
+          "mapped-b",
+          "mapped-moved",
+          "mapped-nosources"
         ]
       }
     },
@@ -355,7 +432,9 @@
         ],
         "builds": [
           "mapped-a",
-          "mapped-b"
+          "mapped-b",
+          "mapped-moved",
+          "mapped-nosources"
         ]
       },
       "versus": {
@@ -368,7 +447,9 @@
         ],
         "builds": [
           "mapped-a",
-          "mapped-b"
+          "mapped-b",
+          "mapped-moved",
+          "mapped-nosources"
         ]
       }
     },
@@ -378,7 +459,9 @@
       "events": {
         "builds": [
           "mapped-a",
-          "mapped-b"
+          "mapped-b",
+          "mapped-moved",
+          "mapped-nosources"
         ]
       },
       "versus": {

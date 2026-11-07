@@ -1,0 +1,36 @@
+{
+  "schema": "vigilon.browser.event@1",
+  "sdk": {
+    "name": "@vigilon/browser",
+    "version": "0.2.22"
+  },
+  "service": {
+    "name": "corpus",
+    "environment": "corpus",
+    "version": "corpus-a"
+  },
+  "sentAt": "2026-01-01T00:00:00.000Z",
+  "events": [
+    {
+      "type": "exception",
+      "eventId": "ca93ee15-8928-4e80-b4b0-94ac42f40650",
+      "timestamp": "2026-01-01T00:00:00.000Z",
+      "exception": {
+        "type": "ValidationError",
+        "message": "Invalid response: rows missing",
+        "stack": "parse@https://corpus.vigilon.test/assets/index-DWFogeJH.js:9:15131\n@https://corpus.vigilon.test/assets/index-DWFogeJH.js:9:15385",
+        "mechanism": "unhandledrejection",
+        "handled": false
+      },
+      "page": {
+        "url": "https://corpus.vigilon.test/"
+      },
+      "session": {
+        "id": "corpus-session"
+      },
+      "user": null,
+      "traceId": null,
+      "tags": {}
+    }
+  ]
+}

@@ -2,7 +2,7 @@
   "schema": "vigilon.browser.event@1",
   "sdk": {
     "name": "@vigilon/browser",
-    "version": "0.2.12"
+    "version": "0.2.22"
   },
   "service": {
     "name": "corpus",
@@ -18,7 +18,7 @@
       "exception": {
         "type": "Error",
         "message": "statements-unavailable",
-        "stack": "e@https://corpus.vigilon.test/assets/statements-CkPRySQD.js:1:50\nasync*t@https://corpus.vigilon.test/assets/statements-CkPRySQD.js:1:108\not/<@https://corpus.vigilon.test/assets/index-CeR2v4rx.js:9:12314\npromise callback*ot@https://corpus.vigilon.test/assets/index-CeR2v4rx.js:9:12290\n@https://corpus.vigilon.test/assets/index-CeR2v4rx.js:9:14152\nsetTimeout handler*@https://corpus.vigilon.test/assets/index-CeR2v4rx.js:9:14133\n",
+        "stack": "e@https://corpus.vigilon.test/assets/statements-CkPRySQD.js:1:50\nasync*t@https://corpus.vigilon.test/assets/statements-CkPRySQD.js:1:108\nBt/<@https://corpus.vigilon.test/assets/index-DWFogeJH.js:9:17285\npromise callback*Bt@https://corpus.vigilon.test/assets/index-DWFogeJH.js:9:17261\n@https://corpus.vigilon.test/assets/index-DWFogeJH.js:9:19342\nsetTimeout handler*@https://corpus.vigilon.test/assets/index-DWFogeJH.js:9:19323\n",
         "mechanism": "unhandledrejection",
         "handled": false
       },

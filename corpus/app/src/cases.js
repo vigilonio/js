@@ -3,12 +3,14 @@
 // so two cases of the same bug share every frame except the one under test.
 // corpus/v1/expectations.json says which cases are the same bug.
 import * as catalogue from "./catalogue.js";
+import { exportQuery, invoicesQuery, plansQuery } from "./api-queries.js";
 import { renderCartTotal } from "./cart.js";
 import { onSaveClick, saveDraft } from "./drafts.js";
 import { renderInvoiceTotal } from "./invoices.js";
 import { loadInvoices, syncAll } from "./loading.js";
 import { failCalendar, failContacts, failingNetwork, failingParse, failQuota } from "./loading-sources.js";
 import { Dashboard, renderPage, Settings } from "./react-app.js";
+import { profileQuery, reportQuery, settingsQuery } from "./queries.js";
 import { loadProfile, loadReport } from "./requests.js";
 import { openBillingStatements, openReportStatements } from "./statements-entry.js";
 import { renderSummary } from "./summary.js";
@@ -65,4 +67,14 @@ export const cases = {
   "parse-invalid-json": [catalogue.parseSettings, "{settings"],
   "invalid-array-length": [catalogue.allocate, -1],
   "in-operator-on-undefined": [catalogue.hasId, undefined],
+
+  // Same-named query functions in one module, told apart only by the line
+  // that fails: a dependency's validation error, a call over several lines,
+  // and the application's own error classes, with and without a constructor.
+  "profile-query-invalid": [profileQuery.queryFn],
+  "report-query-invalid": [reportQuery.queryFn],
+  "settings-query-invalid": [settingsQuery.queryFn],
+  "invoices-query-failed": [invoicesQuery.queryFn],
+  "plans-query-failed": [plansQuery.queryFn],
+  "export-query-timed-out": [exportQuery.queryFn],
 };

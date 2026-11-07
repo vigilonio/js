@@ -10,7 +10,7 @@
 // the same reason; what changes between runs is what the browsers changed.
 import { createHash } from "node:crypto";
 import { mkdir, readFile, rm, writeFile } from "node:fs/promises";
-import { dirname, join, relative } from "node:path";
+import { dirname, join, relative, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 import { chromium, firefox, webkit } from "@playwright/test";
 import vigilon from "@vigilon/bundler-plugins/vite";
@@ -34,6 +34,11 @@ const BUILDS = {
   // The same app with a different release string, so the entry chunk's
   // hash and debug ID change while the lazy chunk's do not.
   "mapped-b": { release: "corpus-b", sourceMaps: true },
+  // The same app with lines added above every module's own code, so every
+  // function and every failing line sits lower in its file.
+  "mapped-moved": { release: "corpus-a", sourceMaps: true, linesAdded: 3 },
+  // The same app with source maps that carry no source text.
+  "mapped-nosources": { release: "corpus-a", sourceMaps: true, sourcesContent: false },
   // No source maps and no debug IDs: the fallback branch.
   unmapped: { release: "corpus-a", sourceMaps: false },
 };
@@ -46,7 +51,7 @@ const caseIds = [
 await rm(join(out, "builds"), { recursive: true, force: true });
 await rm(join(out, "events"), { recursive: true, force: true });
 
-for (const [name, { release, sourceMaps }] of Object.entries(BUILDS)) {
+for (const [name, { release, sourceMaps, linesAdded = 0, sourcesContent = true }] of Object.entries(BUILDS)) {
   await build({
     root: app,
     configFile: false,
@@ -59,10 +64,15 @@ for (const [name, { release, sourceMaps }] of Object.entries(BUILDS)) {
       // React in a chunk of its own: frames that are never in-app, and a
       // file that stays byte for byte the same between the two releases.
       rollupOptions: {
-        output: { manualChunks: (id) => (id.includes("node_modules") ? "vendor" : undefined) },
+        output: {
+          manualChunks: (id) => (id.includes("node_modules") ? "vendor" : undefined),
+          // Dependencies, and the app's stand-in for one, are not its own code.
+          sourcemapIgnoreList: (source) => source.includes("node_modules/") || source.includes("/third-party/"),
+          sourcemapExcludeSources: !sourcesContent,
+        },
       },
     },
-    plugins: sourceMaps ? [vigilon()] : [],
+    plugins: [...(linesAdded > 0 ? [addLines(linesAdded)] : []), ...(sourceMaps ? [vigilon()] : [])],
   });
 }
 
@@ -115,6 +125,28 @@ await writeFile(
   )}\n`,
 );
 console.log(`wrote ${relative(process.cwd(), out)}`);
+
+/**
+ * Adds lines above every app module's own code as it is loaded, so the
+ * source map and its source text describe the moved file under the same path.
+ */
+function addLines(count) {
+  const lines = [
+    "// Added above this module's own code by the mapped-moved build.",
+    "globalThis.__corpusMovedModules = (globalThis.__corpusMovedModules ?? 0) + 1;",
+  ];
+  const added = `${[...lines, ...Array(count - lines.length).fill("")].join("\n")}\n`;
+  return {
+    name: "corpus-add-lines",
+    enforce: "pre",
+    async load(id) {
+      if (!id.startsWith(join(app, "src") + sep) || !id.endsWith(".js")) {
+        return null;
+      }
+      return added + (await readFile(id, "utf8"));
+    },
+  };
+}
 
 /** Loads one case and returns the envelope holding its one event, or null. */
 async function runCase(browser, buildName, caseId) {

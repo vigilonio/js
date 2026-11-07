@@ -2,7 +2,7 @@
   "schema": "vigilon.browser.event@1",
   "sdk": {
     "name": "@vigilon/browser",
-    "version": "0.2.12"
+    "version": "0.2.22"
   },
   "service": {
     "name": "corpus",
@@ -18,7 +18,7 @@
       "exception": {
         "type": "Error",
         "message": "statements-unavailable",
-        "stack": "e@https://corpus.vigilon.test/assets/statements-D5iB4wI-.js:2:50\nasync*t@https://corpus.vigilon.test/assets/statements-D5iB4wI-.js:2:108\not/<@https://corpus.vigilon.test/assets/index-CBlyPtJs.js:10:12314\npromise callback*ot@https://corpus.vigilon.test/assets/index-CBlyPtJs.js:10:12290\n@https://corpus.vigilon.test/assets/index-CBlyPtJs.js:10:14152\nsetTimeout handler*@https://corpus.vigilon.test/assets/index-CBlyPtJs.js:10:14133\n",
+        "stack": "e@https://corpus.vigilon.test/assets/statements-D5iB4wI-.js:2:50\nasync*t@https://corpus.vigilon.test/assets/statements-D5iB4wI-.js:2:108\nBt/<@https://corpus.vigilon.test/assets/index-C5tHM2jm.js:10:17285\npromise callback*Bt@https://corpus.vigilon.test/assets/index-C5tHM2jm.js:10:17261\n@https://corpus.vigilon.test/assets/index-C5tHM2jm.js:10:19342\nsetTimeout handler*@https://corpus.vigilon.test/assets/index-C5tHM2jm.js:10:19323\n",
         "mechanism": "unhandledrejection",
         "handled": false
       },
@@ -32,7 +32,7 @@
       "traceId": null,
       "tags": {},
       "debugIds": {
-        "https://corpus.vigilon.test/assets/index-CBlyPtJs.js": "c60127de-b1e2-48cf-becc-2588b5bb6070",
+        "https://corpus.vigilon.test/assets/index-C5tHM2jm.js": "16ffd582-e9ff-45dc-be16-22d429c87a33",
         "https://corpus.vigilon.test/assets/statements-D5iB4wI-.js": "3b50b6ef-fead-4456-bd18-9abed6e77d41"
       }
     }

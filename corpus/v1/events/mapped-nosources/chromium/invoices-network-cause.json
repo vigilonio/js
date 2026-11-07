@@ -1,0 +1,46 @@
+{
+  "schema": "vigilon.browser.event@1",
+  "sdk": {
+    "name": "@vigilon/browser",
+    "version": "0.2.22"
+  },
+  "service": {
+    "name": "corpus",
+    "environment": "corpus",
+    "version": "corpus-a"
+  },
+  "sentAt": "2026-01-01T00:00:00.000Z",
+  "events": [
+    {
+      "type": "exception",
+      "eventId": "9cbdbc95-80ed-49e5-9495-f94a50e70c29",
+      "timestamp": "2026-01-01T00:00:00.000Z",
+      "exception": {
+        "type": "Error",
+        "message": "invoices-load-failed",
+        "stack": "Error: invoices-load-failed\n    at U (https://corpus.vigilon.test/assets/index-C5tHM2jm.js:10:13626)\n    at https://corpus.vigilon.test/assets/index-C5tHM2jm.js:10:19342",
+        "mechanism": "onerror",
+        "handled": false,
+        "cause": [
+          {
+            "type": "TypeError",
+            "message": "Failed to fetch",
+            "stack": "TypeError: Failed to fetch\n    at ht (https://corpus.vigilon.test/assets/index-C5tHM2jm.js:10:13804)\n    at U (https://corpus.vigilon.test/assets/index-C5tHM2jm.js:10:13607)\n    at https://corpus.vigilon.test/assets/index-C5tHM2jm.js:10:19342"
+          }
+        ]
+      },
+      "page": {
+        "url": "https://corpus.vigilon.test/"
+      },
+      "session": {
+        "id": "corpus-session"
+      },
+      "user": null,
+      "traceId": null,
+      "tags": {},
+      "debugIds": {
+        "https://corpus.vigilon.test/assets/index-C5tHM2jm.js": "9a4944ce-ecff-4c79-97ef-8a3c657d2b2c"
+      }
+    }
+  ]
+}

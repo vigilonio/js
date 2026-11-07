@@ -2,7 +2,7 @@
   "schema": "vigilon.browser.event@1",
   "sdk": {
     "name": "@vigilon/browser",
-    "version": "0.2.12"
+    "version": "0.2.22"
   },
   "service": {
     "name": "corpus",
@@ -18,7 +18,7 @@
       "exception": {
         "type": "TypeError",
         "message": "can't access property \"depth\", e.root is undefined",
-        "stack": "Q@https://corpus.vigilon.test/assets/index-CBlyPtJs.js:10:12556\nQ@https://corpus.vigilon.test/assets/index-CBlyPtJs.js:10:12556\nQ@https://corpus.vigilon.test/assets/index-CBlyPtJs.js:10:12556\n@https://corpus.vigilon.test/assets/index-CBlyPtJs.js:10:14152\nsetTimeout handler*@https://corpus.vigilon.test/assets/index-CBlyPtJs.js:10:14133\n",
+        "stack": "Q@https://corpus.vigilon.test/assets/index-C5tHM2jm.js:10:17527\nQ@https://corpus.vigilon.test/assets/index-C5tHM2jm.js:10:17527\nQ@https://corpus.vigilon.test/assets/index-C5tHM2jm.js:10:17527\n@https://corpus.vigilon.test/assets/index-C5tHM2jm.js:10:19342\nsetTimeout handler*@https://corpus.vigilon.test/assets/index-C5tHM2jm.js:10:19323\n",
         "mechanism": "onerror",
         "handled": false
       },
@@ -32,7 +32,7 @@
       "traceId": null,
       "tags": {},
       "debugIds": {
-        "https://corpus.vigilon.test/assets/index-CBlyPtJs.js": "c60127de-b1e2-48cf-becc-2588b5bb6070"
+        "https://corpus.vigilon.test/assets/index-C5tHM2jm.js": "16ffd582-e9ff-45dc-be16-22d429c87a33"
       }
     }
   ]

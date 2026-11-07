@@ -2,7 +2,7 @@
   "schema": "vigilon.browser.event@1",
   "sdk": {
     "name": "@vigilon/browser",
-    "version": "0.2.12"
+    "version": "0.2.22"
   },
   "service": {
     "name": "corpus",
@@ -18,7 +18,7 @@
       "exception": {
         "type": "Error",
         "message": "Request failed",
-        "stack": "tt@https://corpus.vigilon.test/assets/index-CgNAj55e.js:10:10616\n@https://corpus.vigilon.test/assets/index-CgNAj55e.js:10:14152\nsetTimeout handler*@https://corpus.vigilon.test/assets/index-CgNAj55e.js:10:14133\n",
+        "stack": "Pt@https://corpus.vigilon.test/assets/index-DFrqdHjv.js:10:15585\n@https://corpus.vigilon.test/assets/index-DFrqdHjv.js:10:19342\nsetTimeout handler*@https://corpus.vigilon.test/assets/index-DFrqdHjv.js:10:19323\n",
         "mechanism": "onerror",
         "handled": false
       },
@@ -32,7 +32,7 @@
       "traceId": null,
       "tags": {},
       "debugIds": {
-        "https://corpus.vigilon.test/assets/index-CgNAj55e.js": "e95e7030-aa25-4c55-b740-0d0791ec7381"
+        "https://corpus.vigilon.test/assets/index-DFrqdHjv.js": "b744111d-9269-43e0-af89-a1c2757fdeb3"
       }
     }
   ]

@@ -2,7 +2,7 @@
   "schema": "vigilon.browser.event@1",
   "sdk": {
     "name": "@vigilon/browser",
-    "version": "0.2.12"
+    "version": "0.2.22"
   },
   "service": {
     "name": "corpus",
@@ -18,7 +18,7 @@
       "exception": {
         "type": "TypeError",
         "message": "Cannot read properties of null (reading 'email')",
-        "stack": "TypeError: Cannot read properties of null (reading 'email')\n    at De (https://corpus.vigilon.test/assets/index-CeR2v4rx.js:9:8570)\n    at https://corpus.vigilon.test/assets/index-CeR2v4rx.js:9:14152",
+        "stack": "TypeError: Cannot read properties of null (reading 'email')\n    at Xe (https://corpus.vigilon.test/assets/index-DWFogeJH.js:9:12415)\n    at https://corpus.vigilon.test/assets/index-DWFogeJH.js:9:19342",
         "mechanism": "onerror",
         "handled": false
       },

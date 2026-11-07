@@ -2,7 +2,7 @@
   "schema": "vigilon.browser.event@1",
   "sdk": {
     "name": "@vigilon/browser",
-    "version": "0.2.12"
+    "version": "0.2.22"
   },
   "service": {
     "name": "corpus",
@@ -18,7 +18,7 @@
       "exception": {
         "type": "Error",
         "message": "draft-title-missing",
-        "stack": "Be@https://corpus.vigilon.test/assets/index-CeR2v4rx.js:9:9017\nU@https://corpus.vigilon.test/assets/index-CeR2v4rx.js:9:9090\nasync*@https://corpus.vigilon.test/assets/index-CeR2v4rx.js:9:14152\nsetTimeout handler*@https://corpus.vigilon.test/assets/index-CeR2v4rx.js:9:14133\n",
+        "stack": "ft@https://corpus.vigilon.test/assets/index-DWFogeJH.js:9:13425\nH@https://corpus.vigilon.test/assets/index-DWFogeJH.js:9:13498\nasync*@https://corpus.vigilon.test/assets/index-DWFogeJH.js:9:19342\nsetTimeout handler*@https://corpus.vigilon.test/assets/index-DWFogeJH.js:9:19323\n",
         "mechanism": "unhandledrejection",
         "handled": false
       },

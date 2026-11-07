@@ -1,0 +1,39 @@
+{
+  "schema": "vigilon.browser.event@1",
+  "sdk": {
+    "name": "@vigilon/browser",
+    "version": "0.2.22"
+  },
+  "service": {
+    "name": "corpus",
+    "environment": "corpus",
+    "version": "corpus-a"
+  },
+  "sentAt": "2026-01-01T00:00:00.000Z",
+  "events": [
+    {
+      "type": "exception",
+      "eventId": "0bdd40fb-0802-4886-94b3-1dd81b7d2428",
+      "timestamp": "2026-01-01T00:00:00.000Z",
+      "exception": {
+        "type": "TypeError",
+        "message": "Cannot read properties of undefined (reading 'depth')",
+        "stack": "TypeError: Cannot read properties of undefined (reading 'depth')\n    at Q (https://corpus.vigilon.test/assets/index-r9Eq6dS5.js:10:18692)\n    at Q (https://corpus.vigilon.test/assets/index-r9Eq6dS5.js:10:18671)\n    at Q (https://corpus.vigilon.test/assets/index-r9Eq6dS5.js:10:18671)\n    at Q (https://corpus.vigilon.test/assets/index-r9Eq6dS5.js:10:18671)\n    at Q (https://corpus.vigilon.test/assets/index-r9Eq6dS5.js:10:18671)\n    at Q (https://corpus.vigilon.test/assets/index-r9Eq6dS5.js:10:18671)\n    at Q (https://corpus.vigilon.test/assets/index-r9Eq6dS5.js:10:18671)\n    at Q (https://corpus.vigilon.test/assets/index-r9Eq6dS5.js:10:18671)\n    at Q (https://corpus.vigilon.test/assets/index-r9Eq6dS5.js:10:18671)\n    at Q (https://corpus.vigilon.test/assets/index-r9Eq6dS5.js:10:18671)",
+        "mechanism": "onerror",
+        "handled": false
+      },
+      "page": {
+        "url": "https://corpus.vigilon.test/"
+      },
+      "session": {
+        "id": "corpus-session"
+      },
+      "user": null,
+      "traceId": null,
+      "tags": {},
+      "debugIds": {
+        "https://corpus.vigilon.test/assets/index-r9Eq6dS5.js": "160297ab-b4d5-4822-8a86-2c13914419b0"
+      }
+    }
+  ]
+}

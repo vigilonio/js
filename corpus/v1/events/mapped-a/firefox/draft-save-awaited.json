@@ -2,7 +2,7 @@
   "schema": "vigilon.browser.event@1",
   "sdk": {
     "name": "@vigilon/browser",
-    "version": "0.2.12"
+    "version": "0.2.22"
   },
   "service": {
     "name": "corpus",
@@ -18,7 +18,7 @@
       "exception": {
         "type": "Error",
         "message": "draft-title-missing",
-        "stack": "Be@https://corpus.vigilon.test/assets/index-CBlyPtJs.js:10:9017\nU@https://corpus.vigilon.test/assets/index-CBlyPtJs.js:10:9090\nasync*Ve@https://corpus.vigilon.test/assets/index-CBlyPtJs.js:10:9123\n@https://corpus.vigilon.test/assets/index-CBlyPtJs.js:10:14152\nsetTimeout handler*@https://corpus.vigilon.test/assets/index-CBlyPtJs.js:10:14133\n",
+        "stack": "ft@https://corpus.vigilon.test/assets/index-C5tHM2jm.js:10:13425\nH@https://corpus.vigilon.test/assets/index-C5tHM2jm.js:10:13498\nasync*pt@https://corpus.vigilon.test/assets/index-C5tHM2jm.js:10:13531\n@https://corpus.vigilon.test/assets/index-C5tHM2jm.js:10:19342\nsetTimeout handler*@https://corpus.vigilon.test/assets/index-C5tHM2jm.js:10:19323\n",
         "mechanism": "unhandledrejection",
         "handled": false
       },
@@ -32,7 +32,7 @@
       "traceId": null,
       "tags": {},
       "debugIds": {
-        "https://corpus.vigilon.test/assets/index-CBlyPtJs.js": "c60127de-b1e2-48cf-becc-2588b5bb6070"
+        "https://corpus.vigilon.test/assets/index-C5tHM2jm.js": "16ffd582-e9ff-45dc-be16-22d429c87a33"
       }
     }
   ]
