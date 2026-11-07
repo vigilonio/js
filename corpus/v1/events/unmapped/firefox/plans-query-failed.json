@@ -1,0 +1,36 @@
+{
+  "schema": "vigilon.browser.event@1",
+  "sdk": {
+    "name": "@vigilon/browser",
+    "version": "0.2.22"
+  },
+  "service": {
+    "name": "corpus",
+    "environment": "corpus",
+    "version": "corpus-a"
+  },
+  "sentAt": "2026-01-01T00:00:00.000Z",
+  "events": [
+    {
+      "type": "exception",
+      "eventId": "0bd42ee7-4ed7-47ab-8796-b6e6380bc359",
+      "timestamp": "2026-01-01T00:00:00.000Z",
+      "exception": {
+        "type": "RequestError",
+        "message": "Request failed with status 503",
+        "stack": "z@https://corpus.vigilon.test/assets/index-DWFogeJH.js:9:12735\nqueryFn@https://corpus.vigilon.test/assets/index-DWFogeJH.js:9:13082\nasync*@https://corpus.vigilon.test/assets/index-DWFogeJH.js:9:19342\nsetTimeout handler*@https://corpus.vigilon.test/assets/index-DWFogeJH.js:9:19323\n",
+        "mechanism": "unhandledrejection",
+        "handled": false
+      },
+      "page": {
+        "url": "https://corpus.vigilon.test/"
+      },
+      "session": {
+        "id": "corpus-session"
+      },
+      "user": null,
+      "traceId": null,
+      "tags": {}
+    }
+  ]
+}

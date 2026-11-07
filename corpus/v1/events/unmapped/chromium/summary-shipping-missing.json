@@ -2,7 +2,7 @@
   "schema": "vigilon.browser.event@1",
   "sdk": {
     "name": "@vigilon/browser",
-    "version": "0.2.12"
+    "version": "0.2.22"
   },
   "service": {
     "name": "corpus",
@@ -18,7 +18,7 @@
       "exception": {
         "type": "TypeError",
         "message": "price-missing",
-        "stack": "TypeError: price-missing\n    at H (https://corpus.vigilon.test/assets/index-CeR2v4rx.js:9:8888)\n    at Z (https://corpus.vigilon.test/assets/index-CeR2v4rx.js:9:12510)\n    at https://corpus.vigilon.test/assets/index-CeR2v4rx.js:9:14152",
+        "stack": "TypeError: price-missing\n    at V (https://corpus.vigilon.test/assets/index-DWFogeJH.js:9:13296)\n    at Z (https://corpus.vigilon.test/assets/index-DWFogeJH.js:9:17481)\n    at https://corpus.vigilon.test/assets/index-DWFogeJH.js:9:19342",
         "mechanism": "onerror",
         "handled": false
       },

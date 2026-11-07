@@ -1,7 +1,7 @@
 {
   "corpusVersion": 1,
   "origin": "https://corpus.vigilon.test",
-  "sdk": "@vigilon/browser@0.2.12",
+  "sdk": "@vigilon/browser@0.2.22",
   "playwright": "1.64.1",
   "engines": {
     "chromium": "156.0.8078.4",
@@ -16,6 +16,16 @@
     "mapped-b": {
       "release": "corpus-b",
       "sourceMaps": true
+    },
+    "mapped-moved": {
+      "release": "corpus-a",
+      "sourceMaps": true,
+      "linesAdded": 3
+    },
+    "mapped-nosources": {
+      "release": "corpus-a",
+      "sourceMaps": true,
+      "sourcesContent": false
     },
     "unmapped": {
       "release": "corpus-a",
@@ -58,11 +68,19 @@
     "construct-missing-class",
     "parse-invalid-json",
     "invalid-array-length",
-    "in-operator-on-undefined"
+    "in-operator-on-undefined",
+    "profile-query-invalid",
+    "report-query-invalid",
+    "settings-query-invalid",
+    "invoices-query-failed",
+    "plans-query-failed",
+    "export-query-timed-out"
   ],
   "unreported": [
     "mapped-a/webkit/parse-invalid-json",
     "mapped-b/webkit/parse-invalid-json",
+    "mapped-moved/webkit/parse-invalid-json",
+    "mapped-nosources/webkit/parse-invalid-json",
     "unmapped/webkit/parse-invalid-json"
   ]
 }

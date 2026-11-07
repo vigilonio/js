@@ -2,7 +2,7 @@
   "schema": "vigilon.browser.event@1",
   "sdk": {
     "name": "@vigilon/browser",
-    "version": "0.2.12"
+    "version": "0.2.22"
   },
   "service": {
     "name": "corpus",
@@ -18,14 +18,14 @@
       "exception": {
         "type": "Error",
         "message": "invoices-load-failed",
-        "stack": "W@https://corpus.vigilon.test/assets/index-CgNAj55e.js:10:9218\n@https://corpus.vigilon.test/assets/index-CgNAj55e.js:10:14152\nsetTimeout handler*@https://corpus.vigilon.test/assets/index-CgNAj55e.js:10:14133\n",
+        "stack": "U@https://corpus.vigilon.test/assets/index-DFrqdHjv.js:10:13626\n@https://corpus.vigilon.test/assets/index-DFrqdHjv.js:10:19342\nsetTimeout handler*@https://corpus.vigilon.test/assets/index-DFrqdHjv.js:10:19323\n",
         "mechanism": "onerror",
         "handled": false,
         "cause": [
           {
             "type": "TypeError",
             "message": "Failed to fetch",
-            "stack": "Ue@https://corpus.vigilon.test/assets/index-CgNAj55e.js:10:9396\nW@https://corpus.vigilon.test/assets/index-CgNAj55e.js:10:9199\n@https://corpus.vigilon.test/assets/index-CgNAj55e.js:10:14152\nsetTimeout handler*@https://corpus.vigilon.test/assets/index-CgNAj55e.js:10:14133\n"
+            "stack": "ht@https://corpus.vigilon.test/assets/index-DFrqdHjv.js:10:13804\nU@https://corpus.vigilon.test/assets/index-DFrqdHjv.js:10:13607\n@https://corpus.vigilon.test/assets/index-DFrqdHjv.js:10:19342\nsetTimeout handler*@https://corpus.vigilon.test/assets/index-DFrqdHjv.js:10:19323\n"
           }
         ]
       },
@@ -39,7 +39,7 @@
       "traceId": null,
       "tags": {},
       "debugIds": {
-        "https://corpus.vigilon.test/assets/index-CgNAj55e.js": "e95e7030-aa25-4c55-b740-0d0791ec7381"
+        "https://corpus.vigilon.test/assets/index-DFrqdHjv.js": "b744111d-9269-43e0-af89-a1c2757fdeb3"
       }
     }
   ]

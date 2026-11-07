@@ -2,7 +2,7 @@
   "schema": "vigilon.browser.event@1",
   "sdk": {
     "name": "@vigilon/browser",
-    "version": "0.2.12"
+    "version": "0.2.22"
   },
   "service": {
     "name": "corpus",
@@ -18,14 +18,14 @@
       "exception": {
         "type": "Error",
         "message": "invoices-load-failed",
-        "stack": "W@https://corpus.vigilon.test/assets/index-CeR2v4rx.js:9:9223",
+        "stack": "U@https://corpus.vigilon.test/assets/index-DWFogeJH.js:9:13631",
         "mechanism": "onerror",
         "handled": false,
         "cause": [
           {
             "type": "TypeError",
             "message": "Failed to fetch",
-            "stack": "Ue@https://corpus.vigilon.test/assets/index-CeR2v4rx.js:9:9405\nW@https://corpus.vigilon.test/assets/index-CeR2v4rx.js:9:9200"
+            "stack": "ht@https://corpus.vigilon.test/assets/index-DWFogeJH.js:9:13813\nU@https://corpus.vigilon.test/assets/index-DWFogeJH.js:9:13608"
           }
         ]
       },

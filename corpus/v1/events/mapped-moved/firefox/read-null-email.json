@@ -1,0 +1,39 @@
+{
+  "schema": "vigilon.browser.event@1",
+  "sdk": {
+    "name": "@vigilon/browser",
+    "version": "0.2.22"
+  },
+  "service": {
+    "name": "corpus",
+    "environment": "corpus",
+    "version": "corpus-a"
+  },
+  "sentAt": "2026-01-01T00:00:00.000Z",
+  "events": [
+    {
+      "type": "exception",
+      "eventId": "b9acac0a-88ed-4abd-a61c-720e5e3a885e",
+      "timestamp": "2026-01-01T00:00:00.000Z",
+      "exception": {
+        "type": "TypeError",
+        "message": "can't access property \"email\", e is null",
+        "stack": "Xe@https://corpus.vigilon.test/assets/index-r9Eq6dS5.js:10:12484\n@https://corpus.vigilon.test/assets/index-r9Eq6dS5.js:10:20628\nsetTimeout handler*@https://corpus.vigilon.test/assets/index-r9Eq6dS5.js:10:20609\n",
+        "mechanism": "onerror",
+        "handled": false
+      },
+      "page": {
+        "url": "https://corpus.vigilon.test/"
+      },
+      "session": {
+        "id": "corpus-session"
+      },
+      "user": null,
+      "traceId": null,
+      "tags": {},
+      "debugIds": {
+        "https://corpus.vigilon.test/assets/index-r9Eq6dS5.js": "160297ab-b4d5-4822-8a86-2c13914419b0"
+      }
+    }
+  ]
+}

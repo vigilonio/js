@@ -2,7 +2,7 @@
   "schema": "vigilon.browser.event@1",
   "sdk": {
     "name": "@vigilon/browser",
-    "version": "0.2.12"
+    "version": "0.2.22"
   },
   "service": {
     "name": "corpus",
@@ -18,7 +18,7 @@
       "exception": {
         "type": "TypeError",
         "message": "right-hand side of 'in' should be an object, got undefined",
-        "stack": "Re@https://corpus.vigilon.test/assets/index-CeR2v4rx.js:9:8852\n@https://corpus.vigilon.test/assets/index-CeR2v4rx.js:9:14152\nsetTimeout handler*@https://corpus.vigilon.test/assets/index-CeR2v4rx.js:9:14133\n",
+        "stack": "ot@https://corpus.vigilon.test/assets/index-DWFogeJH.js:9:12696\n@https://corpus.vigilon.test/assets/index-DWFogeJH.js:9:19342\nsetTimeout handler*@https://corpus.vigilon.test/assets/index-DWFogeJH.js:9:19323\n",
         "mechanism": "onerror",
         "handled": false
       },

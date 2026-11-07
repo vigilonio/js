@@ -2,7 +2,7 @@
   "schema": "vigilon.browser.event@1",
   "sdk": {
     "name": "@vigilon/browser",
-    "version": "0.2.12"
+    "version": "0.2.22"
   },
   "service": {
     "name": "corpus",
@@ -18,14 +18,14 @@
       "exception": {
         "type": "Error",
         "message": "invoices-load-failed",
-        "stack": "Error: invoices-load-failed\n    at W (https://corpus.vigilon.test/assets/index-CeR2v4rx.js:9:9218)\n    at https://corpus.vigilon.test/assets/index-CeR2v4rx.js:9:14152",
+        "stack": "Error: invoices-load-failed\n    at U (https://corpus.vigilon.test/assets/index-DWFogeJH.js:9:13626)\n    at https://corpus.vigilon.test/assets/index-DWFogeJH.js:9:19342",
         "mechanism": "onerror",
         "handled": false,
         "cause": [
           {
             "type": "TypeError",
             "message": "Failed to fetch",
-            "stack": "TypeError: Failed to fetch\n    at Ue (https://corpus.vigilon.test/assets/index-CeR2v4rx.js:9:9396)\n    at W (https://corpus.vigilon.test/assets/index-CeR2v4rx.js:9:9199)\n    at https://corpus.vigilon.test/assets/index-CeR2v4rx.js:9:14152"
+            "stack": "TypeError: Failed to fetch\n    at ht (https://corpus.vigilon.test/assets/index-DWFogeJH.js:9:13804)\n    at U (https://corpus.vigilon.test/assets/index-DWFogeJH.js:9:13607)\n    at https://corpus.vigilon.test/assets/index-DWFogeJH.js:9:19342"
           }
         ]
       },

@@ -2,7 +2,7 @@
   "schema": "vigilon.browser.event@1",
   "sdk": {
     "name": "@vigilon/browser",
-    "version": "0.2.12"
+    "version": "0.2.22"
   },
   "service": {
     "name": "corpus",
@@ -18,7 +18,7 @@
       "exception": {
         "type": "TypeError",
         "message": "e[t] is not a function",
-        "stack": "TypeError: e[t] is not a function\n    at ke (https://corpus.vigilon.test/assets/index-CeR2v4rx.js:9:8619)\n    at https://corpus.vigilon.test/assets/index-CeR2v4rx.js:9:14152",
+        "stack": "TypeError: e[t] is not a function\n    at Qe (https://corpus.vigilon.test/assets/index-DWFogeJH.js:9:12464)\n    at https://corpus.vigilon.test/assets/index-DWFogeJH.js:9:19342",
         "mechanism": "onerror",
         "handled": false
       },

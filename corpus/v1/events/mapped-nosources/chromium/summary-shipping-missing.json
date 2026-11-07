@@ -1,0 +1,39 @@
+{
+  "schema": "vigilon.browser.event@1",
+  "sdk": {
+    "name": "@vigilon/browser",
+    "version": "0.2.22"
+  },
+  "service": {
+    "name": "corpus",
+    "environment": "corpus",
+    "version": "corpus-a"
+  },
+  "sentAt": "2026-01-01T00:00:00.000Z",
+  "events": [
+    {
+      "type": "exception",
+      "eventId": "0306617b-4d36-46a4-a44c-e867cf2b2559",
+      "timestamp": "2026-01-01T00:00:00.000Z",
+      "exception": {
+        "type": "TypeError",
+        "message": "price-missing",
+        "stack": "TypeError: price-missing\n    at V (https://corpus.vigilon.test/assets/index-C5tHM2jm.js:10:13296)\n    at Z (https://corpus.vigilon.test/assets/index-C5tHM2jm.js:10:17481)\n    at https://corpus.vigilon.test/assets/index-C5tHM2jm.js:10:19342",
+        "mechanism": "onerror",
+        "handled": false
+      },
+      "page": {
+        "url": "https://corpus.vigilon.test/"
+      },
+      "session": {
+        "id": "corpus-session"
+      },
+      "user": null,
+      "traceId": null,
+      "tags": {},
+      "debugIds": {
+        "https://corpus.vigilon.test/assets/index-C5tHM2jm.js": "9a4944ce-ecff-4c79-97ef-8a3c657d2b2c"
+      }
+    }
+  ]
+}
