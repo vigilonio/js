@@ -1,6 +1,6 @@
 {
   "name": "@vigilon/react",
-  "version": "0.2.23",
+  "version": "0.2.24",
   "description": "Vigilon error monitoring for React applications",
   "license": "ISC",
   "author": "Vigilon",
