@@ -12,9 +12,9 @@ import { instrumentXhr, selectorOf } from "../breadcrumbs";
 
 const options: VigilonBrowserOptions = {
   apiKey: "test-key",
-  serviceName: "dashboard",
+  appName: "dashboard",
   environment: "test",
-  serviceVersion: "1.2.3",
+  appVersion: "1.2.3",
   endpoint: "https://ingest.example.com",
 };
 

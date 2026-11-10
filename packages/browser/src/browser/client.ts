@@ -70,11 +70,21 @@ export interface BreadcrumbInput {
 export interface VigilonBrowserOptions {
   /** A project API key from the Vigilon dashboard. */
   apiKey: string;
-  /** The Service this app reports as. Letters, digits, and `._:/-`, up to 100 characters. */
-  serviceName: string;
-  /** The deployment environment, for example `production`. Same character set. */
+  /**
+   * The name this app reports as, shown as its Service in Vigilon. Letters,
+   * digits, and `._:/-`, up to 100 characters. Required: `init` does not
+   * start without it (or, until it is removed, the deprecated `serviceName`).
+   */
+  // Optional only while serviceName is accepted in its place; becomes
+  // required when serviceName is removed in 0.3.0.
+  appName?: string;
+  /** @deprecated Renamed to `appName`; will be removed in 0.3.0. */
+  serviceName?: string;
+  /** The deployment environment, for example `production`. Letters, digits, and `._:/-`, up to 100 characters. */
   environment: string;
   /** The release, for example a build number or commit SHA. */
+  appVersion?: string;
+  /** @deprecated Renamed to `appVersion`; will be removed in 0.3.0. */
   serviceVersion?: string;
   /** The ingest base URL. Defaults to https://ingest.vigilon.io. */
   endpoint?: string;
@@ -129,6 +139,7 @@ export class BrowserClient {
 
   constructor(private readonly options: VigilonBrowserOptions) {
     const endpoint = (options.endpoint ?? DEFAULT_ENDPOINT).replace(/\/+$/, "");
+    const version = appVersion(options);
     this.ownEventsUrl = `${endpoint}${EVENTS_PATH}`;
     this.transport = new Transport({
       url: this.ownEventsUrl,
@@ -137,11 +148,9 @@ export class BrowserClient {
         schema: SCHEMA_ID,
         sdk: { name: SDK_NAME, version: SDK_VERSION },
         service: {
-          name: options.serviceName,
+          name: appName(options) as string,
           environment: options.environment,
-          ...(options.serviceVersion
-            ? { version: truncate(options.serviceVersion, LIMITS.serviceVersionLength) }
-            : {}),
+          ...(version ? { version: truncate(version, LIMITS.serviceVersionLength) } : {}),
         },
       },
       fetch: (input, init) => window.fetch(input, init),
@@ -427,8 +436,10 @@ export function invalidOptions(options: VigilonBrowserOptions): string | null {
   if (/^\s*\[.*\]\s*$/.test(options.apiKey)) {
     return "apiKey is a placeholder, set a real API key";
   }
+  const nameOption =
+    options.appName === undefined && options.serviceName !== undefined ? "serviceName" : "appName";
   for (const [name, value] of [
-    ["serviceName", options.serviceName],
+    [nameOption, appName(options)],
     ["environment", options.environment],
   ] as const) {
     if (
@@ -441,4 +452,34 @@ export function invalidOptions(options: VigilonBrowserOptions): string | null {
     }
   }
   return null;
+}
+
+/** The app's name: `appName`, or the deprecated `serviceName` when it is unset. */
+export function appName(options: VigilonBrowserOptions): unknown {
+  return options.appName ?? options.serviceName;
+}
+
+/** The release: `appVersion`, or the deprecated `serviceVersion` when it is unset. */
+export function appVersion(options: VigilonBrowserOptions): string | undefined {
+  return options.appVersion ?? options.serviceVersion;
+}
+
+const RENAMED_OPTIONS = [
+  ["serviceName", "appName"],
+  ["serviceVersion", "appVersion"],
+] as const;
+
+/** One warning for each deprecated option that is set. */
+export function deprecationWarnings(options: VigilonBrowserOptions): string[] {
+  const warnings: string[] = [];
+  for (const [old, current] of RENAMED_OPTIONS) {
+    if (options[old] !== undefined) {
+      warnings.push(
+        options[current] === undefined
+          ? `${old} is deprecated and will be removed in 0.3.0; rename it to ${current}`
+          : `${old} is deprecated and ignored because ${current} is set; remove ${old}`,
+      );
+    }
+  }
+  return warnings;
 }

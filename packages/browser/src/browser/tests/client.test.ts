@@ -13,9 +13,9 @@ import {
 
 const options: VigilonBrowserOptions = {
   apiKey: "test-key",
-  serviceName: "dashboard",
+  appName: "dashboard",
   environment: "test",
-  serviceVersion: "1.2.3",
+  appVersion: "1.2.3",
   endpoint: "https://ingest.example.com/",
 };
 
@@ -76,16 +76,81 @@ describe("@vigilon/browser", () => {
 
   it("refuses invalid options without throwing", () => {
     expect(init({ ...options, apiKey: "" })).toBe(false);
-    expect(init({ ...options, serviceName: "has spaces" })).toBe(false);
+    expect(init({ ...options, appName: "has spaces" })).toBe(false);
     expect(init({ ...options, environment: "e".repeat(101) })).toBe(false);
     expect(console.error).toHaveBeenCalled();
   });
 
-  it("warns once when serviceVersion is missing", () => {
+  it("warns once when appVersion is missing", () => {
     // Held before init: console breadcrumbs wrap console.warn once it runs.
     const warn = console.warn;
-    expect(init({ ...options, serviceVersion: undefined })).toBe(true);
-    expect(warn).toHaveBeenCalledWith(expect.stringContaining("serviceVersion"));
+    expect(init({ ...options, appVersion: undefined })).toBe(true);
+    expect(warn).toHaveBeenCalledWith(expect.stringContaining("appVersion"));
+  });
+
+  it("names the deprecated serviceName in its validation error", () => {
+    const { appName: _, appVersion: __, ...rest } = options;
+    expect(init({ ...rest, serviceName: "has spaces" })).toBe(false);
+    expect(console.error).toHaveBeenCalledWith(
+      "[Vigilon] not started: serviceName must be 1 to 100 characters of letters, digits, and . _ : / -",
+    );
+    expect(init(rest)).toBe(false);
+    expect(console.error).toHaveBeenLastCalledWith(
+      "[Vigilon] not started: appName must be 1 to 100 characters of letters, digits, and . _ : / -",
+    );
+  });
+
+  it("reports as serviceName and serviceVersion when they are used instead, and says to rename them", async () => {
+    const { appName: _, appVersion: __, ...rest } = options;
+    const warn = console.warn;
+    expect(init({ ...rest, serviceName: "legacy", serviceVersion: "0.9" })).toBe(true);
+
+    expect(warn).toHaveBeenCalledWith(
+      "[Vigilon] serviceName is deprecated and will be removed in 0.3.0; rename it to appName",
+    );
+    expect(warn).toHaveBeenCalledWith(
+      "[Vigilon] serviceVersion is deprecated and will be removed in 0.3.0; rename it to appVersion",
+    );
+    expect(warn).not.toHaveBeenCalledWith(expect.stringContaining("is not set"));
+    captureException(new Error("boom"));
+    await sentEvents();
+    expect(requests[0].envelope.service).toEqual({
+      name: "legacy",
+      environment: "test",
+      version: "0.9",
+    });
+  });
+
+  it("prefers appName and appVersion over the deprecated options and says to remove them", async () => {
+    const warn = console.warn;
+    expect(init({ ...options, serviceName: "legacy", serviceVersion: "0.9" })).toBe(true);
+
+    expect(warn).toHaveBeenCalledWith(
+      "[Vigilon] serviceName is deprecated and ignored because appName is set; remove serviceName",
+    );
+    expect(warn).toHaveBeenCalledWith(
+      "[Vigilon] serviceVersion is deprecated and ignored because appVersion is set; remove serviceVersion",
+    );
+    captureException(new Error("boom"));
+    await sentEvents();
+    expect(requests[0].envelope.service).toMatchObject({ name: "dashboard", version: "1.2.3" });
+  });
+
+  it("accepts options from an interface that extends VigilonBrowserOptions", () => {
+    // Apps extend the options interface; it must stay an object type that
+    // interfaces can extend, which typecheck verifies here.
+    interface AppOptions extends VigilonBrowserOptions {
+      feature?: boolean;
+    }
+    const { appName: _, ...rest } = options;
+    const legacy: AppOptions = { ...rest, serviceName: "legacy", feature: true };
+    expect(init(legacy)).toBe(true);
+  });
+
+  it("does not warn about deprecations when only the new options are used", () => {
+    const warn = console.warn;
+    expect(init(options)).toBe(true);
+    expect(warn).not.toHaveBeenCalled();
   });
 
   it("sends a manual capture with the envelope, page, and session", async () => {

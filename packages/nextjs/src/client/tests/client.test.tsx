@@ -12,7 +12,7 @@ const { initBrowser, captureException } = vi.hoisted(() => ({
 vi.mock("@vigilon/react", () => ({ init: initBrowser, captureException }));
 
 const TRACE_ID = "4bf92f3577b34da6a3ce929d0e0e4736";
-const options: VigilonBrowserOptions = { apiKey: "k", serviceName: "web", environment: "test" };
+const options: VigilonBrowserOptions = { apiKey: "k", appName: "web", environment: "test" };
 
 function event(url: string, traceId: string | null = null): BrowserEvent {
   return {

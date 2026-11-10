@@ -36,8 +36,10 @@ export * from "./src/errors/index.js";
 export * from "./src/jobs/index.js";
 export {
   VigilonConfigError,
-  SERVICE_NAME_ENV_VARS,
+  APP_NAME_ENV_VARS,
   ENVIRONMENT_ENV_VARS,
+  APP_VERSION_ENV_VARS,
+  SERVICE_NAME_ENV_VARS,
   SERVICE_VERSION_ENV_VARS,
 } from "./src/config/index.js";
 
@@ -73,17 +75,20 @@ export type SpanProcessorExtensions = {
 
 /**
  * Every setting is optional. Anything omitted is resolved from the
- * environment, and service name and version additionally fall back to the
+ * environment, and app name and version additionally fall back to the
  * nearest package.json. See the README for the full precedence.
  */
 export type VigilonRegisterParams = {
   /** Falls back to VIGILON_API_KEY. Required once resolved. */
   apiKey?: string;
   /**
-   * Falls back to VIGILON_SERVICE_NAME, OTEL_SERVICE_NAME, npm_package_name,
+   * The name this app reports as, shown as its Service in Vigilon. Falls back
+   * to VIGILON_APP_NAME, OTEL_SERVICE_NAME, npm_package_name,
    * AWS_LAMBDA_FUNCTION_NAME, then the "name" of the nearest package.json.
    * Required once resolved.
    */
+  appName?: string;
+  /** @deprecated Renamed to `appName`; will be removed in 0.3.0. */
   serviceName?: string;
   /**
    * Falls back to VIGILON_ENVIRONMENT, ENVIRONMENT, ENV, then NODE_ENV.
@@ -91,9 +96,11 @@ export type VigilonRegisterParams = {
    */
   environment?: string;
   /**
-   * Falls back to VIGILON_SERVICE_VERSION, npm_package_version, then the
-   * "version" of the nearest package.json. Optional; warns when unresolved.
+   * The release. Falls back to VIGILON_APP_VERSION, npm_package_version, then
+   * the "version" of the nearest package.json. Optional; warns when unresolved.
    */
+  appVersion?: string;
+  /** @deprecated Renamed to `appVersion`; will be removed in 0.3.0. */
   serviceVersion?: string;
   /** Falls back to VIGILON_OTEL_ENDPOINT, then https://ingest.vigilon.io. */
   otelEndpoint?: string;
@@ -114,7 +121,7 @@ export type VigilonRegisterParams = {
  * Resolves the configuration (explicit params, then environment variables,
  * then package.json), validates it, and starts the OpenTelemetry SDK.
  *
- * Throws a VigilonConfigError when the API key, service name, or environment
+ * Throws a VigilonConfigError when the API key, app name, or environment
  * cannot be resolved. Returns undefined without starting anything when
  * VIGILON_DISABLED is set or the SDK is already registered in this process.
  */
@@ -239,9 +246,9 @@ function startSdk(
 
   const sdk = new NodeSDK({
     resource: resourceFromAttributes({
-      [ATTR_SERVICE_NAME]: config.serviceName,
-      ...(config.serviceVersion
-        ? { [ATTR_SERVICE_VERSION]: config.serviceVersion }
+      [ATTR_SERVICE_NAME]: config.appName,
+      ...(config.appVersion
+        ? { [ATTR_SERVICE_VERSION]: config.appVersion }
         : {}),
       ["deployment.environment"]: config.environment,
     }),
@@ -257,9 +264,12 @@ function startSdk(
   sdk.start();
 
   console.info(describeConfig(config, exporterBaseUrl));
-  if (!config.serviceVersion) {
+  for (const deprecation of config.deprecations) {
+    console.warn(`Vigilon: ${deprecation}`);
+  }
+  if (!config.appVersion) {
     console.warn(
-      "Vigilon could not determine a service version. Set VIGILON_SERVICE_VERSION (or a \"version\" in package.json) to track deployments and get better insights.",
+      "Vigilon could not determine an app version. Set VIGILON_APP_VERSION (or a \"version\" in package.json) to track deployments and get better insights.",
     );
   }
 

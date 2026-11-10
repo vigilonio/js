@@ -5,7 +5,9 @@
  * no-op until `init` runs in a browser, so it can be imported during SSR.
  */
 import {
+  appVersion,
   BrowserClient,
+  deprecationWarnings,
   invalidOptions,
   SDK_VERSION,
   type BreadcrumbInput,
@@ -47,9 +49,12 @@ export function init(options: VigilonBrowserOptions): boolean {
     console.error(`[Vigilon] not started: ${problem}`);
     return false;
   }
-  if (!options.serviceVersion) {
+  for (const warning of deprecationWarnings(options)) {
+    console.warn(`[Vigilon] ${warning}`);
+  }
+  if (!appVersion(options)) {
     console.warn(
-      "[Vigilon] serviceVersion is not set; errors will not be linked to a release",
+      "[Vigilon] appVersion is not set; errors will not be linked to a release",
     );
   }
   if (client !== null) {

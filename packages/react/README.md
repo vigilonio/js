@@ -22,9 +22,9 @@ import { init } from "@vigilon/react";
 
 init({
   apiKey: "your-api-key",
-  serviceName: "dashboard",
+  appName: "dashboard",
   environment: "production",
-  serviceVersion: "2026.10.31-1",
+  appVersion: "2026.10.31-1",
 });
 ```
 

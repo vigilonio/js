@@ -18,7 +18,7 @@ Create an API key of kind `Server` in the [Vigilon dashboard](https://app.vigilo
 VIGILON_API_KEY=your-api-key node --import @vigilon/node/register server.js
 ```
 
-That is usually all that is needed. The `--import` preload works for both CommonJS and ESM apps and starts instrumentation before your application code runs. The service name and version are read from your `package.json`, and the deployment environment from your `ENVIRONMENT`, `ENV`, or `NODE_ENV` variable (see [Configuration](#configuration) for the exact precedence). On startup Vigilon logs one line showing the values it resolved and where each came from:
+That is usually all that is needed. The `--import` preload works for both CommonJS and ESM apps and starts instrumentation before your application code runs. The app name and version are read from your `package.json`, and the deployment environment from your `ENVIRONMENT`, `ENV`, or `NODE_ENV` variable (see [Configuration](#configuration) for the exact precedence). On startup Vigilon logs one line showing the values it resolved and where each came from:
 
 ```
 Vigilon started: service.name=api (package.json), deployment.environment=production (ENVIRONMENT), service.version=1.4.2 (package.json), endpoint=https://ingest.vigilon.io
@@ -55,27 +55,34 @@ Vigilon reads its configuration from, in order of priority, arguments passed to 
 | Setting | Sources, highest priority first | Required |
 |---|---|---|
 | API key | `VIGILON_API_KEY` | Yes |
-| Service name (`service.name`) | `VIGILON_SERVICE_NAME`, `OTEL_SERVICE_NAME`, `npm_package_name`, `AWS_LAMBDA_FUNCTION_NAME`, `package.json` `"name"` | Yes |
+| App name (`service.name`) | `VIGILON_APP_NAME`, `OTEL_SERVICE_NAME`, `npm_package_name`, `AWS_LAMBDA_FUNCTION_NAME`, `package.json` `"name"` | Yes |
 | Environment (`deployment.environment`) | `VIGILON_ENVIRONMENT`, `ENVIRONMENT`, `ENV`, `NODE_ENV` | Yes |
-| Service version (`service.version`) | `VIGILON_SERVICE_VERSION`, `npm_package_version`, `package.json` `"version"` | No, but recommended |
+| App version (`service.version`) | `VIGILON_APP_VERSION`, `npm_package_version`, `package.json` `"version"` | No, but recommended |
 | OTLP endpoint | `VIGILON_OTEL_ENDPOINT` | No, defaults to `https://ingest.vigilon.io` |
 | Excluded URLs | `VIGILON_EXCLUDED_URLS` | No |
 
-If the API key, service name, or environment cannot be resolved, Vigilon throws on startup with a message listing every missing setting and the sources it checked. Set the `VIGILON_*` variable named in the message to fix it. A value in square brackets, such as `[YOUR_API_KEY]`, is a placeholder and counts as a missing API key.
+If the API key, app name, or environment cannot be resolved, Vigilon throws on startup with a message listing every missing setting and the sources it checked. Set the `VIGILON_*` variable named in the message to fix it. A value in square brackets, such as `[YOUR_API_KEY]`, is a placeholder and counts as a missing API key.
 
-### Service name
+### App name
 
-`npm_package_name` is set automatically when the app is started through `npm start`, `pnpm start`, or `yarn start`, so most apps need nothing else. When the app is started with a bare `node` command, Vigilon looks for the nearest `package.json` instead: it walks up from the directory of the entry script, then from the working directory, and uses the first `package.json` that declares a non-blank `name` or `version`. That file is the project's manifest for both fields, so a `package.json` with only a `version` supplies the version and leaves the name to be set through `VIGILON_SERVICE_NAME`, and files with neither field (such as a `{"type": "module"}` stub in a build directory) are walked past. Directories inside `node_modules` are skipped, so a tool entry point such as `node_modules/next/dist/bin/next` still resolves to your application's package, and in a monorepo `node packages/api/dist/server.js` resolves to `packages/api/package.json` rather than the repository root.
+The app name is what Vigilon shows as the app's Service. It is exported as the OpenTelemetry `service.name` resource attribute.
 
-Scoped names are kept as-is: `@acme/api` is reported as `@acme/api`. Set `VIGILON_SERVICE_NAME` if you want a different name, or if the derived one is wrong (for example a monorepo root package named after the repository).
+
+`npm_package_name` is set automatically when the app is started through `npm start`, `pnpm start`, or `yarn start`, so most apps need nothing else. When the app is started with a bare `node` command, Vigilon looks for the nearest `package.json` instead: it walks up from the directory of the entry script, then from the working directory, and uses the first `package.json` that declares a non-blank `name` or `version`. That file is the project's manifest for both fields, so a `package.json` with only a `version` supplies the version and leaves the name to be set through `VIGILON_APP_NAME`, and files with neither field (such as a `{"type": "module"}` stub in a build directory) are walked past. Directories inside `node_modules` are skipped, so a tool entry point such as `node_modules/next/dist/bin/next` still resolves to your application's package, and in a monorepo `node packages/api/dist/server.js` resolves to `packages/api/package.json` rather than the repository root.
+
+Scoped names are kept as-is: `@acme/api` is reported as `@acme/api`. Set `VIGILON_APP_NAME` if you want a different name, or if the derived one is wrong (for example a monorepo root package named after the repository).
+
+### Renamed settings
+
+`VIGILON_SERVICE_NAME` and `VIGILON_SERVICE_VERSION` were renamed to `VIGILON_APP_NAME` and `VIGILON_APP_VERSION`, and the `register()` arguments `serviceName` and `serviceVersion` to `appName` and `appVersion`. The old names still work until 0.3.0, ranked just below their replacements, and Vigilon warns on startup for each one that is set. The value sent to Vigilon is unchanged, so the app keeps its Service and error groups when you rename.
 
 ### Environment
 
 `VIGILON_ENVIRONMENT` always wins. When it is unset, Vigilon falls back to the generic `ENVIRONMENT`, `ENV`, and finally `NODE_ENV` variables. `NODE_ENV` is a last resort because it is usually `production` in staging environments too; check the startup log line if your environment shows up unexpectedly, and set `VIGILON_ENVIRONMENT` explicitly when the generic variables do not describe your deployment.
 
-### Service version
+### App version
 
-The version is derived from `npm_package_version` or the `package.json` `"version"` field. If your services do not bump that field per deployment, set `VIGILON_SERVICE_VERSION` from your CI or platform's commit identifier (for example `GITHUB_SHA`, `VERCEL_GIT_COMMIT_SHA`, or `RAILWAY_GIT_COMMIT_SHA`). Vigilon warns when no version can be resolved at all, because deployment/version data improves change tracking and insights.
+The version is derived from `npm_package_version` or the `package.json` `"version"` field. If your services do not bump that field per deployment, set `VIGILON_APP_VERSION` from your CI or platform's commit identifier (for example `GITHUB_SHA`, `VERCEL_GIT_COMMIT_SHA`, or `RAILWAY_GIT_COMMIT_SHA`). Vigilon warns when no version can be resolved at all, because deployment/version data improves change tracking and insights.
 
 ### Optional variables
 
@@ -203,7 +210,7 @@ import { register } from "@vigilon/node";
 
 register({
   apiKey: "your-api-key",
-  serviceName: "your-service-name",
+  appName: "your-app-name",
   environment: "development",
   otelEndpoint: "http://localhost:4318",
   excludedUrls: ["/internal/metrics"],
@@ -243,7 +250,7 @@ If you bundle your Lambda with esbuild (or a similar bundler), keep `@vigilon/no
 
 **No traces show up.** Read the `Vigilon started:` line the SDK prints on startup. If it is missing, the process was not started with the preload (or `VIGILON_DISABLED` is set); if a required setting could not be resolved, the preload throws instead and names the variable to set. If the line is present, look for a `Vigilon: the ingest endpoint rejected the API key` message, which means `VIGILON_API_KEY` is wrong or revoked, or a `Vigilon: exporting traces failed` message, which points at network or endpoint problems. Set `VIGILON_DEBUG=1` for the full OpenTelemetry diagnostics.
 
-**The service name or environment is wrong.** The startup line shows which source each value came from. A monorepo root `package.json`, a leaked `npm_package_name` from a parent npm script, or `NODE_ENV=production` in staging are the usual causes. Set `VIGILON_SERVICE_NAME` or `VIGILON_ENVIRONMENT` explicitly; they always take priority. See [Configuration](#configuration).
+**The app name or environment is wrong.** The startup line shows which source each value came from. A monorepo root `package.json`, a leaked `npm_package_name` from a parent npm script, or `NODE_ENV=production` in staging are the usual causes. Set `VIGILON_APP_NAME` or `VIGILON_ENVIRONMENT` explicitly; they always take priority. See [Configuration](#configuration).
 
 **HTTP spans appear but Express, Fastify, or database spans are missing.** The instrumented library was loaded before Vigilon. With the preload this only happens in ESM apps started with `--require` instead of `--import`; with manual registration it happens whenever `register()` runs after the library is imported. See [Next Steps](#next-steps).
 
