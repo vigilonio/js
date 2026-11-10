@@ -100,9 +100,9 @@ function page(params: URLSearchParams): string {
   addEventListener("pagehide", sentinel);
   Vigilon.init({
     apiKey: "transport-test-key",
-    serviceName: "transport-test",
+    appName: "transport-test",
     environment: "test",
-    serviceVersion: "1",
+    appVersion: "1",
     endpoint: ${JSON.stringify(endpointOrigin)},
   });
   (async () => {

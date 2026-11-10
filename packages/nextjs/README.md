@@ -39,7 +39,7 @@ export default withVigilon({
 export async function register() {
   if (process.env.NEXT_RUNTIME === "nodejs") {
     const { register } = await import("@vigilon/nextjs/server");
-    register({ serviceName: "storefront", serviceVersion: process.env.VIGILON_SERVICE_VERSION });
+    register({ appName: "storefront", appVersion: process.env.VIGILON_APP_VERSION });
   }
 }
 ```
@@ -55,13 +55,13 @@ import { init } from "@vigilon/nextjs";
 
 init({
   apiKey: process.env.NEXT_PUBLIC_VIGILON_API_KEY!,
-  serviceName: "storefront",
+  appName: "storefront",
   environment: process.env.NEXT_PUBLIC_VIGILON_ENVIRONMENT!,
-  serviceVersion: process.env.NEXT_PUBLIC_VIGILON_SERVICE_VERSION,
+  appVersion: process.env.NEXT_PUBLIC_VIGILON_APP_VERSION,
 });
 ```
 
-Use the same `serviceName` as the server: Vigilon keeps server and browser errors apart by origin. `init` takes the options of [`@vigilon/browser`](../browser#readme). Every event captured before the first client-side navigation carries the trace ID of the request that rendered the page.
+Use the same `appName` as the server: Vigilon keeps server and browser errors apart by origin. `init` takes the options of [`@vigilon/browser`](../browser#readme). Every event captured before the first client-side navigation carries the trace ID of the request that rendered the page.
 
 ### Error boundaries
 

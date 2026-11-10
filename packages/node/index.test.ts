@@ -29,7 +29,7 @@ const REGISTER_STATE_KEY = Symbol.for("vigilon.register.started");
 
 const params = {
   apiKey: "test-key",
-  serviceName: "test-service",
+  appName: "test-service",
   environment: "test",
   otelEndpoint: "http://localhost:9999",
 };
@@ -242,9 +242,9 @@ describe("configuration from the environment", () => {
   beforeEach(async () => {
     ({ registerFromEnv } = await import("./index.js"));
     vi.stubEnv("VIGILON_API_KEY", "env-key");
-    vi.stubEnv("VIGILON_SERVICE_NAME", "env-service");
+    vi.stubEnv("VIGILON_APP_NAME", "env-service");
     vi.stubEnv("VIGILON_ENVIRONMENT", "env-test");
-    vi.stubEnv("VIGILON_SERVICE_VERSION", "1.0.0");
+    vi.stubEnv("VIGILON_APP_VERSION", "1.0.0");
     vi.stubEnv("VIGILON_EXCLUDED_URLS", " /metrics , /internal/status ,");
   });
 
@@ -256,7 +256,7 @@ describe("configuration from the environment", () => {
   });
 
   it("uses the resolved values as the resource attributes", () => {
-    vi.stubEnv("VIGILON_SERVICE_NAME", "");
+    vi.stubEnv("VIGILON_APP_NAME", "");
     vi.stubEnv("OTEL_SERVICE_NAME", "otel-service");
     vi.stubEnv("VIGILON_ENVIRONMENT", "");
     vi.stubEnv("ENVIRONMENT", "staging");
@@ -274,7 +274,7 @@ describe("configuration from the environment", () => {
   });
 
   it("lets register() arguments override the environment", () => {
-    register({ serviceName: "explicit", environment: "explicit-env" });
+    register({ appName: "explicit", environment: "explicit-env" });
 
     const options = nodeSdkCtorMock.mock.calls[0][0] as {
       resource: { attributes: Record<string, unknown> };
@@ -296,9 +296,9 @@ describe("configuration from the environment", () => {
   });
 
   it("throws without starting or taking the guard when a required setting is missing", () => {
-    vi.stubEnv("VIGILON_SERVICE_NAME", "");
+    vi.stubEnv("VIGILON_APP_NAME", "");
 
-    expect(() => registerFromEnv()).toThrow(/VIGILON_SERVICE_NAME/);
+    expect(() => registerFromEnv()).toThrow(/VIGILON_APP_NAME/);
     expect(startMock).not.toHaveBeenCalled();
     expect(
       (globalThis as Record<symbol, unknown>)[REGISTER_STATE_KEY],
@@ -312,19 +312,41 @@ describe("configuration from the environment", () => {
 
     expect(info).toHaveBeenCalledWith(
       expect.stringContaining(
-        "service.name=env-service (VIGILON_SERVICE_NAME), deployment.environment=env-test (VIGILON_ENVIRONMENT), service.version=1.0.0 (VIGILON_SERVICE_VERSION)",
+        "service.name=env-service (VIGILON_APP_NAME), deployment.environment=env-test (VIGILON_ENVIRONMENT), service.version=1.0.0 (VIGILON_APP_VERSION)",
       ),
     );
   });
 
-  it("warns when no service version can be resolved", () => {
-    vi.stubEnv("VIGILON_SERVICE_VERSION", "");
+  it("warns about each deprecated setting it was given", () => {
+    vi.stubEnv("VIGILON_APP_NAME", "");
+    vi.stubEnv("VIGILON_SERVICE_NAME", "old-env-service");
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+
+    register({ serviceVersion: "2.0.0" });
+
+    const options = nodeSdkCtorMock.mock.calls[0][0] as {
+      resource: { attributes: Record<string, unknown> };
+    };
+    expect(options.resource.attributes).toMatchObject({
+      "service.name": "old-env-service",
+      "service.version": "2.0.0",
+    });
+    expect(warn).toHaveBeenCalledWith(
+      "Vigilon: VIGILON_SERVICE_NAME is deprecated and will be removed in 0.3.0. Rename it to VIGILON_APP_NAME.",
+    );
+    expect(warn).toHaveBeenCalledWith(
+      "Vigilon: serviceVersion is deprecated and will be removed in 0.3.0. Rename it to appVersion.",
+    );
+  });
+
+  it("warns when no app version can be resolved", () => {
+    vi.stubEnv("VIGILON_APP_VERSION", "");
     const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
 
     registerFromEnv();
 
     expect(warn).toHaveBeenCalledWith(
-      expect.stringContaining("VIGILON_SERVICE_VERSION"),
+      expect.stringContaining("VIGILON_APP_VERSION"),
     );
   });
 

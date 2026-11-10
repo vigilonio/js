@@ -2,12 +2,16 @@ import { findNearestPackageJson, type PackageInfo } from "./packageJson.js";
 
 /**
  * Settings a caller can pass explicitly. Anything left undefined is resolved
- * from the environment (and, for service name and version, from package.json).
+ * from the environment (and, for app name and version, from package.json).
  */
 export type ConfigOverrides = {
   apiKey?: string;
+  appName?: string;
+  /** @deprecated Renamed to `appName`; will be removed in 0.3.0. */
   serviceName?: string;
   environment?: string;
+  appVersion?: string;
+  /** @deprecated Renamed to `appVersion`; will be removed in 0.3.0. */
   serviceVersion?: string;
   otelEndpoint?: string;
   excludedUrls?: string[];
@@ -15,18 +19,22 @@ export type ConfigOverrides = {
 
 export type ResolvedConfig = {
   apiKey: string;
-  serviceName: string;
+  /** Exported as the `service.name` resource attribute. */
+  appName: string;
   environment: string;
-  serviceVersion?: string;
+  /** Exported as the `service.version` resource attribute. */
+  appVersion?: string;
   otelEndpoint?: string;
   excludedUrls?: string[];
   /** Where each value came from, for the startup log line. */
   sources: {
     apiKey: string;
-    serviceName: string;
+    appName: string;
     environment: string;
-    serviceVersion?: string;
+    appVersion?: string;
   };
+  /** One warning for each deprecated setting that is set. */
+  deprecations: string[];
 };
 
 export type ResolveConfigOptions = {
@@ -39,7 +47,9 @@ const EXPLICIT_SOURCE = "register() argument";
 const PACKAGE_JSON_SOURCE = "package.json";
 
 /** Environment variables consulted for each setting, highest priority first. */
-export const SERVICE_NAME_ENV_VARS = [
+export const APP_NAME_ENV_VARS = [
+  "VIGILON_APP_NAME",
+  // Deprecated: renamed to VIGILON_APP_NAME, will be removed in 0.3.0.
   "VIGILON_SERVICE_NAME",
   "OTEL_SERVICE_NAME",
   "npm_package_name",
@@ -51,10 +61,16 @@ export const ENVIRONMENT_ENV_VARS = [
   "ENV",
   "NODE_ENV",
 ] as const;
-export const SERVICE_VERSION_ENV_VARS = [
+export const APP_VERSION_ENV_VARS = [
+  "VIGILON_APP_VERSION",
+  // Deprecated: renamed to VIGILON_APP_VERSION, will be removed in 0.3.0.
   "VIGILON_SERVICE_VERSION",
   "npm_package_version",
 ] as const;
+/** @deprecated Renamed to `APP_NAME_ENV_VARS`; will be removed in 0.3.0. */
+export const SERVICE_NAME_ENV_VARS = APP_NAME_ENV_VARS;
+/** @deprecated Renamed to `APP_VERSION_ENV_VARS`; will be removed in 0.3.0. */
+export const SERVICE_VERSION_ENV_VARS = APP_VERSION_ENV_VARS;
 
 export class VigilonConfigError extends Error {
   readonly name = "VigilonConfigError";
@@ -78,15 +94,17 @@ export function resolveConfig(
       ? providedApiKey
       : undefined;
   const apiKey = placeholderApiKey ? undefined : providedApiKey;
-  const serviceName =
+  const appName =
+    explicit(overrides.appName) ??
     explicit(overrides.serviceName) ??
-    fromEnv(env, SERVICE_NAME_ENV_VARS) ??
+    fromEnv(env, APP_NAME_ENV_VARS) ??
     fromPackageJson(packageJson, "name");
   const environment =
     explicit(overrides.environment) ?? fromEnv(env, ENVIRONMENT_ENV_VARS);
-  const serviceVersion =
+  const appVersion =
+    explicit(overrides.appVersion) ??
     explicit(overrides.serviceVersion) ??
-    fromEnv(env, SERVICE_VERSION_ENV_VARS) ??
+    fromEnv(env, APP_VERSION_ENV_VARS) ??
     fromPackageJson(packageJson, "version");
 
   const missing: string[] = [];
@@ -97,12 +115,12 @@ export function resolveConfig(
   } else if (!apiKey) {
     missing.push(describeMissing("an API key", ["VIGILON_API_KEY"], "apiKey"));
   }
-  if (!serviceName) {
+  if (!appName) {
     missing.push(
       describeMissing(
-        "a service name",
-        [...SERVICE_NAME_ENV_VARS, `${PACKAGE_JSON_SOURCE} "name"`],
-        "serviceName",
+        "an app name",
+        [...APP_NAME_ENV_VARS, `${PACKAGE_JSON_SOURCE} "name"`],
+        "appName",
       ),
     );
   }
@@ -111,7 +129,7 @@ export function resolveConfig(
       describeMissing("an environment", ENVIRONMENT_ENV_VARS, "environment"),
     );
   }
-  if (!apiKey || !serviceName || !environment) {
+  if (!apiKey || !appName || !environment) {
     throw new VigilonConfigError(
       `Vigilon cannot start:\n${missing.map((line) => `  - ${line}`).join("\n")}`,
     );
@@ -125,18 +143,57 @@ export function resolveConfig(
 
   return {
     apiKey: apiKey.value,
-    serviceName: serviceName.value,
+    appName: appName.value,
     environment: environment.value,
-    serviceVersion: serviceVersion?.value,
+    appVersion: appVersion?.value,
     otelEndpoint,
     excludedUrls,
     sources: {
       apiKey: apiKey.source,
-      serviceName: serviceName.source,
+      appName: appName.source,
       environment: environment.source,
-      serviceVersion: serviceVersion?.source,
+      appVersion: appVersion?.source,
     },
+    deprecations: [
+      ...deprecation("serviceName", "appName", overrides.serviceName, [
+        ["appName", overrides.appName],
+      ]),
+      ...deprecation("VIGILON_SERVICE_NAME", "VIGILON_APP_NAME", env.VIGILON_SERVICE_NAME, [
+        ["appName", overrides.appName],
+        ["serviceName", overrides.serviceName],
+        ["VIGILON_APP_NAME", env.VIGILON_APP_NAME],
+      ]),
+      ...deprecation("serviceVersion", "appVersion", overrides.serviceVersion, [
+        ["appVersion", overrides.appVersion],
+      ]),
+      ...deprecation("VIGILON_SERVICE_VERSION", "VIGILON_APP_VERSION", env.VIGILON_SERVICE_VERSION, [
+        ["appVersion", overrides.appVersion],
+        ["serviceVersion", overrides.serviceVersion],
+        ["VIGILON_APP_VERSION", env.VIGILON_APP_VERSION],
+      ]),
+    ],
   };
+}
+
+/**
+ * The warning for a deprecated setting, when it is set: rename it, or remove
+ * it when one of the settings that take priority over it is set too.
+ */
+function deprecation(
+  old: string,
+  current: string,
+  value: string | undefined,
+  higherPriority: Array<[name: string, value: string | undefined]>,
+): string[] {
+  if (!value?.trim()) {
+    return [];
+  }
+  const winner = higherPriority.find(([, candidate]) => candidate?.trim())?.[0];
+  return [
+    winner === undefined
+      ? `${old} is deprecated and will be removed in 0.3.0. Rename it to ${current}.`
+      : `${old} is deprecated and ignored because ${winner} is set. Remove ${old}.`,
+  ];
 }
 
 /** True when VIGILON_DISABLED is set to 1, true, or yes (case-insensitive). */
@@ -152,10 +209,10 @@ export function isDebug(env: NodeJS.ProcessEnv = process.env): boolean {
 /** One-line summary of the effective configuration and where it came from. */
 export function describeConfig(config: ResolvedConfig, endpoint: string): string {
   const parts = [
-    `service.name=${config.serviceName} (${config.sources.serviceName})`,
+    `service.name=${config.appName} (${config.sources.appName})`,
     `deployment.environment=${config.environment} (${config.sources.environment})`,
-    config.serviceVersion
-      ? `service.version=${config.serviceVersion} (${config.sources.serviceVersion})`
+    config.appVersion
+      ? `service.version=${config.appVersion} (${config.sources.appVersion})`
       : "service.version=<unset>",
     `endpoint=${endpoint}`,
   ];

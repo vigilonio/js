@@ -9,7 +9,7 @@ const require = createRequire(import.meta.url);
 const failures = [];
 const check = (ok, message) => ok || failures.push(message);
 
-check(browser.init({ apiKey: "k", serviceName: "smoke", environment: "smoke" }) === false, "init must not start without a browser");
+check(browser.init({ apiKey: "k", appName: "smoke", environment: "smoke" }) === false, "init must not start without a browser");
 check(browser.captureException(new Error("ssr")) === null, "captureException must be a no-op during SSR");
 check((await browser.flush()) === true, "flush must resolve during SSR");
 check(typeof browser.SDK_VERSION === "string" && browser.SDK_VERSION.length > 0, "SDK_VERSION must be set");

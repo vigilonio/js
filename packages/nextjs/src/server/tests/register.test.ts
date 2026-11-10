@@ -10,7 +10,7 @@ import { VercelResponseStatusProcessor } from "../vercelResponseStatusProcessor"
 const { registerNode } = vi.hoisted(() => ({ registerNode: vi.fn() }));
 vi.mock("@vigilon/node", () => ({ register: registerNode }));
 
-const params = { apiKey: "test-key", serviceName: "test-service", environment: "test" };
+const params = { apiKey: "test-key", appName: "test-service", environment: "test" };
 const fakeContext = {
   batchSpanProcessor: { forceFlush: vi.fn() },
 } as unknown as SpanProcessorContext;

@@ -74,9 +74,9 @@ function page(): string {
 <script>
   Vigilon.init({
     apiKey: "breadcrumb-test-key",
-    serviceName: "breadcrumb-test",
+    appName: "breadcrumb-test",
     environment: "test",
-    serviceVersion: "1",
+    appVersion: "1",
     endpoint: ${JSON.stringify(endpointOrigin)},
   });
   window.run = async () => {

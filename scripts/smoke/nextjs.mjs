@@ -13,7 +13,7 @@ const require = createRequire(import.meta.url);
 const failures = [];
 const check = (ok, message) => ok || failures.push(message);
 
-check(client.init({ apiKey: "k", serviceName: "smoke", environment: "smoke" }) === false, "the client init must not start without a browser");
+check(client.init({ apiKey: "k", appName: "smoke", environment: "smoke" }) === false, "the client init must not start without a browser");
 check(typeof client.useReportError === "function", "useReportError must be exported");
 check(typeof client.ErrorBoundary === "function", "the @vigilon/react API must be re-exported");
 check(typeof server.register === "function" && typeof server.recordException === "function", "the server entry must export register and the @vigilon/node API");

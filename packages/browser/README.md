@@ -31,9 +31,9 @@ import { init } from "@vigilon/browser";
 
 init({
   apiKey: "your-api-key",
-  serviceName: "dashboard",
+  appName: "dashboard",
   environment: "production",
-  serviceVersion: "2026.10.26-1",
+  appVersion: "2026.10.26-1",
 });
 ```
 
@@ -43,7 +43,7 @@ If your entry point imports the rest of your app, put `init` in a module of its 
 
 `init` returns `false` and logs the reason when it cannot start. During server-side rendering there is no `window`, so `init` and every other function are safe no-ops; you can import the package from code that runs on both sides.
 
-Set `serviceVersion` to your release (a build number or commit SHA). Without it, Vigilon cannot tell which release introduced an error, and the SDK warns once.
+Set `appVersion` to your release (a build number or commit SHA). Without it, Vigilon cannot tell which release introduced an error, and the SDK warns once.
 
 ## Reporting errors yourself
 
@@ -108,9 +108,9 @@ init({
 | Option | Default | |
 |---|---|---|
 | `apiKey` | required | A project API key of kind `Browser`. `init` returns `false` for a placeholder in square brackets, such as `[YOUR_BROWSER_API_KEY]`. |
-| `serviceName` | required | The Service this app reports as: 1 to 100 letters, digits, and `. _ : / -`. |
+| `appName` | required | The name this app reports as, shown as its Service in Vigilon: 1 to 100 letters, digits, and `. _ : / -`. |
 | `environment` | required | The deployment environment, with the same character set. |
-| `serviceVersion` | none | The release. |
+| `appVersion` | none | The release. |
 | `endpoint` | `https://ingest.vigilon.io` | The ingest base URL. |
 | `ignoreErrors` | see below | More errors to drop, as strings (substring match) or regular expressions, matched against the message and against `type: message`. |
 | `denyUrls` | see below | More script URLs whose errors are dropped. |
@@ -120,6 +120,8 @@ init({
 | `sampleRate` | `1` | The fraction of errors to send. |
 | `maxEventsPerPage` | `100` | At most this many events per page load. |
 | `debug` | `false` | Log SDK diagnostics to the console. |
+
+`serviceName` and `serviceVersion` were renamed to `appName` and `appVersion`. The old names still work until 0.3.0, and `init` warns for each one you pass. The values sent to Vigilon are unchanged, so the app keeps its Service and error groups when you rename.
 
 Some noise is dropped by default: `Script error.` (an opaque error from a cross-origin script), failed and aborted network requests (`Failed to fetch`, `NetworkError when attempting to fetch resource`, `Load failed`, `AbortError`), `ResizeObserver loop` warnings, and errors thrown by browser extensions. The same error repeating within a minute is sent once, so an error loop cannot flood your project.
 

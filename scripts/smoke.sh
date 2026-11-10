@@ -4,8 +4,9 @@
 # both CJS and ESM apps, plus the legacy --require for CJS — against a local
 # OTLP receiver. Each variant must export both an HTTP server span and an
 # Express span, which is what verifies the loader-hook wiring a consumer
-# actually depends on. A final variant drops the VIGILON_SERVICE_NAME and
-# VIGILON_SERVICE_VERSION variables to check that the defaults are derived
+# actually depends on. One variant names the app through the deprecated
+# VIGILON_SERVICE_NAME, and a final one drops the VIGILON_APP_NAME and
+# VIGILON_APP_VERSION variables to check that the defaults are derived
 # from the project's package.json. Last, @vigilon/browser is imported from its
 # tarball as a server-side renderer would, with no window or document, and
 # every @vigilon/bundler-plugins entry is loaded from its tarball, and the
@@ -54,9 +55,9 @@ port=$(cat collector.port)
 [ -n "$port" ] || { echo "smoke: collector did not start"; exit 1; }
 
 export VIGILON_API_KEY=smoke
-export VIGILON_SERVICE_NAME=smoke
+export VIGILON_APP_NAME=smoke
 export VIGILON_ENVIRONMENT=smoke
-export VIGILON_SERVICE_VERSION=0.0.0
+export VIGILON_APP_VERSION=0.0.0
 export VIGILON_OTEL_ENDPOINT="http://127.0.0.1:$port"
 
 run_variant() {
@@ -76,12 +77,18 @@ run_variant "CJS --require" "$spans" node --require @vigilon/node/register app.c
 run_variant "CJS NODE_OPTIONS" "$spans" \
   env NODE_OPTIONS="--import @vigilon/node/register" node app.cjs
 
-# Derived defaults: service name and version come from package.json, the
+# Deprecated variables: VIGILON_SERVICE_NAME still names the app until it is
+# removed.
+run_variant "deprecated VIGILON_SERVICE_NAME" "$spans legacyServiceName" \
+  env -u VIGILON_APP_NAME VIGILON_SERVICE_NAME=smoke-legacy-service \
+  node --import @vigilon/node/register app.cjs
+
+# Derived defaults: app name and version come from package.json, the
 # environment from the generic ENVIRONMENT variable. The npm_package_*
 # variables are unset because `pnpm smoke` leaks the workspace's own values
 # into this shell.
 run_variant "derived defaults" "$spans derivedServiceName derivedServiceVersion" \
-  env -u VIGILON_SERVICE_NAME -u VIGILON_SERVICE_VERSION -u VIGILON_ENVIRONMENT \
+  env -u VIGILON_APP_NAME -u VIGILON_APP_VERSION -u VIGILON_ENVIRONMENT \
   -u npm_package_name -u npm_package_version \
   ENVIRONMENT=smoke node --import @vigilon/node/register app.cjs
 

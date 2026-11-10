@@ -15,7 +15,7 @@ const check = (ok, message) => ok || failures.push(message);
 
 check(typeof react.ErrorBoundary === "function", "ErrorBoundary must be exported");
 check(typeof react.rootErrorHandlers === "function", "rootErrorHandlers must be exported");
-check(react.init({ apiKey: "k", serviceName: "smoke", environment: "smoke" }) === false, "the re-exported init must not start without a browser");
+check(react.init({ apiKey: "k", appName: "smoke", environment: "smoke" }) === false, "the re-exported init must not start without a browser");
 check(react.captureException(new Error("ssr")) === null, "the re-exported captureException must be a no-op during SSR");
 react.setRoute("/smoke/:id");
 check(typeof tanStackRouter.trackTanStackRouter === "function", "the tanstack-router entry must load");

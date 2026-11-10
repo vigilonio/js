@@ -89,9 +89,9 @@ describe("every envelope the SDK sends conforms", () => {
   it("for every kind of throwable and every optional field", async () => {
     init({
       apiKey: "k",
-      serviceName: "dashboard",
+      appName: "dashboard",
       environment: "production",
-      serviceVersion: "v".repeat(250),
+      appVersion: "v".repeat(250),
       endpoint: "https://ingest.example.com",
       beforeSend: (event) =>
         event.exception.message === "with edited breadcrumbs"
