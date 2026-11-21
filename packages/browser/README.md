@@ -16,7 +16,7 @@ Or load the script-tag build, which exposes `window.Vigilon`:
 <script src="https://unpkg.com/@vigilon/browser@0/dist/vigilon.min.js" crossorigin="anonymous"></script>
 ```
 
-Pin an exact version (`@vigilon/browser@0.2.8`) in production so a release never changes your page without a deploy.
+In production, replace `@0` with the exact version you tested (`npm view @vigilon/browser version` prints the latest), so a release never changes your page without a deploy.
 
 ## Quick start
 
